@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Base project for creating a console application in Typescript",
   "main": "./lib/index.js",
+  "bin": {
+    "basketry": "./lib/cli.js"
+  },
   "scripts": {
     "test": "jest",
     "clean": "run-s -s clean:*",
@@ -17,7 +20,9 @@
     "lint:prettier": "prettier -c .",
     "fix:prettier": "prettier -w .",
     "clean:coverage": "rimraf coverage",
-    "pretest": "run-s -s clean"
+    "pretest": "run-s -s clean",
+    "chmod": "chmod +x ./lib/cli.js",
+    "prepack": "run-s build chmod"
   },
   "keywords": [],
   "author": "",
