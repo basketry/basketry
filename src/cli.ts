@@ -19,8 +19,8 @@ const { argv } = yargs(hideBin(process.argv))
   .option('config', {
     alias: 'c',
     string: true,
-    description: 'Path to the config file. Defaults to ility.conifg.json.',
-    default: 'ility.config.json',
+    description: 'Path to the config file. Defaults to basketry.conifg.json.',
+    default: 'basketry.config.json',
     requiresArg: true,
   })
   .option('source', {
