@@ -4,6 +4,7 @@ import { readFile, writeFile, mkdir } from 'fs/promises';
 import { watchFile } from 'fs';
 import { join, sep } from 'path';
 
+import * as chalk from 'chalk';
 import yargs = require('yargs/yargs');
 import { hideBin } from 'yargs/helpers';
 import {
@@ -79,13 +80,43 @@ const { argv } = yargs(hideBin(process.argv))
       const parser = getParser(config.parser);
       const generators = getGenerators(config.generators);
 
-      const service = parser(sdl);
-      await doGenerate(outputPath, service, generators);
+      console.log(
+        chalk.bold(`🧺 Basketry v${require('../package.json').version}`),
+      );
+      console.log(chalk.blue(`Parsing ${sdlPath}`));
+      let service: Service | null = null;
+      try {
+        service = parser(sdl);
+      } catch (ex) {
+        error(`Error parsing file`, ex);
+      }
+      if (service) {
+        const wrote = await doGenerate(outputPath, service, generators);
+
+        if (!wrote) {
+          console.log(chalk.blue('Nothing to do'));
+        }
+      }
 
       if (watch && sdlPath) {
+        console.log();
+        console.log('Waiting for changes...');
+        console.log();
         watchFile(sdlPath, async () => {
           const newSdl = (await readFile(sdlPath)).toString('utf8');
-          await doGenerate(outputPath, parser(newSdl), generators);
+          let newService: Service | null;
+
+          try {
+            newService = parser(newSdl);
+          } catch (ex) {
+            newService = null;
+            error(`Error parsing file`, ex);
+            console.log();
+            console.log('Waiting for changes...');
+            console.log();
+          }
+
+          if (newService) await doGenerate(outputPath, newService, generators);
         });
       }
     }
@@ -99,21 +130,12 @@ async function doGenerate(
   output: string,
   service: Service,
   generators: Generator[],
-): Promise<void> {
-  console.log('Writing files ...');
+): Promise<boolean> {
+  let wrote = false;
   for (const file of getFiles(service, generators)) {
-    const path = file.path.slice(0, file.path.length - 1);
-    const filename = file.path[file.path.length - 1];
-
-    const fullpath = [...output.split(sep), ...path];
-    const finalName = join(...fullpath, filename);
-
-    console.log(`+ ${finalName}`);
-
-    await mkdir(join(...fullpath), { recursive: true });
-    await writeFile(join(...fullpath, filename), file.contents);
+    wrote = (await write(file, output)) || wrote;
   }
-  console.log();
+  return wrote;
 }
 
 async function getConfig(path: string): Promise<Config> {
@@ -172,4 +194,40 @@ async function readStreamToString(stream: NodeJS.ReadStream) {
   const chunks: any[] = [];
   for await (const chunk of stream) chunks.push(chunk);
   return Buffer.concat(chunks).toString('utf8');
+}
+
+async function write(file: File, output: string): Promise<boolean> {
+  const path = join(...output.split(sep), ...file.path);
+
+  let previous: string | null;
+  try {
+    previous = (await readFile(path)).toString();
+  } catch {
+    previous = null;
+    await mkdir(join(...path.split(sep).slice(0, -1)), { recursive: true });
+  }
+
+  if (file.contents === previous) return false;
+
+  try {
+    await writeFile(path, file.contents);
+
+    if (previous === null) {
+      console.log(chalk.green(`+ ${path}`));
+    } else {
+      console.log(chalk.green(`m ${path}`));
+    }
+    return true;
+  } catch (ex) {
+    error(`Error writing ${path}`, ex.message);
+    return false;
+  }
+}
+
+function error(...lines: string[]): void {
+  console.error();
+  for (const line of lines) {
+    console.error(chalk.bold.red(line));
+  }
+  console.error();
 }
