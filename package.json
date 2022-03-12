@@ -25,11 +25,19 @@
     "prepack": "run-s build chmod"
   },
   "keywords": [],
-  "author": "",
+  "author": "Steve Konves",
   "license": "MIT",
   "files": [
     "lib"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/basketry/basketry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/basketry/basketry/issues"
+  },
+  "homepage": "https://github.com/basketry/basketry#readme",
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "@types/node": "^17.0.10",
