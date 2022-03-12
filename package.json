@@ -1,7 +1,7 @@
 {
   "name": "basketry",
   "version": "0.0.4",
-  "description": "Base project for creating a console application in Typescript",
+  "description": "Generate service-oriented code from popular API definition languages",
   "main": "./lib/index.js",
   "bin": {
     "basketry": "./lib/cli.js"
