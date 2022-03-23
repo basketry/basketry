@@ -9,11 +9,11 @@ Generate service-oriented code from popular API definition languages.
 
 The following example converts a "Swagger" doc into Typescript types.
 
-### Install packages
+### 1. Install packages
 
 Install the following: `npm install --save-dev basketry @basketry/swagger-2 @basketry/typescript`
 
-### Config
+### 2. Config
 
 Add `basketry.config.json` to the root of your project:
 
@@ -34,7 +34,7 @@ Add the following script to `package.json`:
 }
 ```
 
-### Generate code
+### 3. Generate code
 
 Run the script: `npm run basketry`
 
