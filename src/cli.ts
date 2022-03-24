@@ -24,6 +24,12 @@ const { argv } = yargs(hideBin(process.argv))
     default: 'basketry.config.json',
     requiresArg: true,
   })
+  .option('parser', {
+    alias: 'p',
+    string: true,
+    description: 'The parser',
+    requiresArg: true,
+  })
   .option('source', {
     alias: 's',
     string: true,
@@ -41,6 +47,7 @@ const { argv } = yargs(hideBin(process.argv))
   .option('generators', {
     alias: 'g',
     string: true,
+    array: true,
     description: `Generators`,
     requiresArg: true,
   })
@@ -53,75 +60,76 @@ const { argv } = yargs(hideBin(process.argv))
 
 (async () => {
   try {
-    const { config: configPath, source, output, watch } = await argv;
+    const {
+      parser: parserPath,
+      source,
+      output,
+      generators: generatorPaths,
+      watch,
+    } = await getConfig(argv);
 
-    const config = await getConfig(configPath);
-
-    const sdlPath = source || config.source;
-
-    if (watch && !sdlPath) {
+    if (watch && !source) {
       throw new Error('Must specify source when running in watch mode.');
     }
 
-    const x = output || config.output || '';
+    const x = output || '';
     const outputPath = x.startsWith('/') ? x.substring(1) : x;
 
     let sdl: string | undefined;
 
-    if (sdlPath) {
-      sdl = (await readFile(sdlPath)).toString('utf8');
+    if (source) {
+      sdl = (await readFile(source)).toString('utf8');
     } else if (!process.stdin.isTTY) {
       sdl = await readStreamToString(process.stdin);
-    } else {
+    }
+    if (!sdl) {
       throw new Error('No input file provided and nothing to read from stdin');
     }
 
-    if (sdl) {
-      const parser = getParser(config.parser);
-      const generators = getGenerators(config.generators);
+    const parser = getParser(parserPath);
+    const generators = getGenerators(generatorPaths);
 
-      console.log(
-        chalk.bold(`🧺 Basketry v${require('../package.json').version}`),
-      );
-      console.log(chalk.blue(`Parsing ${sdlPath}`));
-      let service: Service | null = null;
-      try {
-        service = parser(sdl);
-      } catch (ex) {
-        error(`Error parsing file`, ex);
-      }
-      if (service) {
-        const wrote = await doGenerate(outputPath, service, generators);
+    console.log(
+      chalk.bold(`🧺 Basketry v${require('../package.json').version}`),
+    );
+    console.log(chalk.blue(`Parsing ${source}`));
+    let service: Service | null = null;
+    try {
+      service = parser(sdl);
+    } catch (ex) {
+      error(`Error parsing file`, ex);
+    }
+    if (service) {
+      const wrote = await doGenerate(outputPath, service, generators);
 
-        if (!wrote) {
-          console.log(chalk.blue('Nothing to do'));
-        }
-      }
-
-      if (watch && sdlPath) {
-        console.log();
-        console.log('Waiting for changes...');
-        console.log();
-        watchFile(sdlPath, async () => {
-          const newSdl = (await readFile(sdlPath)).toString('utf8');
-          let newService: Service | null;
-
-          try {
-            newService = parser(newSdl);
-          } catch (ex) {
-            newService = null;
-            error(`Error parsing file`, ex);
-            console.log();
-            console.log('Waiting for changes...');
-            console.log();
-          }
-
-          if (newService) await doGenerate(outputPath, newService, generators);
-        });
+      if (!wrote) {
+        console.log(chalk.blue('Nothing to do'));
       }
     }
+
+    if (watch && source) {
+      console.log();
+      console.log('Waiting for changes...');
+      console.log();
+      watchFile(source, async () => {
+        const newSdl = (await readFile(source)).toString('utf8');
+        let newService: Service | null;
+
+        try {
+          newService = parser(newSdl);
+        } catch (ex) {
+          newService = null;
+          error(`Error parsing file`, ex);
+          console.log();
+          console.log('Waiting for changes...');
+          console.log();
+        }
+
+        if (newService) await doGenerate(outputPath, newService, generators);
+      });
+    }
   } catch (ex) {
-    console.error('Did not generate server types', ex.message);
+    error('Did not generate output', ex.message);
     process.exit(1);
   }
 })();
@@ -138,7 +146,23 @@ async function doGenerate(
   return wrote;
 }
 
-async function getConfig(path: string): Promise<Config> {
+async function getConfig(
+  args: typeof argv,
+): Promise<Config & { watch: boolean }> {
+  const { config, generators, output, source, parser, watch } = await argv;
+
+  const fromFile = await getConfigFromFile(config);
+
+  return {
+    parser: parser || fromFile.parser || '',
+    generators: generators || fromFile.generators || [],
+    source: source || fromFile.source,
+    output: output || fromFile.output,
+    watch: watch || false,
+  };
+}
+
+async function getConfigFromFile(path: string): Promise<Partial<Config>> {
   try {
     return JSON.parse(
       ((await readFile(join(process.cwd(), path))) || {}).toString(),
