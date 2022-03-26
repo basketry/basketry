@@ -12,10 +12,12 @@ export type GeneratorOptions = {
 export type Parser = (input: string) => Service;
 export type Generator = (service: Service) => File[];
 
+/** @deprecated */
 export interface ServiceFactory {
   parse(): Service;
 }
 
+/** @deprecated */
 export interface FileFactory {
   get target(): string;
   build(service: Service): File[];
@@ -26,6 +28,9 @@ export type File = {
   contents: string;
 };
 
+/**
+ * Intermediate Representation (IR) of a service
+ */
 export type Service = {
   title: string;
   majorVersion: number;
