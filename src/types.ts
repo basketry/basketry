@@ -90,9 +90,75 @@ export type ParameterSpec = {
 
 export type Method = {
   name: string;
+  security: SecurityOption[];
   description?: string | string[];
   parameters: Parameter[];
   returnType: ReturnType | undefined;
+};
+
+export type SecurityOption = SecurityScheme[];
+
+export type SecurityScheme = BasicScheme | ApiKeyScheme | OAuth2Scheme;
+
+export type BasicScheme = {
+  type: 'basic';
+  name: string;
+  description?: string;
+};
+
+export type ApiKeyScheme = {
+  type: 'apiKey';
+  name: string;
+  description?: string;
+  parameter: string;
+  in: 'header' | 'query' | 'cookie';
+};
+
+export type OAuth2Scheme = {
+  type: 'oauth2';
+  name: string;
+  description?: string;
+  flows: OAuth2Flow[];
+};
+
+export type OAuth2Flow =
+  | OAuth2ImplicitFlow
+  | OAuth2PasswordFlow
+  | OAuth2ClientCredentialsFlow
+  | OAuth2AuthorizationCodeFlow;
+
+export type OAuth2ImplicitFlow = {
+  type: 'implicit';
+  authorizationUrl: string;
+  refreshUrl?: string;
+  scopes: OAuth2Scope[];
+};
+
+export type OAuth2PasswordFlow = {
+  type: 'password';
+  tokenUrl: string;
+  refreshUrl?: string;
+  scopes: OAuth2Scope[];
+};
+
+export type OAuth2ClientCredentialsFlow = {
+  type: 'clientCredentials';
+  tokenUrl: string;
+  refreshUrl?: string;
+  scopes: OAuth2Scope[];
+};
+
+export type OAuth2AuthorizationCodeFlow = {
+  type: 'authorizationCode';
+  authorizationUrl: string;
+  tokenUrl: string;
+  refreshUrl?: string;
+  scopes: OAuth2Scope[];
+};
+
+export type OAuth2Scope = {
+  name: string;
+  description: string;
 };
 
 export type Parameter = {
