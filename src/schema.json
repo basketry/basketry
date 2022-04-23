@@ -1,0 +1,651 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "type": "object",
+  "description": "Intermediate Representation (IR) of a service",
+  "required": ["title", "majorVersion", "interfaces", "types", "enums"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "title": { "type": "string" },
+    "majorVersion": { "type": "integer" },
+    "interfaces": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/interface" }
+    },
+    "types": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/type" }
+    },
+    "enums": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/enum" }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "interface": {
+      "type": "object",
+      "required": ["name", "methods", "protocols"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "methods": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/method" }
+        },
+        "protocols": {
+          "type": "object",
+          "required": ["http"],
+          "properties": {
+            "http": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/pathSpec" }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "type": {
+      "type": "object",
+      "required": ["name", "properties", "rules"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "properties": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/property" }
+        },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/objectValidationRule" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "enum": {
+      "type": "object",
+      "required": ["name", "values"],
+      "properties": {
+        "name": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "property": {
+      "type": "object",
+      "required": [
+        "name",
+        "typeName",
+        "isUnknown",
+        "isArray",
+        "isLocal",
+        "rules"
+      ],
+      "properties": {
+        "name": { "type": "string" },
+        "description": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "typeName": { "type": "string" },
+        "isUnknown": { "type": "boolean" },
+        "isArray": { "type": "boolean" },
+        "isLocal": { "type": "boolean" },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/validationRule" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "method": {
+      "type": "object",
+      "required": ["name", "security", "parameters"],
+      "properties": {
+        "name": { "type": "string" },
+        "security": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/securityOption" }
+        },
+        "description": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "parameters": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/parameter" }
+        },
+        "returnType": { "$ref": "#/definitions/returnType" }
+      },
+      "additionalProperties": false
+    },
+    "parameter": {
+      "type": "object",
+      "required": [
+        "name",
+        "typeName",
+        "isUnknown",
+        "isArray",
+        "isLocal",
+        "rules"
+      ],
+      "properties": {
+        "name": { "type": "string" },
+        "description": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "typeName": { "type": "string" },
+        "isUnknown": { "type": "boolean" },
+        "isArray": { "type": "boolean" },
+        "isLocal": { "type": "boolean" },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/validationRule" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "returnType": {
+      "type": "object",
+      "required": ["typeName", "isUnknown", "isArray", "isLocal", "rules"],
+      "properties": {
+        "typeName": { "type": "string" },
+        "isUnknown": { "type": "boolean" },
+        "isArray": { "type": "boolean" },
+        "isLocal": { "type": "boolean" },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/validationRule" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "pathSpec": {
+      "type": "object",
+      "required": ["path", "methods"],
+      "properties": {
+        "path": { "type": "string" },
+        "methods": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/methodSpec" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "methodSpec": {
+      "type": "object",
+      "required": ["name", "verb", "parameters", "successCode"],
+      "properties": {
+        "name": { "type": "string" },
+        "verb": {
+          "type": "string",
+          "enum": [
+            "get",
+            "post",
+            "put",
+            "patch",
+            "delete",
+            "head",
+            "options",
+            "trace"
+          ]
+        },
+        "parameters": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/parameterSpec" }
+        },
+        "successCode": { "type": "integer", "minimum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "parameterSpec": {
+      "type": "object",
+      "required": ["name", "in"],
+      "properties": {
+        "name": { "type": "string" },
+        "in": {
+          "type": "string",
+          "enum": ["header", "query", "path", "formData", "body"]
+        },
+        "array": {
+          "type": "string",
+          "enum": ["csv", "ssv", "tsv", "pipes", "multi"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "securityOption": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/securityScheme" }
+    },
+    "securityScheme": {
+      "oneOf": [
+        { "$ref": "#/definitions/basicScheme" },
+        { "$ref": "#/definitions/apiKeyScheme" },
+        { "$ref": "#/definitions/oauth2Scheme" }
+      ]
+    },
+    "basicScheme": {
+      "type": "object",
+      "required": ["type", "name"],
+      "properties": {
+        "type": { "type": "string", "const": "basic" },
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "apiKeyScheme": {
+      "type": "object",
+      "required": ["type", "name", "parameter", "in"],
+      "properties": {
+        "type": { "type": "string", "const": "apiKey" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "parameter": { "type": "string" },
+        "in": { "type": "string", "enum": ["header", "query", "cookie"] }
+      },
+      "additionalProperties": false
+    },
+    "oauth2Scheme": {
+      "type": "object",
+      "required": ["type", "name", "flows"],
+      "properties": {
+        "type": { "type": "string", "const": "oauth2" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "flows": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/oauth2Flow" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "oauth2Flow": {
+      "oneOf": [
+        { "$ref": "#/definitions/oauth2ImplicitFlow" },
+        { "$ref": "#/definitions/oauth2PasswordFlow" },
+        { "$ref": "#/definitions/oauth2ClientCredentialsFlow" },
+        { "$ref": "#/definitions/oauth2AuthorizationCodeFlow" }
+      ]
+    },
+    "oauth2ImplicitFlow": {
+      "type": "object",
+      "required": ["type", "authorizationUrl", "scopes"],
+      "properties": {
+        "type": { "type": "string", "const": "implicit" },
+        "authorizationUrl": { "type": "string" },
+        "refreshUrl": { "type": "string" },
+        "scopes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/oauth2Scope" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "oauth2PasswordFlow": {
+      "type": "object",
+      "required": ["type", "tokenUrl", "scopes"],
+      "properties": {
+        "type": { "type": "string", "const": "password" },
+        "tokenUrl": { "type": "string" },
+        "refreshUrl": { "type": "string" },
+        "scopes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/oauth2Scope" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "oauth2ClientCredentialsFlow": {
+      "type": "object",
+      "required": ["type", "tokenUrl", "scopes"],
+      "properties": {
+        "type": { "type": "string", "const": "clientCredentials" },
+        "tokenUrl": { "type": "string" },
+        "refreshUrl": { "type": "string" },
+        "scopes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/oauth2Scope" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "oauth2AuthorizationCodeFlow": {
+      "type": "object",
+      "required": ["type", "authorizationUrl", "tokenUrl", "scopes"],
+      "properties": {
+        "type": { "type": "string", "const": "authorizationCode" },
+        "authorizationUrl": { "type": "string" },
+        "tokenUrl": { "type": "string" },
+        "refreshUrl": { "type": "string" },
+        "scopes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/oauth2Scope" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "oauth2Scope": {
+      "type": "object",
+      "required": ["name", "description"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "multilineDescription": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "validationRule": {
+      "oneOf": [
+        { "$ref": "#/definitions/requiredRule" },
+        { "$ref": "#/definitions/stringRule" },
+        { "$ref": "#/definitions/stringMaxLengthRule" },
+        { "$ref": "#/definitions/stringMinLengthRule" },
+        { "$ref": "#/definitions/stringPatternRule" },
+        { "$ref": "#/definitions/stringFormatRule" },
+        { "$ref": "#/definitions/stringEnumRule" },
+        { "$ref": "#/definitions/numberMultipleOfRule" },
+        { "$ref": "#/definitions/numberGtRule" },
+        { "$ref": "#/definitions/numberGteRule" },
+        { "$ref": "#/definitions/numberLtRule" },
+        { "$ref": "#/definitions/numberLteRule" },
+        { "$ref": "#/definitions/arrayMaxItemsRule" },
+        { "$ref": "#/definitions/arrayMinItemsRule" },
+        { "$ref": "#/definitions/arrayUniqueItemsRule" }
+      ]
+    },
+    "objectValidationRule": {
+      "oneOf": [
+        { "$ref": "#/definitions/objectMinPropertiesRule" },
+        { "$ref": "#/definitions/objectMaxPropertiesRule" },
+        { "$ref": "#/definitions/objectAdditionalPropertiesRule" }
+      ]
+    },
+    "requiredRule": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "required"
+        }
+      },
+      "additionalProperties": false
+    },
+    "stringRule": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "stringMaxLengthRule": {
+      "type": "object",
+      "required": ["id", "length"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "string-max-length"
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "stringMinLengthRule": {
+      "type": "object",
+      "required": ["id", "length"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "string-min-length"
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "stringPatternRule": {
+      "type": "object",
+      "required": ["id", "pattern"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "string-pattern"
+        },
+        "pattern": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "stringFormatRule": {
+      "type": "object",
+      "required": ["id", "format"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "string-format"
+        },
+        "pattern": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "stringEnumRule": {
+      "type": "object",
+      "required": ["id", "values"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "string-enum"
+        },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberMultipleOfRule": {
+      "type": "object",
+      "required": ["id", "value"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "number-multiple-of"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberGtRule": {
+      "type": "object",
+      "required": ["id", "value"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "number-gt"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberGteRule": {
+      "type": "object",
+      "required": ["id", "value"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "number-gte"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberLtRule": {
+      "type": "object",
+      "required": ["id", "value"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "number-lt"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "numberLteRule": {
+      "type": "object",
+      "required": ["id", "value"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "number-lte"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayMaxItemsRule": {
+      "type": "object",
+      "required": ["id", "max"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "array-max-items"
+        },
+        "max": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayMinItemsRule": {
+      "type": "object",
+      "required": ["id", "min"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "array-min-items"
+        },
+        "min": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "arrayUniqueItemsRule": {
+      "type": "object",
+      "required": ["id", "required"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "array-unique-items"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "objectMinPropertiesRule": {
+      "type": "object",
+      "required": ["id", "min"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "object-min-properties"
+        },
+        "min": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "objectMaxPropertiesRule": {
+      "type": "object",
+      "required": ["id", "max"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "object-max-properties"
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "objectAdditionalPropertiesRule": {
+      "type": "object",
+      "required": ["id", "forbidden"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "const": "object-additional-properties"
+        },
+        "forbidden": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
