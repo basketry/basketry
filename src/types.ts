@@ -77,7 +77,15 @@ export type PathSpec = {
 
 export type MethodSpec = {
   name: string;
-  verb: string;
+  verb:
+    | 'get'
+    | 'post'
+    | 'put'
+    | 'patch'
+    | 'delete'
+    | 'head'
+    | 'options'
+    | 'trace';
   parameters: ParameterSpec[];
   successCode: number;
 };
