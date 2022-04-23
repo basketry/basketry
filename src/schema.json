@@ -464,7 +464,7 @@
           "type": "string",
           "const": "string-format"
         },
-        "pattern": {
+        "format": {
           "type": "string",
           "minLength": 1
         }
