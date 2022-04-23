@@ -100,7 +100,7 @@ const { argv } = yargs(hideBin(process.argv))
       service = parser(sdl);
 
       const parseErrors = validate(service);
-      if (parseErrors) {
+      if (parseErrors.length) {
         error(
           `${parserPath} cannot correctly parse SDL:`,
           ...parseErrors.filter((e) => e.message).map((e) => ` - ${e.message}`),
