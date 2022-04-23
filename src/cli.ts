@@ -16,6 +16,8 @@ import {
   Service,
 } from './types';
 
+import { validate } from './validator';
+
 const { argv } = yargs(hideBin(process.argv))
   .option('config', {
     alias: 'c',
@@ -96,6 +98,16 @@ const { argv } = yargs(hideBin(process.argv))
     let service: Service | null = null;
     try {
       service = parser(sdl);
+
+      const parseErrors = validate(service);
+      if (parseErrors) {
+        error(
+          `${parserPath} cannot correctly parse SDL:`,
+          ...parseErrors.filter((e) => e.message).map((e) => ` - ${e.message}`),
+        );
+
+        service = null;
+      }
     } catch (ex) {
       error(`Error parsing file`, ex);
     }
