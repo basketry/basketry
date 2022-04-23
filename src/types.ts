@@ -295,11 +295,3 @@ export type ObjectValidationRule =
   | ObjectMinPropertiesRule
   | ObjectMaxPropertiesRule
   | ObjectAdditionalPropertiesRule;
-
-export function isRequired(obj: { rules: ValidationRule[] }): boolean {
-  return obj.rules.some((r) => r.id === 'required');
-}
-
-export function isEnum(obj: { rules: ValidationRule[] }): boolean {
-  return obj.rules.some((r) => r.id === 'string-enum');
-}
