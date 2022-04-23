@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir } from 'fs/promises';
 import { watchFile } from 'fs';
 import { join, sep } from 'path';
 
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import yargs = require('yargs/yargs');
 import { hideBin } from 'yargs/helpers';
 import {
