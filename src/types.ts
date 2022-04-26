@@ -28,42 +28,63 @@ export type File = {
   contents: string;
 };
 
+export type Position = {
+  line: number;
+  column: number;
+  offset: number;
+};
+
+export type Range = {
+  start: Position;
+  end: Position;
+};
+
+export type Literal<T extends string | number | boolean | null> = {
+  value: T;
+  loc?: string;
+};
+
 /**
  * Intermediate Representation (IR) of a service
  */
 export type Service = {
-  title: string;
-  majorVersion: number;
+  basketry: '1';
+  title: Literal<string>;
+  majorVersion: Literal<number>;
   interfaces: Interface[];
   types: Type[];
   enums: Enum[];
+  loc: string;
 };
 
 export type Type = {
-  name: string;
-  description?: string | string[];
+  name: Literal<string>;
+  description?: Literal<string> | Literal<string>[];
   properties: Property[];
   rules: ObjectValidationRule[];
+  loc: string;
 };
 
 export type Enum = {
-  name: string;
-  values: string[];
+  name: Literal<string>;
+  values: Literal<string>[];
+  loc: string;
 };
 
 export type Property = {
-  name: string;
-  description?: string | string[];
-  typeName: string;
+  name: Literal<string>;
+  description?: Literal<string> | Literal<string>[];
+  typeName: Literal<string>;
   isUnknown: boolean;
   isArray: boolean;
   isLocal: boolean;
   rules: ValidationRule[];
+  loc: string;
 };
 
 export type Interface = {
   name: string;
-  description?: string | string[];
+  description?: string;
   methods: Method[];
   protocols: {
     http: PathSpec[];
@@ -71,37 +92,35 @@ export type Interface = {
 };
 
 export type PathSpec = {
-  path: string;
+  path: Literal<string>;
   methods: MethodSpec[];
+  loc: string;
 };
 
 export type MethodSpec = {
-  name: string;
-  verb:
-    | 'get'
-    | 'post'
-    | 'put'
-    | 'patch'
-    | 'delete'
-    | 'head'
-    | 'options'
-    | 'trace';
+  name: Literal<string>;
+  verb: Literal<
+    'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options' | 'trace'
+  >;
   parameters: ParameterSpec[];
-  successCode: number;
+  successCode: Literal<number>;
+  loc: string;
 };
 
 export type ParameterSpec = {
-  name: string;
-  in: 'header' | 'query' | 'path' | 'formData' | 'body';
-  array?: 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
+  name: Literal<string>;
+  in: Literal<'header' | 'query' | 'path' | 'formData' | 'body'>;
+  array?: Literal<'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi'>;
+  loc: string;
 };
 
 export type Method = {
-  name: string;
+  name: Literal<string>;
   security: SecurityOption[];
-  description?: string | string[];
+  description?: Literal<string> | Literal<string>[];
   parameters: Parameter[];
   returnType: ReturnType | undefined;
+  loc: string;
 };
 
 export type SecurityOption = SecurityScheme[];
@@ -109,24 +128,27 @@ export type SecurityOption = SecurityScheme[];
 export type SecurityScheme = BasicScheme | ApiKeyScheme | OAuth2Scheme;
 
 export type BasicScheme = {
-  type: 'basic';
-  name: string;
-  description?: string;
+  type: Literal<'basic'>;
+  name: Literal<string>;
+  description?: Literal<string>;
+  loc: string;
 };
 
 export type ApiKeyScheme = {
-  type: 'apiKey';
-  name: string;
-  description?: string;
-  parameter: string;
-  in: 'header' | 'query' | 'cookie';
+  type: Literal<'apiKey'>;
+  name: Literal<string>;
+  description?: Literal<string>;
+  parameter: Literal<string>;
+  in: Literal<'header' | 'query' | 'cookie'>;
+  loc: string;
 };
 
 export type OAuth2Scheme = {
-  type: 'oauth2';
-  name: string;
-  description?: string;
+  type: Literal<'oauth2'>;
+  name: Literal<string>;
+  description?: Literal<string>;
   flows: OAuth2Flow[];
+  loc: string;
 };
 
 export type OAuth2Flow =
@@ -136,143 +158,162 @@ export type OAuth2Flow =
   | OAuth2AuthorizationCodeFlow;
 
 export type OAuth2ImplicitFlow = {
-  type: 'implicit';
-  authorizationUrl: string;
-  refreshUrl?: string;
+  type: Literal<'implicit'>;
+  authorizationUrl: Literal<string>;
+  refreshUrl?: Literal<string>;
   scopes: OAuth2Scope[];
+  loc: string;
 };
 
 export type OAuth2PasswordFlow = {
-  type: 'password';
-  tokenUrl: string;
-  refreshUrl?: string;
+  type: Literal<'password'>;
+  tokenUrl: Literal<string>;
+  refreshUrl?: Literal<string>;
   scopes: OAuth2Scope[];
+  loc: string;
 };
 
 export type OAuth2ClientCredentialsFlow = {
-  type: 'clientCredentials';
-  tokenUrl: string;
-  refreshUrl?: string;
+  type: Literal<'clientCredentials'>;
+  tokenUrl: Literal<string>;
+  refreshUrl?: Literal<string>;
   scopes: OAuth2Scope[];
+  loc: string;
 };
 
 export type OAuth2AuthorizationCodeFlow = {
-  type: 'authorizationCode';
-  authorizationUrl: string;
-  tokenUrl: string;
-  refreshUrl?: string;
+  type: Literal<'authorizationCode'>;
+  authorizationUrl: Literal<string>;
+  tokenUrl: Literal<string>;
+  refreshUrl?: Literal<string>;
   scopes: OAuth2Scope[];
+  loc: string;
 };
 
 export type OAuth2Scope = {
-  name: string;
-  description: string;
+  name: Literal<string>;
+  description: Literal<string>;
+  loc: string;
 };
 
 export type Parameter = {
-  name: string;
-  description?: string | string[];
-  typeName: string;
+  name: Literal<string>;
+  description?: Literal<string> | Literal<string>[];
+  typeName: Literal<string>;
   isUnknown: boolean;
   isArray: boolean;
   isLocal: boolean;
   rules: ValidationRule[];
+  loc: string;
 };
 
 export type ReturnType = {
-  typeName: string;
+  typeName: Literal<string>;
   isUnknown: boolean;
   isArray: boolean;
   isLocal: boolean;
   rules: ValidationRule[];
+  loc: string;
 };
 
 export type RequiredRule = {
   id: 'required';
 };
 
-export type StringRule = {
-  id: 'string';
-};
-
 export type StringMaxLengthRule = {
   id: 'string-max-length';
-  length: number;
+  length: Literal<number>;
+  loc: string;
 };
 
 export type StringMinLengthRule = {
   id: 'string-min-length';
-  length: number;
+  length: Literal<number>;
+  loc: string;
 };
 
 export type StringPatternRule = {
   id: 'string-pattern';
-  pattern: string;
+  pattern: Literal<string>;
+  loc: string;
 };
 
 export type StringFormatRule = {
   id: 'string-format';
-  format: string;
+  format: Literal<string>;
+  loc: string;
 };
 
 export type StringEnumRule = {
   id: 'string-enum';
-  values: string[];
+  values: Literal<string>[];
+  loc: string;
 };
 
 export type NumberMultipleOfRule = {
   id: 'number-multiple-of';
-  value: number;
+  value: Literal<number>;
+  loc: string;
 };
 
 export type NumberGtRule = {
   id: 'number-gt';
-  value: number;
+  value: Literal<number>;
+  loc: string;
 };
 
 export type NumberGteRule = {
   id: 'number-gte';
-  value: number;
+  value: Literal<number>;
+  loc: string;
 };
 
 export type NumberLtRule = {
   id: 'number-lt';
-  value: number;
+  value: Literal<number>;
+  loc: string;
 };
 
 export type NumberLteRule = {
   id: 'number-lte';
-  value: number;
+  value: Literal<number>;
+  loc: string;
 };
 
 export type ArrayMaxItemsRule = {
   id: 'array-max-items';
-  max: number;
+  max: Literal<number>;
+  loc: string;
 };
 
 export type ArrayMinItemsRule = {
   id: 'array-min-items';
-  min: number;
+  min: Literal<number>;
+  loc: string;
 };
 
 export type ArrayUniqueItemsRule = {
   id: 'array-unique-items';
   required: boolean;
+  loc: string;
 };
 
 export type ObjectMinPropertiesRule = {
   id: 'object-min-properties';
-  min: number;
+  min: Literal<number>;
+  loc: string;
 };
 
 export type ObjectMaxPropertiesRule = {
   id: 'object-max-properties';
-  max: number;
+  max: Literal<number>;
+  loc: string;
 };
 
 export type ObjectAdditionalPropertiesRule = {
   id: 'object-additional-properties';
   forbidden: true;
+  loc: string;
 };
 
 export type ValidationRule =
