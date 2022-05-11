@@ -58,6 +58,8 @@ Or pipe contents in via stdio:
 cat src/petstore.json | basketry
 ```
 
+Note that if a source parameter is provided _and_ data is piped in via `stdin`, the content from `stdin` will be parsed, but any violations will still point to the file located at the source path. This can be useful to validate dirty versions of a file prior to the file being saved and thus accessible by reading from the file system.
+
 ### Parser
 
 Use `-p`, `--parser` to specify the parser to use:
@@ -107,10 +109,28 @@ All generated files will be written to the specified `output` directory. Some ge
 Use `-w`, `--watch` to run in watch mode. In watch mode, `--source` must be specified (you can't pipe to stdio). Running in watch mode will immediately generate output file and then update the output file on each subsequent change to the source SDL file.
 
 ```
-generate-server-types --input schema.graphql --output types.g.ts --watch
+basketry --source src/petstore.json --watch
 ```
 
-You can also run Basketry in watch mode by passing the `-w` option: `npm run basketry -- -w`. While in watch mode, Basketry will re-run all generators whenever the source file is updated.
+You can also run Basketry in watch mode by passing the `-w` option to an npm script: `npm run basketry -- -w`. While in watch mode, Basketry will re-run all rules and generators whenever the source file is updated.
+
+### Validate only
+
+Use `-v`, `--validate` to only run the parser and rules but skip file generation:
+
+```
+basketry --validate
+```
+
+### JSON output
+
+Normally, the CLI will output human readable progress, results, and pretty-printed errors. Use `-j`, `--json` to output JSON-formatted output to `stdout`:
+
+```
+basketry --json
+```
+
+Note that `--json` cannot be used with `--watch`.
 
 ## How does it work?
 
@@ -123,9 +143,9 @@ Basketry coordinates the pipeline and writes the resulting output to the file sy
 A "Parser" is a JavaScript module whose default export is a parsing function that converts in input SDL into the intermediate representation of a Service:
 
 ```ts
-type Parser = (input: string) => Service;
+type Parser = (content: string, path: string) => { service: Service };
 
-const parser: Parser = (input) => {
+const parser: Parser = (content, path) => {
   // Parser implementation goes here
 };
 
@@ -146,11 +166,29 @@ const generator: Generator = (service) => {
 export default generator;
 ```
 
-### Using parsers and generators
+### Rules
 
-Any string that can be used to "require" a CommonJS module can be used to specify a parser or generator.
+A "Rule" is a JavaScript module whose default export is a rule function that looks at the intermediate representation of a service and returns an array of any rule violations:
 
-For example, any parser (as described above) that can be required with `const myParser = require('./path/to/my/parser')` can be used with Basketry with `basketry --parser ./path/to/my/parser`. This applies to both modules defined within your project and packages installed from NPM. If it can be required from within your project, it can be used as a Parser or Generator.
+```ts
+type Rule = (service: Service, path: string) => Violation[];
+
+const rule: Rule = (service, path) => {
+  // Rule implementation goes here
+};
+
+export default rule;
+```
+
+Rules can be used to enforce specific opinions about service design. For example, a rule could enforce names and types for paging parameters. Another rule might establish a naming convention for method and types.
+
+Note that rules are run against the Intermediate Representation (IR); therefore, any rule may be used with any Basketry parser. The IR contains source map data which allows the violations to point to specific ranges of the source Serivce Definition without needing to implement the same rule for each SDL.
+
+### Using parsers, generators, and rules
+
+Any string that can be used to "require" a CommonJS module can be used to specify a parser, generator, or rule.
+
+For example, any parser (as described above) that can be required with `const myParser = require('./path/to/my/parser')` can be used with Basketry with `basketry --parser ./path/to/my/parser`. This applies to both modules defined within your project and packages installed from NPM. If it can be required from within your project, it can be used as a Parser, Generator, or Rule.
 
 Although Basketry is written in the JavaScript family of languages, it can be used to generate code in any language.
 

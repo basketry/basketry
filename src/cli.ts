@@ -1,22 +1,19 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { watchFile } from 'fs';
-import { join, sep } from 'path';
+import { readFileSync, StatWatcher, watchFile } from 'fs';
+import { EOL } from 'os';
 
+import Ajv from 'ajv';
 import chalk from 'chalk';
 import yargs = require('yargs/yargs');
 import { hideBin } from 'yargs/helpers';
-import {
-  Config,
-  File,
-  Generator,
-  GeneratorOptions,
-  Parser,
-  Service,
-} from './types';
 
-import { validate } from './validator';
+import schema from './config-schema.json';
+import { BasketryError, Violation, FileStatus, CliOutput } from './types';
+import { getInput, run, writeFiles } from './engine';
+
+const ajv = new Ajv({ allErrors: false });
+const runner = ajv.compile(schema);
 
 const { argv } = yargs(hideBin(process.argv))
   .option('config', {
@@ -53,177 +50,120 @@ const { argv } = yargs(hideBin(process.argv))
     description: `Generators`,
     requiresArg: true,
   })
+  .option('rules', {
+    alias: 'r',
+    string: true,
+    array: true,
+    description: `Rules`,
+    requiresArg: true,
+  })
   .option('watch', {
     alias: 'w',
     boolean: true,
     description: 'Recreates the output each time the input file changes.',
     nargs: 0,
+  })
+  .option('validate', {
+    alias: 'v',
+    boolean: true,
+    default: false,
+    description:
+      'Only validates the source document without writing any files.',
+    nargs: 0,
+  })
+  .option('json', {
+    alias: 'j',
+    boolean: true,
+    default: false,
+    description: 'Outputs validation results as JSON',
+    nargs: 0,
   });
 
 (async () => {
+  let j = false;
+  const errors: BasketryError[] = [];
+  const violations: Violation[] = [];
+  let files: Record<string, FileStatus> = {};
+
   try {
     const {
-      parser: parserPath,
+      config,
+      parser,
       source,
       output,
-      generators: generatorPaths,
+      generators,
+      rules,
       watch,
-    } = await getConfig(argv);
+      validate,
+      json,
+    } = await argv;
+    j = json;
+    const stdin = !process.stdin.isTTY;
+    if (!j) bold(`🧺 Basketry v${require('../package.json').version}`);
 
-    if (watch && !source) {
-      throw new Error('Must specify source when running in watch mode.');
-    }
+    const sourceContent = stdin
+      ? await readStreamToString(process.stdin)
+      : undefined;
 
-    const x = output || '';
-    const outputPath = x.startsWith('/') ? x.substring(1) : x;
+    let watcher: StatWatcher | undefined = undefined;
 
-    let sdl: string | undefined;
-
-    if (source) {
-      sdl = (await readFile(source)).toString('utf8');
-    } else if (!process.stdin.isTTY) {
-      sdl = await readStreamToString(process.stdin);
-    }
-    if (!sdl) {
-      throw new Error('No input file provided and nothing to read from stdin');
-    }
-
-    const parser = getParser(parserPath);
-    const generators = getGenerators(generatorPaths);
-
-    console.log(
-      chalk.bold(`🧺 Basketry v${require('../package.json').version}`),
-    );
-    console.log(chalk.blue(`Parsing ${source}`));
-    let service: Service | null = null;
-    try {
-      service = parser(sdl);
-
-      const parseErrors = validate(service);
-      if (parseErrors.length) {
-        error(
-          `${parserPath} cannot correctly parse SDL:`,
-          ...parseErrors.filter((e) => e.message).map((e) => ` - ${e.message}`),
-        );
-
-        service = null;
-      }
-    } catch (ex) {
-      error(`Error parsing file`, ex);
-    }
-    if (service) {
-      const wrote = await doGenerate(outputPath, service, generators);
-
-      if (!wrote) {
-        console.log(chalk.blue('Nothing to do'));
-      }
-    }
-
-    if (watch && source) {
-      console.log();
-      console.log('Waiting for changes...');
-      console.log();
-      watchFile(source, async () => {
-        const newSdl = (await readFile(source)).toString('utf8');
-        let newService: Service | null;
-
-        try {
-          newService = parser(newSdl);
-        } catch (ex) {
-          newService = null;
-          error(`Error parsing file`, ex);
-          console.log();
-          console.log('Waiting for changes...');
-          console.log();
-        }
-
-        if (newService) await doGenerate(outputPath, newService, generators);
+    const go = async () => {
+      const input = await getInput(config, {
+        output,
+        validate,
+        generators,
+        parser,
+        rules,
+        sourceContent,
+        sourcePath: source,
       });
-    }
+      errors.push(...input.errors);
+      if (!j) printErrors(input.errors);
+
+      if (input.values) {
+        if (!j) blue(`Parsing ${input.values.sourcePath}`);
+        const result = run(input.values);
+        errors.push(...result.errors);
+        if (!j) printErrors(result.errors);
+
+        violations.push(...result.violations);
+        if (!j) printViolations(result.violations);
+
+        const writeResult = await writeFiles(result.files);
+        errors.push(...writeResult.errors);
+        files = writeResult.value;
+        if (!j) printFiles(writeResult.value);
+      }
+
+      if (!watcher && watch && input.values?.sourcePath && !stdin && !json) {
+        let timer: NodeJS.Timeout | undefined = undefined;
+        watcher = watchFile(input.values?.sourcePath, () => {
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(go, 100);
+        });
+      }
+    };
+
+    await go();
   } catch (ex) {
-    error('Did not generate output', ex.message);
+    error('FATAL ERROR!', ex.message);
+    process.exit(1);
+  }
+
+  if (j) {
+    const output: CliOutput = { errors, violations, files };
+    console.log(JSON.stringify({ errors, violations, files }));
+  } else if (errors.length) {
     process.exit(1);
   }
 })();
 
-async function doGenerate(
-  output: string,
-  service: Service,
-  generators: Generator[],
-): Promise<boolean> {
-  let wrote = false;
-  for (const file of getFiles(service, generators)) {
-    wrote = (await write(file, output)) || wrote;
-  }
-  return wrote;
+function bold(message: string): void {
+  console.log(chalk.bold(message));
 }
 
-async function getConfig(
-  args: typeof argv,
-): Promise<Config & { watch: boolean }> {
-  const { config, generators, output, source, parser, watch } = await argv;
-
-  const fromFile = await getConfigFromFile(config);
-
-  return {
-    parser: parser || fromFile.parser || '',
-    generators: generators || fromFile.generators || [],
-    source: source || fromFile.source,
-    output: output || fromFile.output,
-    watch: watch || false,
-  };
-}
-
-async function getConfigFromFile(path: string): Promise<Partial<Config>> {
-  try {
-    return JSON.parse(
-      ((await readFile(join(process.cwd(), path))) || {}).toString(),
-    );
-  } catch {}
-
-  try {
-    return JSON.parse(
-      ((await readFile(join(__dirname, path))) || {}).toString(),
-    );
-  } catch {}
-
-  try {
-    return JSON.parse(((await readFile(path)) || {}).toString());
-  } catch {}
-
-  return {
-    parser: '',
-    generators: [],
-  };
-}
-
-function getParser(moduleName: string): Parser {
-  const parserModule = require(moduleName);
-
-  if (typeof parserModule === 'function') return parserModule;
-  if (typeof parserModule.default === 'function') return parserModule.default;
-
-  throw new Error(`${moduleName} is not a valid parser`);
-}
-
-function getGenerators(
-  moduleNames: (string | GeneratorOptions)[],
-): Generator[] {
-  return moduleNames.map((x) => {
-    const moduleName = typeof x === 'string' ? x : x.generator;
-    const parserModule = require(moduleName);
-
-    if (typeof parserModule === 'function') return parserModule;
-    if (typeof parserModule.default === 'function') return parserModule.default;
-
-    throw new Error(`${moduleName} is not a valid parser`);
-  });
-}
-
-function* getFiles(service: Service, generators: Generator[]): Iterable<File> {
-  for (const generator of generators) {
-    yield* generator(service);
-  }
+function blue(message: string): void {
+  console.log(chalk.blue(message));
 }
 
 async function readStreamToString(stream: NodeJS.ReadStream) {
@@ -232,38 +172,101 @@ async function readStreamToString(stream: NodeJS.ReadStream) {
   return Buffer.concat(chunks).toString('utf8');
 }
 
-async function write(file: File, output: string): Promise<boolean> {
-  const path = join(...output.split(sep), ...file.path);
-
-  let previous: string | null;
-  try {
-    previous = (await readFile(path)).toString();
-  } catch {
-    previous = null;
-    await mkdir(join(...path.split(sep).slice(0, -1)), { recursive: true });
-  }
-
-  if (file.contents === previous) return false;
-
-  try {
-    await writeFile(path, file.contents);
-
-    if (previous === null) {
-      console.log(chalk.green(`+ ${path}`));
-    } else {
-      console.log(chalk.green(`m ${path}`));
-    }
-    return true;
-  } catch (ex) {
-    error(`Error writing ${path}`, ex.message);
-    return false;
-  }
-}
-
 function error(...lines: string[]): void {
   console.error();
   for (const line of lines) {
     console.error(chalk.bold.red(line));
   }
   console.error();
+}
+
+function printViolations(violations: Violation[]): void {
+  if (violations.length) {
+    const contentBySource = new Map<string, string[]>();
+
+    for (const violation of violations) {
+      const { start, end } = violation.range;
+
+      if (!contentBySource.has(violation.sourcePath)) {
+        contentBySource.set(
+          violation.sourcePath,
+          readFileSync(violation.sourcePath).toString().split(EOL),
+        );
+      }
+      const line = contentBySource.get(violation.sourcePath)![start.line - 1];
+      const violationLength =
+        start.line === end.line
+          ? end.column - start.column
+          : line.length - start.column + 1;
+
+      console.error();
+      console.error(
+        `${chalk.cyan(violation.sourcePath)}:${chalk.yellow(
+          start.line,
+        )}:${chalk.yellow(start.column)}`,
+      );
+      let severity: string;
+      let underline: string;
+
+      switch (violation.severity) {
+        case 'info':
+          severity = chalk.blue(violation.severity);
+          underline = chalk.blue('~'.repeat(violationLength));
+          break;
+        case 'warning':
+          severity = chalk.yellow(violation.severity);
+          underline = chalk.yellow('~'.repeat(violationLength));
+          break;
+        case 'error':
+          severity = chalk.redBright(violation.severity);
+          underline = chalk.redBright('~'.repeat(violationLength));
+          break;
+      }
+
+      console.error(
+        `${severity} ${chalk.gray(`${violation.code}:`)} ${violation.message}`,
+      );
+      console.error();
+      console.error(`${chalk.bgWhite.black(start.line)}${line}`);
+      console.error(
+        `${chalk.bgWhite.black(' '.repeat(`${start.line}`.length))}${' '.repeat(
+          start.column - 1,
+        )}${underline}`,
+      );
+    }
+    console.error();
+  }
+}
+
+function printErrors(errors: BasketryError[]): void {
+  for (const e of errors) {
+    console.error();
+    console.error(e);
+  }
+}
+
+function printFiles(files: Record<string, FileStatus>): void {
+  if (Object.keys(files).some((file) => files[file] !== 'no-change')) {
+    console.log();
+    for (const file in files) {
+      switch (files[file]) {
+        case 'added':
+          console.log(chalk.green(`+ ${file}`));
+          break;
+        case 'error':
+          console.log(chalk.bold.red(`E ${file}`));
+          break;
+        case 'modified':
+          console.log(chalk.blue(`m ${file}`));
+          break;
+      }
+    }
+  } else {
+    console.log(chalk.blue('No changes'));
+  }
+  console.log();
+}
+
+export function validateConfig(service: any): boolean {
+  return runner(service);
 }

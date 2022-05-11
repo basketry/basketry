@@ -1,0 +1,8 @@
+*.*
+**/*.*
+
+!/lib/**/*.*
+
+**/*.test.*
+**/test-modules/*.*
+**/test-modules/**/*.*

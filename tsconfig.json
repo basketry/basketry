@@ -4,13 +4,12 @@
     "module": "commonjs",
     "noImplicitReturns": true,
     "outDir": "lib",
+    "rootDir": "src",
     "sourceMap": true,
     "target": "es6",
     "declaration": true,
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "esModuleInterop": true
-  },
-  "include": ["src"],
-  "exclude": ["**/*.test?.*"]
+  }
 }
