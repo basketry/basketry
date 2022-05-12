@@ -1,5 +1,8 @@
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import { join, resolve, sep } from 'path';
+
+import { merge } from 'webpack-merge';
+
 import { validateConfig } from './config-validator';
 import {
   BasketryError,
@@ -45,6 +48,7 @@ export async function getInput(
   const rules = overrides?.rules || config.value?.rules || [];
   const generators = overrides?.generators || config.value?.generators || [];
   const output = overrides?.output || config.value?.output;
+  const options = config.value?.options;
 
   if (sourcePath && sourceContent && parser) {
     values = {
@@ -56,6 +60,7 @@ export async function getInput(
       generators,
       validate: overrides?.validate || false,
       output,
+      options,
     };
   }
 
@@ -97,7 +102,11 @@ export function run(input: Input): Output {
     const rules = getRules(input.rules, input.configPath);
     push(errors, rules.errors);
 
-    const generators = getGenerators(input.generators, input.configPath);
+    const generators = getGenerators(
+      input.generators,
+      input.configPath,
+      input.options,
+    );
     push(errors, generators.errors);
 
     const service = runParser({ fn: parser.fn, sourcePath, sourceContent });
@@ -356,7 +365,8 @@ function getRules(
 
 function getGenerators(
   moduleNames: (string | GeneratorOptions)[],
-  configPath?: string,
+  configPath: string | undefined,
+  commonOptions: any,
 ): {
   fns: Generator[];
   errors: BasketryError[];
@@ -364,10 +374,26 @@ function getGenerators(
   return moduleNames.reduce(
     (acc, item) => {
       const moduleName = typeof item === 'string' ? item : item.generator;
+
+      const generatorOptions: any =
+        typeof item === 'string' ? undefined : item.options;
+
       const { fn, errors } = loadModule<Generator>(moduleName, configPath);
 
+      const gen: Generator | undefined = fn
+        ? (service, localOptions = {}) =>
+            fn(
+              service,
+              merge(
+                commonOptions || {},
+                generatorOptions || {},
+                localOptions || {},
+              ),
+            )
+        : undefined;
+
       return {
-        fns: [...acc.fns, fn].filter(
+        fns: [...acc.fns, gen].filter(
           (f): f is Generator => typeof f === 'function',
         ),
         errors: [...acc.errors, ...errors],

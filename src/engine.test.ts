@@ -50,7 +50,7 @@ describe('engine', () => {
     });
   });
 
-  it('works when a generator is supplied with options', () => {
+  it('works when a generator is supplied with generator-specific options', () => {
     // ARRANGE
     const files: File[] = [
       { path: ['some', 'path'], contents: 'some content' },
@@ -64,7 +64,13 @@ describe('engine', () => {
       sourceContent: 'some content',
       configPath: 'some-config.ext',
       parser: 'src/test-modules/parser',
-      generators: [{ generator: 'src/test-modules/generator' }],
+      generators: [
+        'src/test-modules/generator',
+        {
+          generator: 'src/test-modules/generator-that-takes-options',
+          options: { foo: 'bar' },
+        },
+      ],
       rules: [],
       validate: false,
     });
@@ -73,7 +79,130 @@ describe('engine', () => {
     expect(result).toEqual<Output>({
       violations: [],
       errors: [],
-      files,
+      files: [
+        ...files,
+        {
+          path: ['with', 'options'],
+          contents: '{"foo":"bar"}',
+        },
+      ],
+    });
+  });
+
+  it('works when a generator is supplied with common options', () => {
+    // ARRANGE
+    const files: File[] = [
+      { path: ['some', 'path'], contents: 'some content' },
+    ];
+
+    setFiles(files);
+
+    // ACT
+    const result = run({
+      sourcePath: 'some-file.ext',
+      sourceContent: 'some content',
+      configPath: 'some-config.ext',
+      parser: 'src/test-modules/parser',
+      generators: [
+        'src/test-modules/generator',
+        'src/test-modules/generator-that-takes-options',
+      ],
+      rules: [],
+      validate: false,
+      options: { foo: 'bar' },
+    });
+
+    // ASSERT
+    expect(result).toEqual<Output>({
+      violations: [],
+      errors: [],
+      files: [
+        ...files,
+        {
+          path: ['with', 'options'],
+          contents: '{"foo":"bar"}',
+        },
+      ],
+    });
+  });
+
+  it('works when a generator is supplied with generator-specific options that override common options', () => {
+    // ARRANGE
+    const files: File[] = [
+      { path: ['some', 'path'], contents: 'some content' },
+    ];
+
+    setFiles(files);
+
+    // ACT
+    const result = run({
+      sourcePath: 'some-file.ext',
+      sourceContent: 'some content',
+      configPath: 'some-config.ext',
+      parser: 'src/test-modules/parser',
+      generators: [
+        'src/test-modules/generator',
+        {
+          generator: 'src/test-modules/generator-that-takes-options',
+          options: { foo: 'not bar' },
+        },
+      ],
+      rules: [],
+      validate: false,
+      options: { foo: 'bar' },
+    });
+
+    // ASSERT
+    expect(result).toEqual<Output>({
+      violations: [],
+      errors: [],
+      files: [
+        ...files,
+        {
+          path: ['with', 'options'],
+          contents: '{"foo":"not bar"}',
+        },
+      ],
+    });
+  });
+
+  it('works when a generator is supplied with generator-specific options that extend common options', () => {
+    // ARRANGE
+    const files: File[] = [
+      { path: ['some', 'path'], contents: 'some content' },
+    ];
+
+    setFiles(files);
+
+    // ACT
+    const result = run({
+      sourcePath: 'some-file.ext',
+      sourceContent: 'some content',
+      configPath: 'some-config.ext',
+      parser: 'src/test-modules/parser',
+      generators: [
+        'src/test-modules/generator',
+        {
+          generator: 'src/test-modules/generator-that-takes-options',
+          options: { fiz: 'buz' },
+        },
+      ],
+      rules: [],
+      validate: false,
+      options: { foo: 'bar' },
+    });
+
+    // ASSERT
+    expect(result).toEqual<Output>({
+      violations: [],
+      errors: [],
+      files: [
+        ...files,
+        {
+          path: ['with', 'options'],
+          contents: '{"foo":"bar","fiz":"buz"}',
+        },
+      ],
     });
   });
 

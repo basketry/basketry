@@ -1,21 +1,34 @@
 export type Config = {
+  /** CommonJS module that contains the Parser function */
   parser: string;
+  /** Array of CommonJS modules that contain Rule functions */
   rules?: string[];
+  /** Array of CommonJS modules that contain Generator functions */
   generators: (string | GeneratorOptions)[];
+  /** The source Service Definition used to generate service code */
   source?: string;
+  /** The folder in which to output all generated files. */
   output?: string;
+  /** Common options passed only to all generators. These common options will be overridden by generator-specific options. */
+  options?: any;
 };
 
 export type Options = {
+  /** CommonJS module that contains the Parser function */
   parser: string;
+  /** Array of CommonJS modules that contain Rule functions */
   rules: string[];
+  /** Array of CommonJS modules that contain Generator functions */
   generators: (string | GeneratorOptions)[];
   sourceName: string;
   sourceContent: string;
 };
 
 export type GeneratorOptions = {
+  /** CommonJS module that contain a Generator function */
   generator: string;
+  /** Options passed only to this generator. These generator-specific options will override common options. */
+  options?: any;
 };
 
 export type Parser = (
@@ -47,7 +60,7 @@ export type Rule = (
   sourcePath: string,
 ) => Violation[];
 
-export type Generator = (service: Service) => File[];
+export type Generator = (service: Service, options?: any) => File[];
 
 export type FileStatus = 'added' | 'modified' | 'no-change' | 'error';
 
@@ -60,6 +73,8 @@ export type Input = {
   generators: (string | GeneratorOptions)[];
   validate: boolean;
   output?: string;
+  /** Common options passed only to all generators. These common options will be overridden by generator-specific options. */
+  options?: any;
 };
 
 export type Output = {

@@ -36,6 +36,10 @@
     "output": {
       "description": "The folder in which to output all generated files.",
       "type": "string"
+    },
+    "options": {
+      "description": "Common options passed only to all generators. These common options will be overridden by generator-specific options.",
+      "type": "object"
     }
   },
   "definitions": {
@@ -43,7 +47,14 @@
       "type": "object",
       "required": ["generator"],
       "properties": {
-        "generator": { "type": "string" }
+        "generator": {
+          "description": "CommonJS module that contain a Generator function",
+          "type": "string"
+        },
+        "options": {
+          "description": "Options passed only to this generator. These generator-specific options will override common options.",
+          "type": "object"
+        }
       }
     }
   },
