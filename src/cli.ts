@@ -108,7 +108,7 @@ const { argv } = yargs(hideBin(process.argv))
     let watcher: StatWatcher | undefined = undefined;
 
     const go = async () => {
-      const input = await getInput(config, {
+      const inputs = await getInput(config, {
         output,
         validate,
         generators,
@@ -117,12 +117,14 @@ const { argv } = yargs(hideBin(process.argv))
         sourceContent,
         sourcePath: source,
       });
-      errors.push(...input.errors);
-      if (!j) printErrors(input.errors);
+      errors.push(...inputs.errors);
+      if (!j) printErrors(inputs.errors);
 
-      if (input.values) {
-        if (!j) blue(`Parsing ${input.values.sourcePath}`);
-        const result = run(input.values);
+      // TODO: fail if multiplexed with stdin
+
+      for (const input of inputs.values) {
+        if (!j) blue(`Parsing ${input.sourcePath}`);
+        const result = run(input);
         errors.push(...result.errors);
         if (!j) printErrors(result.errors);
 
@@ -135,12 +137,14 @@ const { argv } = yargs(hideBin(process.argv))
         if (!j) printFiles(writeResult.value);
       }
 
-      if (!watcher && watch && input.values?.sourcePath && !stdin && !json) {
-        let timer: NodeJS.Timeout | undefined = undefined;
-        watcher = watchFile(input.values?.sourcePath, () => {
-          if (timer) clearTimeout(timer);
-          timer = setTimeout(go, 100);
-        });
+      if (!watcher && watch && !stdin && !json) {
+        for (const input of inputs.values) {
+          let timer: NodeJS.Timeout | undefined = undefined;
+          watcher = watchFile(input.sourcePath, () => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(go, 100);
+          });
+        }
       }
     };
 
