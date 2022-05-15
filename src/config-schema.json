@@ -1,48 +1,69 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "type": "object",
-  "description": "Basketry configuration",
-  "required": ["parser"],
-  "properties": {
-    "$schema": {
-      "description": "The schema to verify this document against.",
-      "type": "string"
-    },
-    "parser": {
-      "description": "CommonJS module that contains the Parser function.",
-      "type": "string"
-    },
-    "rules": {
-      "description": "Array of CommonJS modules that contain Rule functions.",
-      "type": "array",
-      "items": { "type": "string" },
-      "uniqueItems": true
-    },
-    "generators": {
-      "description": "Array of CommonJS modules that contain Generator functions.",
-      "type": "array",
-      "items": {
-        "oneOf": [
-          { "type": "string" },
-          { "$ref": "#/definitions/generatorOptions" }
-        ]
-      },
-      "uniqueItems": true
-    },
-    "source": {
-      "description": "The source Service Definition used to generate service code.",
-      "type": "string"
-    },
-    "output": {
-      "description": "The folder in which to output all generated files.",
-      "type": "string"
-    },
-    "options": {
-      "description": "Common options passed only to all generators. These common options will be overridden by generator-specific options.",
-      "type": "object"
-    }
-  },
+  "oneOf": [
+    { "$ref": "#/definitions/localConfig" },
+    { "$ref": "#/definitions/globalConfig" }
+  ],
   "definitions": {
+    "globalConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["configs"],
+      "properties": {
+        "configs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "localConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Basketry configuration",
+      "required": ["parser"],
+      "properties": {
+        "$schema": {
+          "description": "The schema to verify this document against.",
+          "type": "string"
+        },
+        "parser": {
+          "description": "CommonJS module that contains the Parser function.",
+          "type": "string"
+        },
+        "rules": {
+          "description": "Array of CommonJS modules that contain Rule functions.",
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "generators": {
+          "description": "Array of CommonJS modules that contain Generator functions.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              { "$ref": "#/definitions/generatorOptions" }
+            ]
+          },
+          "uniqueItems": true
+        },
+        "source": {
+          "description": "The source Service Definition used to generate service code.",
+          "type": "string"
+        },
+        "output": {
+          "description": "The folder in which to output all generated files.",
+          "type": "string"
+        },
+        "options": {
+          "description": "Common options passed only to all generators. These common options will be overridden by generator-specific options.",
+          "type": "object"
+        }
+      }
+    },
     "generatorOptions": {
       "type": "object",
       "required": ["generator"],
@@ -57,6 +78,5 @@
         }
       }
     }
-  },
-  "additionalProperties": false
+  }
 }

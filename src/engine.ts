@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from 'fs/promises';
 import { join, resolve, sep } from 'path';
 
 import { merge } from 'webpack-merge';
+import { GlobalConfig, LocalConfig } from '.';
 
 import { validateConfig } from './config-validator';
 import {
@@ -25,64 +26,83 @@ require('ts-node').register({
   transpileOnly: true,
 });
 
+function isLocalConfig(
+  config: LocalConfig | GlobalConfig | undefined,
+): config is LocalConfig {
+  return config?.['configs'] === undefined;
+}
+
+function isGlobalConfig(
+  config: LocalConfig | GlobalConfig | undefined,
+): config is LocalConfig {
+  return config?.['configs'] !== undefined;
+}
+
 export async function getInput(
   configPath: string | undefined,
   overrides?: Overrides,
 ): Promise<{
-  values: Input | undefined;
+  values: Input[];
   errors: BasketryError[];
 }> {
-  let values: Input | undefined = undefined;
+  const values: Input[] = [];
   const errors: BasketryError[] = [];
 
-  const config = await getConfig(configPath);
-  push(errors, config.errors);
+  const configs = await getConfig(configPath);
+  push(errors, configs.errors);
 
-  const sourcePath = overrides?.sourcePath || config.value?.source;
+  for (const config of configs.value) {
+    if (!isLocalConfig(config)) continue;
 
-  const source = await getSource(sourcePath);
-  push(errors, source.errors);
+    let inputs: Input | undefined = undefined;
+    const sourcePath = overrides?.sourcePath || config.source;
 
-  const sourceContent = overrides?.sourceContent || source.content;
-  const parser = overrides?.parser || config.value?.parser;
-  const rules = overrides?.rules || config.value?.rules || [];
-  const generators = overrides?.generators || config.value?.generators || [];
-  const output = overrides?.output || config.value?.output;
-  const options = config.value?.options;
+    const source = await getSource(sourcePath);
+    push(errors, source.errors);
 
-  if (sourcePath && sourceContent && parser) {
-    values = {
-      sourcePath: resolve(process.cwd(), sourcePath),
-      sourceContent,
-      configPath,
-      parser,
-      rules,
-      generators,
-      validate: overrides?.validate || false,
-      output,
-      options,
-    };
-  }
+    const sourceContent = overrides?.sourceContent || source.content;
+    const parser = overrides?.parser || config.parser;
+    const rules = overrides?.rules || config.rules || [];
+    const generators = overrides?.generators || config.generators || [];
+    const output = overrides?.output || config.output;
+    const options = config.options;
 
-  if (!sourcePath) {
-    errors.push({
-      code: 'MISSING_PARAMETER',
-      message: '`sourcePath` is not specified',
-    });
-  }
+    if (sourcePath && sourceContent && parser) {
+      inputs = {
+        sourcePath: resolve(process.cwd(), sourcePath),
+        sourceContent,
+        configPath,
+        parser,
+        rules,
+        generators,
+        validate: overrides?.validate || false,
+        output,
+        options,
+      };
+    }
 
-  if (!sourceContent) {
-    errors.push({
-      code: 'MISSING_PARAMETER',
-      message: '`sourceContent` is not specified',
-    });
-  }
+    if (!sourcePath) {
+      errors.push({
+        code: 'MISSING_PARAMETER',
+        message: '`sourcePath` is not specified',
+      });
+    }
 
-  if (!parser) {
-    errors.push({
-      code: 'MISSING_PARAMETER',
-      message: '`parser` is not specified',
-    });
+    if (!sourceContent) {
+      errors.push({
+        code: 'MISSING_PARAMETER',
+        message: '`sourceContent` is not specified',
+      });
+    }
+
+    if (!parser) {
+      errors.push({
+        code: 'MISSING_PARAMETER',
+        message: '`parser` is not specified',
+      });
+    }
+
+    if (inputs) values.push(inputs);
   }
 
   return { values, errors };
@@ -279,23 +299,35 @@ function runGenerators(options: { fns: Generator[]; service: Service }): {
 }
 
 async function getConfig(configPath: string | undefined): Promise<{
-  value: Config | undefined;
+  value: LocalConfig[];
   errors: BasketryError[];
 }> {
-  let value: Config | undefined = undefined;
+  const value: LocalConfig[] = [];
   const errors: BasketryError[] = [];
 
   try {
-    const path = join(...[process.cwd(), configPath || ''].filter((x) => x));
     if (configPath?.length) {
       const config = validateConfig(
         JSON.parse(
           (await readFile(join(process.cwd(), configPath))).toString(),
         ),
       );
-
-      value = config.value;
       push(errors, config.errors);
+
+      if (isLocalConfig(config.value)) {
+        value.push(config.value);
+      } else if (isGlobalConfig(config.value)) {
+        for (const subConfigPath of config.value.configs) {
+          const subConfig = validateConfig(
+            JSON.parse(
+              (await readFile(join(process.cwd(), subConfigPath))).toString(),
+            ),
+          );
+          push(errors, subConfig.errors);
+
+          if (isLocalConfig(subConfig.value)) value.push(subConfig.value);
+        }
+      }
     }
   } catch (ex) {
     // TOOD: look for ENOENT

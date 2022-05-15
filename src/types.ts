@@ -1,4 +1,6 @@
-export type Config = {
+export type Config = LocalConfig | GlobalConfig;
+
+export type LocalConfig = {
   /** CommonJS module that contains the Parser function */
   parser: string;
   /** Array of CommonJS modules that contain Rule functions */
@@ -11,6 +13,10 @@ export type Config = {
   output?: string;
   /** Common options passed only to all generators. These common options will be overridden by generator-specific options. */
   options?: any;
+};
+
+export type GlobalConfig = {
+  configs: string[];
 };
 
 export type Options = {
