@@ -2,9 +2,7 @@ import { mkdir, readFile, writeFile } from 'fs/promises';
 import { join, resolve, sep } from 'path';
 
 import { merge } from 'webpack-merge';
-import { GlobalConfig, LocalConfig } from '.';
 
-import { validateConfig } from './config-validator';
 import {
   BasketryError,
   Config,
@@ -20,23 +18,12 @@ import {
   Service,
   Violation,
 } from './types';
+import { getConfigs, isLocalConfig } from './utils';
 import { validate } from './validator';
 
 require('ts-node').register({
   transpileOnly: true,
 });
-
-function isLocalConfig(
-  config: LocalConfig | GlobalConfig | undefined,
-): config is LocalConfig {
-  return config?.['configs'] === undefined;
-}
-
-function isGlobalConfig(
-  config: LocalConfig | GlobalConfig | undefined,
-): config is LocalConfig {
-  return config?.['configs'] !== undefined;
-}
 
 export async function getInput(
   configPath: string | undefined,
@@ -48,7 +35,7 @@ export async function getInput(
   const values: Input[] = [];
   const errors: BasketryError[] = [];
 
-  const configs = await getConfig(configPath);
+  const configs = await getConfigs(configPath);
   push(errors, configs.errors);
 
   for (const config of configs.value) {
@@ -296,50 +283,6 @@ function runGenerators(options: { fns: Generator[]; service: Service }): {
   }
 
   return { files, errors, violations };
-}
-
-async function getConfig(configPath: string | undefined): Promise<{
-  value: LocalConfig[];
-  errors: BasketryError[];
-}> {
-  const value: LocalConfig[] = [];
-  const errors: BasketryError[] = [];
-
-  try {
-    if (configPath?.length) {
-      const config = validateConfig(
-        JSON.parse(
-          (await readFile(join(process.cwd(), configPath))).toString(),
-        ),
-      );
-      push(errors, config.errors);
-
-      if (isLocalConfig(config.value)) {
-        value.push(config.value);
-      } else if (isGlobalConfig(config.value)) {
-        for (const subConfigPath of config.value.configs) {
-          const subConfig = validateConfig(
-            JSON.parse(
-              (await readFile(join(process.cwd(), subConfigPath))).toString(),
-            ),
-          );
-          push(errors, subConfig.errors);
-
-          if (isLocalConfig(subConfig.value)) value.push(subConfig.value);
-        }
-      }
-    }
-  } catch (ex) {
-    // TOOD: look for ENOENT
-    // TOOD: look for SyntaxError
-    errors.push({
-      code: 'CONFIG_ERROR',
-      message: 'Unhandled exception loading config', // TODO: Use ex
-      filepath: configPath,
-    });
-  }
-
-  return { value, errors };
 }
 
 async function getSource(
