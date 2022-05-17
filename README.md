@@ -60,6 +60,12 @@ cat src/petstore.json | basketry
 
 Note that if a source parameter is provided _and_ data is piped in via `stdin`, the content from `stdin` will be parsed, but any violations will still point to the file located at the source path. This can be useful to validate dirty versions of a file prior to the file being saved and thus accessible by reading from the file system.
 
+`stdin` cannot be used with multiple configs. You can, however, still pass a child config as an argument:
+
+```
+cat src/petstore/service.json | basketry --config src/petstore/basketry.config.json
+```
+
 ### Parser
 
 Use `-p`, `--parser` to specify the parser to use:
@@ -191,6 +197,31 @@ Any string that can be used to "require" a CommonJS module can be used to specif
 For example, any parser (as described above) that can be required with `const myParser = require('./path/to/my/parser')` can be used with Basketry with `basketry --parser ./path/to/my/parser`. This applies to both modules defined within your project and packages installed from NPM. If it can be required from within your project, it can be used as a Parser, Generator, or Rule.
 
 Although Basketry is written in the JavaScript family of languages, it can be used to generate code in any language.
+
+## Advanced Usage
+
+### Multiple configs
+
+Basketry can generate multiple service interfaces from a single source file. However, there may be times where developers need to create multiple configurations within a single repository. Doing so allows for stricter modularity between services and more fine grained control over configuration settings.
+
+To use multiple configurations, provide an array of the config file locations in the root configuration (`your-project/basketry.config.json`):
+
+```json
+{
+  "configs": [
+    "src/petstore/basketry.config.json",
+    "src/swapi/basketry.config.json"
+  ]
+}
+```
+
+Each of the child configuations will be "normal" configuations that specify the source, parser, rules, generators, and output. Child configs can not contain further children—all configs must be specified in the top-level parent.
+
+Running basketry against project will _everything_ in all of the specified folders. You can still run against only one child by passing the config path as an arg:
+
+```
+basketry --config src/petstore/basketry.config.json
+```
 
 ---
 
