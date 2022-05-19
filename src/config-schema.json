@@ -36,7 +36,12 @@
         "rules": {
           "description": "Array of CommonJS modules that contain Rule functions.",
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              { "$ref": "#/definitions/ruleOptions" }
+            ]
+          },
           "uniqueItems": true
         },
         "generators": {
@@ -77,6 +82,21 @@
           "type": "object"
         }
       }
+    },
+    "ruleOptions": {
+      "type": "object",
+      "required": ["rule"],
+      "properties": {
+        "rule": {
+          "description": "CommonJS module that contain a Rule function",
+          "type": "string"
+        },
+        "options": { "type": "object" }
+      }
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["info", "warning", "error"]
     }
   }
 }

@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import { join, resolve, sep } from 'path';
 
-import { merge } from 'webpack-merge';
+import { merge as webpackMerge } from 'webpack-merge';
 
 import {
   BasketryError,
@@ -15,6 +15,7 @@ import {
   Overrides,
   Parser,
   Rule,
+  RuleOptions,
   Service,
   Violation,
 } from './types';
@@ -316,18 +317,30 @@ function getParser(
 }
 
 function getRules(
-  moduleNames: string[],
+  moduleNames: (string | RuleOptions)[],
   configPath?: string,
 ): {
   fns: Rule[];
   errors: BasketryError[];
 } {
   return moduleNames.reduce(
-    (acc, moduleName) => {
+    (acc, item) => {
+      const moduleName = typeof item === 'string' ? item : item.rule;
+
+      const ruleOptions: any =
+        typeof item === 'string' ? undefined : item.options;
+
       const { fn, errors } = loadModule<Rule>(moduleName, configPath);
 
+      const rule: Rule | undefined = fn
+        ? (service, sourcePath, localOptions) =>
+            fn(service, sourcePath, merge(ruleOptions, localOptions))
+        : undefined;
+
       return {
-        fns: [...acc.fns, fn].filter((f): f is Rule => typeof f === 'function'),
+        fns: [...acc.fns, rule].filter(
+          (f): f is Rule => typeof f === 'function',
+        ),
         errors: [...acc.errors, ...errors],
       };
     },
@@ -356,15 +369,8 @@ function getGenerators(
       const { fn, errors } = loadModule<Generator>(moduleName, configPath);
 
       const gen: Generator | undefined = fn
-        ? (service, localOptions = {}) =>
-            fn(
-              service,
-              merge(
-                commonOptions || {},
-                generatorOptions || {},
-                localOptions || {},
-              ),
-            )
+        ? (service, localOptions) =>
+            fn(service, merge(commonOptions, generatorOptions, localOptions))
         : undefined;
 
       return {
@@ -448,4 +454,12 @@ function loadModule<T extends Function>(
   }
 
   return { fn, errors };
+}
+
+function merge<T extends object>(
+  ...configurations: (T | null | undefined)[]
+): T | undefined {
+  const input = configurations.filter((c): c is T => !!c);
+
+  return input.length ? webpackMerge(input) : undefined;
 }

@@ -23,7 +23,7 @@ export type Options = {
   /** CommonJS module that contains the Parser function */
   parser: string;
   /** Array of CommonJS modules that contain Rule functions */
-  rules: string[];
+  rules: (string | RuleOptions)[];
   /** Array of CommonJS modules that contain Generator functions */
   generators: (string | GeneratorOptions)[];
   sourceName: string;
@@ -56,6 +56,12 @@ export type Parser = (
   violations: Violation[];
 };
 
+export type RuleOptions = {
+  rule: string;
+  /** Options passed only to this Rule. */
+  options?: any;
+};
+
 export type Rule = (
   /** The Intermediate Representation (IR) of the service */
   service: Service,
@@ -64,6 +70,7 @@ export type Rule = (
    * generating Violations that point to a specific range within the original SDL file.
    */
   sourcePath: string,
+  options?: any,
 ) => Violation[];
 
 export type Generator = (service: Service, options?: any) => File[];
@@ -75,7 +82,7 @@ export type Input = {
   sourceContent: string;
   configPath?: string;
   parser: string;
-  rules: string[];
+  rules: (string | RuleOptions)[];
   generators: (string | GeneratorOptions)[];
   validate: boolean;
   output?: string;
@@ -99,7 +106,7 @@ export type Overrides = {
   sourcePath?: string;
   sourceContent?: string;
   parser?: string;
-  rules?: string[];
+  rules?: (string | RuleOptions)[];
   generators?: (string | GeneratorOptions)[];
   validate?: boolean;
   output?: string;
@@ -136,11 +143,13 @@ export type File = {
   contents: string;
 };
 
+export type Severity = 'info' | 'warning' | 'error';
+
 export type Violation = {
   sourcePath: string;
   range: Range;
   message: string;
-  severity: 'info' | 'warning' | 'error';
+  severity: Severity;
   code: string;
   link?: string;
 };

@@ -206,6 +206,57 @@ describe('engine', () => {
     });
   });
 
+  it('works when a rule is supplied with options', () => {
+    // ARRANGE
+    const files: File[] = [
+      { path: ['some', 'path'], contents: 'some content' },
+    ];
+
+    setFiles(files);
+
+    // ACT
+    const result = run({
+      sourcePath: 'some-file.ext',
+      sourceContent: 'some content',
+      configPath: 'some-config.ext',
+      parser: 'src/test-modules/parser',
+      generators: ['src/test-modules/generator'],
+      rules: [
+        {
+          rule: 'src/test-modules/rule-that-takes-options',
+          options: { severity: 'info', foo: 'bar' },
+        },
+      ],
+      validate: false,
+    });
+
+    // ASSERT
+    expect(result).toEqual<Output>({
+      violations: [
+        {
+          code: 'rule-that-takes-options',
+          message: '{"severity":"info","foo":"bar"}',
+          severity: 'info',
+          range: {
+            end: {
+              column: 0,
+              line: 0,
+              offset: 0,
+            },
+            start: {
+              column: 0,
+              line: 0,
+              offset: 0,
+            },
+          },
+          sourcePath: 'some-file.ext',
+        },
+      ],
+      errors: [],
+      files,
+    });
+  });
+
   it('returns an error when the parser module throws', () => {
     // ACT
     const result = run({
