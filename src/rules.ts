@@ -170,3 +170,57 @@ export function combineRules(...rules: Rule[]): Rule {
   return (service, sourcePath, options) =>
     rules.flatMap((rule) => rule(service, sourcePath, options));
 }
+
+const methodMapsByService = new WeakMap<
+  Service,
+  ReadonlyMap<string, MethodSpec>
+>();
+export function getHttpMethodByName(
+  service: Service,
+  methodName: string | undefined,
+): MethodSpec | undefined {
+  if (!methodName) return;
+
+  if (!methodMapsByService.has(service)) {
+    const httpMethodsByName: ReadonlyMap<string, MethodSpec> = new Map(
+      service.interfaces
+        .flatMap((i) => i.protocols.http)
+        .flatMap((p) => p.methods)
+        .map((m) => [m.name.value.toLowerCase(), m]),
+    );
+    methodMapsByService.set(service, httpMethodsByName);
+  }
+  return methodMapsByService.get(service)?.get(methodName.toLowerCase());
+}
+
+const typeMapsByService = new WeakMap<Service, ReadonlyMap<string, Type>>();
+export function getTypeByName(
+  service: Service,
+  typeName: string | undefined,
+): Type | undefined {
+  if (!typeName) return;
+
+  if (!typeMapsByService.has(service)) {
+    const typesByName: ReadonlyMap<string, Type> = new Map(
+      service.types.map((t) => [t.name.value.toLowerCase(), t]),
+    );
+    typeMapsByService.set(service, typesByName);
+  }
+  return typeMapsByService.get(service)?.get(typeName.toLowerCase());
+}
+
+const enumMapsByService = new WeakMap<Service, ReadonlyMap<string, Enum>>();
+export function getEnumByName(
+  service: Service,
+  enumName: string | undefined,
+): Enum | undefined {
+  if (!enumName) return;
+
+  if (!enumMapsByService.has(service)) {
+    const enumsByName: ReadonlyMap<string, Enum> = new Map(
+      service.enums.map((e) => [e.name.value.toLowerCase(), e]),
+    );
+    enumMapsByService.set(service, enumsByName);
+  }
+  return enumMapsByService.get(service)?.get(enumName.toLowerCase());
+}
