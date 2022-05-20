@@ -41,6 +41,7 @@ export function interfaceRule(
 
 export interface MethodRuleContext extends InterfaceRuleContext {
   method: Method;
+  httpMethod?: MethodSpec;
 }
 export function methodRule(
   rule: (context: MethodRuleContext) => Violation | undefined,
@@ -49,7 +50,14 @@ export function methodRule(
     service.interfaces
       .flatMap((i) => i.methods.map<[Method, Interface]>((m) => [m, i]))
       .map(([m, i]) =>
-        rule({ method: m, interface: i, service, sourcePath, options }),
+        rule({
+          method: m,
+          httpMethod: getHttpMethodByName(service, m.name.value),
+          interface: i,
+          service,
+          sourcePath,
+          options,
+        }),
       )
       .filter((v): v is Violation => !!v);
 }
@@ -71,89 +79,9 @@ export function httpPathRule(
       .filter((v): v is Violation => !!v);
 }
 
-export interface HttpMethodRuleContext extends HttpPathRuleContext {
-  method: Method;
-  httpMethod: MethodSpec;
-}
-export function httpMethodRule(
-  rule: (context: HttpMethodRuleContext) => Violation | undefined,
-): Rule {
-  return (service, sourcePath, options) => {
-    const methodsByName: Map<string, Method> = new Map(
-      service.interfaces
-        .flatMap((i) => i.methods)
-        .map((m) => [m.name.value, m]),
-    );
-
-    return service.interfaces
-      .flatMap((i) =>
-        i.protocols.http.map<[PathSpec, Interface]>((p) => [p, i]),
-      )
-      .flatMap(([p, i]) =>
-        p.methods.map<[MethodSpec, PathSpec, Interface]>((m) => [m, p, i]),
-      )
-      .map(([m, p, i]) =>
-        rule({
-          httpMethod: m,
-          method: methodsByName.get(m.name.value)!,
-          httpPath: p,
-          interface: i,
-          service,
-          sourcePath,
-          options,
-        }),
-      )
-      .filter((v): v is Violation => !!v);
-  };
-}
-
-export interface HttpParameterRuleContext extends HttpMethodRuleContext {
-  parameter: Parameter;
-  httpParameter: ParameterSpec;
-}
-export function httpParameterRule(
-  rule: (context: HttpParameterRuleContext) => Violation | undefined,
-): Rule {
-  return (service, sourcePath, options) => {
-    const methodsByName: Map<string, Method> = new Map(
-      service.interfaces
-        .flatMap((i) => i.methods)
-        .map((m) => [m.name.value, m]),
-    );
-
-    return service.interfaces
-      .flatMap((i) =>
-        i.protocols.http.map<[PathSpec, Interface]>((p) => [p, i]),
-      )
-      .flatMap(([u, i]) =>
-        u.methods.map<[MethodSpec, PathSpec, Interface]>((m) => [m, u, i]),
-      )
-      .flatMap(([m, u, i]) =>
-        m.parameters.map<[ParameterSpec, MethodSpec, PathSpec, Interface]>(
-          (p) => [p, m, u, i],
-        ),
-      )
-      .map(([p, m, u, i]) =>
-        rule({
-          httpParameter: p,
-          parameter: methodsByName
-            .get(m.name.value)
-            ?.parameters.find((x) => x.name.value === p.name.value)!,
-          httpMethod: m,
-          method: methodsByName.get(m.name.value)!,
-          httpPath: u,
-          interface: i,
-          service,
-          sourcePath,
-          options,
-        }),
-      )
-      .filter((v): v is Violation => !!v);
-  };
-}
-
 export interface ParameterRuleContext extends MethodRuleContext {
   parameter: Parameter;
+  httpParameter?: ParameterSpec;
 }
 export function parameterRule(
   rule: (context: ParameterRuleContext) => Violation | undefined,
@@ -167,7 +95,12 @@ export function parameterRule(
       .map(([p, m, i]) =>
         rule({
           parameter: p,
+          httpParameter: getHttpMethodByName(
+            service,
+            m.name.value,
+          )?.parameters?.find((x) => x.name.value === p.name.value),
           method: m,
+          httpMethod: getHttpMethodByName(service, m.name.value),
           interface: i,
           service,
           sourcePath,
