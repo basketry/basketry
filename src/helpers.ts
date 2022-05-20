@@ -72,7 +72,7 @@ export function encodeRange(range: Range): string {
 }
 
 export function decodeRange(range: string | null | undefined): Range {
-  if (!range) return decodeRange('0;0;0');
+  if (!range) return decodeRange('1;1;0');
 
   const parts = range.split(';').map((x) => Number(x));
 

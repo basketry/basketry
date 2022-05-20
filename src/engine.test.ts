@@ -239,13 +239,13 @@ describe('engine', () => {
           severity: 'info',
           range: {
             end: {
-              column: 0,
-              line: 0,
+              column: 1,
+              line: 1,
               offset: 0,
             },
             start: {
-              column: 0,
-              line: 0,
+              column: 1,
+              line: 1,
               offset: 0,
             },
           },
