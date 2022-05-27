@@ -1,0 +1,2152 @@
+{
+  "basketry": "1",
+  "title": { "value": "BasketryExample", "loc": "1;1;0" },
+  "majorVersion": { "value": 1, "loc": "1;1;0" },
+  "interfaces": [
+    {
+      "name": "gizmo",
+      "methods": [
+        {
+          "name": { "value": "getGizmos", "loc": "1;1;0" },
+          "security": [
+            [
+              {
+                "type": { "value": "oauth2", "loc": "1;1;0" },
+                "name": { "value": "oauth2Auth", "loc": "1;1;0" },
+                "flows": [
+                  {
+                    "type": {
+                      "value": "implicit",
+                      "loc": "1;1;0"
+                    },
+                    "authorizationUrl": {
+                      "value": "https://example.com/auth",
+                      "loc": "1;1;0"
+                    },
+                    "scopes": [
+                      {
+                        "name": {
+                          "value": "read:gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "description": {
+                          "value": "Access gizmo data",
+                          "loc": "1;1;0"
+                        },
+                        "loc": "1;1;0"
+                      }
+                    ],
+                    "loc": "1;1;0"
+                  }
+                ],
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [
+            {
+              "name": { "value": "search", "loc": "1;1;0" },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            }
+          ],
+          "description": {
+            "value": "Only has a summary",
+            "loc": "1;1;0"
+          },
+          "returnType": {
+            "typeName": { "value": "gizmosResponse" },
+            "isUnknown": false,
+            "isLocal": true,
+            "isArray": false,
+            "rules": [],
+            "loc": "1;1;0"
+          },
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "createGizmo", "loc": "1;1;0" },
+          "security": [
+            [
+              {
+                "type": { "value": "oauth2", "loc": "1;1;0" },
+                "name": { "value": "oauth2Auth", "loc": "1;1;0" },
+                "flows": [
+                  {
+                    "type": {
+                      "value": "implicit",
+                      "loc": "1;1;0"
+                    },
+                    "authorizationUrl": {
+                      "value": "https://example.com/auth",
+                      "loc": "1;1;0"
+                    },
+                    "scopes": [
+                      {
+                        "name": {
+                          "value": "write:gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "description": {
+                          "value": "Write gizmo data",
+                          "loc": "1;1;0"
+                        },
+                        "loc": "1;1;0"
+                      }
+                    ],
+                    "loc": "1;1;0"
+                  }
+                ],
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [
+            {
+              "name": { "value": "size", "loc": "1;1;0" },
+              "description": {
+                "value": "Anonymous enum",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "createGizmoSize" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": false,
+              "rules": [
+                {
+                  "id": "string-enum",
+                  "values": [
+                    { "value": "small", "loc": "1;1;0" },
+                    { "value": "medium", "loc": "1;1;0" },
+                    { "value": "big", "loc": "1;1;0" },
+                    { "value": "XL", "loc": "1;1;0" }
+                  ],
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            }
+          ],
+          "description": [
+            {
+              "value": "Has a summary in addition to a description",
+              "loc": "1;1;0"
+            },
+            {
+              "value": "Has a description in addition to a summary",
+              "loc": "1;1;0"
+            }
+          ],
+          "returnType": {
+            "typeName": { "value": "gizmo", "loc": "1;1;0" },
+            "isUnknown": false,
+            "isLocal": true,
+            "isArray": false,
+            "rules": [],
+            "loc": "1;1;0"
+          },
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "updateGizmo", "loc": "1;1;0" },
+          "security": [
+            [
+              {
+                "type": { "value": "oauth2", "loc": "1;1;0" },
+                "name": { "value": "oauth2Auth", "loc": "1;1;0" },
+                "flows": [
+                  {
+                    "type": {
+                      "value": "implicit",
+                      "loc": "1;1;0"
+                    },
+                    "authorizationUrl": {
+                      "value": "https://example.com/auth",
+                      "loc": "1;1;0"
+                    },
+                    "scopes": [
+                      {
+                        "name": {
+                          "value": "write:gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "description": {
+                          "value": "Write gizmo data",
+                          "loc": "1;1;0"
+                        },
+                        "loc": "1;1;0"
+                      },
+                      {
+                        "name": {
+                          "value": "admin:gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "description": {
+                          "value": "Manage gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "loc": "1;1;0"
+                      }
+                    ],
+                    "loc": "1;1;0"
+                  }
+                ],
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [
+            {
+              "name": { "value": "factors", "loc": "1;1;0" },
+              "description": {
+                "value": "array of primitive",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [
+                {
+                  "id": "array-max-items",
+                  "max": { "value": 6, "loc": "1;1;0" },
+                  "loc": "1;1;0"
+                },
+                {
+                  "id": "array-min-items",
+                  "min": { "value": 2, "loc": "1;1;0" },
+                  "loc": "1;1;0"
+                },
+                {
+                  "id": "string-pattern",
+                  "pattern": {
+                    "value": "[0-9a-fA-F]+",
+                    "loc": "1;1;0"
+                  },
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            }
+          ],
+          "returnType": {
+            "typeName": { "value": "gizmo", "loc": "1;1;0" },
+            "isUnknown": false,
+            "isLocal": true,
+            "isArray": false,
+            "rules": [],
+            "loc": "1;1;0"
+          },
+          "loc": "1;1;0"
+        }
+      ],
+      "protocols": {
+        "http": [
+          {
+            "path": { "value": "/gizmos", "loc": "1;1;0" },
+            "methods": [
+              {
+                "name": { "value": "getGizmos", "loc": "1;1;0" },
+                "verb": { "value": "get", "loc": "1;1;0" },
+                "parameters": [
+                  {
+                    "name": { "value": "search", "loc": "1;1;0" },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  }
+                ],
+                "successCode": { "value": 200, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              },
+              {
+                "name": { "value": "createGizmo", "loc": "1;1;0" },
+                "verb": { "value": "post", "loc": "1;1;0" },
+                "parameters": [
+                  {
+                    "name": { "value": "size", "loc": "1;1;0" },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  }
+                ],
+                "successCode": { "value": 201, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              },
+              {
+                "name": {
+                  "value": "updateGizmo",
+                  "loc": "1;1;0"
+                },
+                "verb": { "value": "put", "loc": "1;1;0" },
+                "parameters": [
+                  {
+                    "name": {
+                      "value": "factors",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "array": { "value": "csv", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  }
+                ],
+                "successCode": { "value": 200, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            "loc": "1;1;0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "widget",
+      "methods": [
+        {
+          "name": { "value": "getWidgets", "loc": "1;1;0" },
+          "security": [
+            [
+              {
+                "type": { "value": "apiKey", "loc": "1;1;0" },
+                "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
+                "parameter": { "value": "x-apikey", "loc": "1;1;0" },
+                "in": { "value": "header", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [],
+          "returnType": {
+            "typeName": { "value": "widget", "loc": "1;1;0" },
+            "isUnknown": false,
+            "isLocal": true,
+            "isArray": false,
+            "rules": [],
+            "loc": "1;1;0"
+          },
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "createWidget", "loc": "1;1;0" },
+          "security": [
+            [
+              {
+                "type": { "value": "apiKey", "loc": "1;1;0" },
+                "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
+                "parameter": { "value": "x-apikey", "loc": "1;1;0" },
+                "in": { "value": "header", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [
+            {
+              "name": { "value": "body", "loc": "1;1;0" },
+              "description": {
+                "value": "The new widget",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "createWidgetBody" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "putWidget", "loc": "1;1;0" },
+          "security": [
+            [
+              {
+                "type": { "value": "apiKey", "loc": "1;1;0" },
+                "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
+                "parameter": { "value": "x-apikey", "loc": "1;1;0" },
+                "in": { "value": "header", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "getWidgetFoo", "loc": "1;1;0" },
+          "security": [
+            [
+              {
+                "type": { "value": "apiKey", "loc": "1;1;0" },
+                "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
+                "parameter": { "value": "x-apikey", "loc": "1;1;0" },
+                "in": { "value": "header", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [
+            {
+              "name": { "value": "id", "loc": "1;1;0" },
+              "description": {
+                "value": "The widget ID",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [
+                { "id": "required" },
+                {
+                  "id": "string-max-length",
+                  "length": { "value": 30, "loc": "1;1;0" },
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            }
+          ],
+          "returnType": {
+            "typeName": { "value": "widget", "loc": "1;1;0" },
+            "isUnknown": false,
+            "isLocal": true,
+            "isArray": false,
+            "rules": [],
+            "loc": "1;1;0"
+          },
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "deleteWidgetFoo", "loc": "1;1;0" },
+          "security": [
+            [
+              {
+                "type": { "value": "apiKey", "loc": "1;1;0" },
+                "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
+                "parameter": { "value": "x-apikey", "loc": "1;1;0" },
+                "in": { "value": "header", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [
+            {
+              "name": { "value": "id", "loc": "1;1;0" },
+              "description": {
+                "value": "The widget ID",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [
+                { "id": "required" },
+                {
+                  "id": "string-max-length",
+                  "length": { "value": 30, "loc": "1;1;0" },
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        }
+      ],
+      "protocols": {
+        "http": [
+          {
+            "path": { "value": "/widgets", "loc": "1;1;0" },
+            "methods": [
+              {
+                "name": { "value": "getWidgets", "loc": "1;1;0" },
+                "verb": { "value": "get", "loc": "1;1;0" },
+                "parameters": [],
+                "successCode": { "value": 200, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              },
+              {
+                "name": {
+                  "value": "createWidget",
+                  "loc": "1;1;0"
+                },
+                "verb": { "value": "post", "loc": "1;1;0" },
+                "parameters": [
+                  {
+                    "name": { "value": "body", "loc": "1;1;0" },
+                    "in": { "value": "body", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  }
+                ],
+                "successCode": { "value": 204, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              },
+              {
+                "name": { "value": "putWidget", "loc": "1;1;0" },
+                "verb": { "value": "put", "loc": "1;1;0" },
+                "parameters": [],
+                "successCode": { "value": 200 },
+                "loc": "1;1;0"
+              }
+            ],
+            "loc": "1;1;0"
+          },
+          {
+            "path": {
+              "value": "/widgets/{id}/foo",
+              "loc": "1;1;0"
+            },
+            "methods": [
+              {
+                "name": {
+                  "value": "getWidgetFoo",
+                  "loc": "1;1;0"
+                },
+                "verb": { "value": "get", "loc": "1;1;0" },
+                "parameters": [
+                  {
+                    "name": { "value": "id", "loc": "1;1;0" },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  }
+                ],
+                "successCode": { "value": 200, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              },
+              {
+                "name": {
+                  "value": "deleteWidgetFoo",
+                  "loc": "1;1;0"
+                },
+                "verb": { "value": "delete", "loc": "1;1;0" },
+                "parameters": [
+                  {
+                    "name": { "value": "id", "loc": "1;1;0" },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  }
+                ],
+                "successCode": { "value": 204, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            "loc": "1;1;0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "exhaustive",
+      "methods": [
+        {
+          "name": {
+            "value": "exhaustiveFormats",
+            "loc": "1;1;0"
+          },
+          "security": [],
+          "parameters": [
+            {
+              "name": {
+                "value": "string-no-format",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "string-date", "loc": "1;1;0" },
+              "typeName": { "value": "date", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [
+                {
+                  "id": "string-format",
+                  "format": { "value": "date", "loc": "1;1;0" },
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "string-date-time",
+                "loc": "1;1;0"
+              },
+              "typeName": {
+                "value": "date-time",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [
+                {
+                  "id": "string-format",
+                  "format": {
+                    "value": "date-time",
+                    "loc": "1;1;0"
+                  },
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "integer-no-format",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "integer", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "integer-int32",
+                "loc": "1;1;0"
+              },
+              "typeName": {
+                "value": "integer",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "integer-int64",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "long", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "number-no-format",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "number", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "number-float", "loc": "1;1;0" },
+              "typeName": {
+                "value": "float",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "number-double",
+                "loc": "1;1;0"
+              },
+              "typeName": {
+                "value": "double",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "exhaustiveParams", "loc": "1;1;0" },
+          "security": [],
+          "parameters": [
+            {
+              "name": { "value": "query-string", "loc": "1;1;0" },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "query-enum", "loc": "1;1;0" },
+              "typeName": { "value": "exhaustiveParamsQueryEnum" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": false,
+              "rules": [
+                {
+                  "id": "string-enum",
+                  "values": [
+                    { "value": "one", "loc": "1;1;0" },
+                    { "value": "two", "loc": "1;1;0" },
+                    { "value": "three", "loc": "1;1;0" }
+                  ],
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "query-number", "loc": "1;1;0" },
+              "typeName": { "value": "number", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "query-integer",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "integer", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "query-boolean",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "boolean", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "query-string-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "query-enum-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "exhaustiveParamsQueryEnumArray" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": true,
+              "rules": [
+                {
+                  "id": "string-enum",
+                  "values": [
+                    { "value": "one", "loc": "1;1;0" },
+                    { "value": "two", "loc": "1;1;0" },
+                    { "value": "three", "loc": "1;1;0" }
+                  ],
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "query-number-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "number", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "query-integer-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "integer", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "query-boolean-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "boolean", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "path-string", "loc": "1;1;0" },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [{ "id": "required" }],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "path-enum", "loc": "1;1;0" },
+              "typeName": { "value": "exhaustiveParamsPathEnum" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": false,
+              "rules": [
+                { "id": "required" },
+                {
+                  "id": "string-enum",
+                  "values": [
+                    { "value": "one", "loc": "1;1;0" },
+                    { "value": "two", "loc": "1;1;0" },
+                    { "value": "three", "loc": "1;1;0" }
+                  ],
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "path-number", "loc": "1;1;0" },
+              "typeName": { "value": "number", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [{ "id": "required" }],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "path-integer", "loc": "1;1;0" },
+              "typeName": { "value": "integer", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [{ "id": "required" }],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "path-boolean", "loc": "1;1;0" },
+              "typeName": { "value": "boolean", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [{ "id": "required" }],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "path-string-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [{ "id": "required" }],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "path-enum-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "exhaustiveParamsPathEnumArray" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": true,
+              "rules": [
+                { "id": "required" },
+                {
+                  "id": "string-enum",
+                  "values": [
+                    { "value": "one", "loc": "1;1;0" },
+                    { "value": "two", "loc": "1;1;0" },
+                    { "value": "three", "loc": "1;1;0" }
+                  ],
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "path-number-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "number", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [{ "id": "required" }],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "path-integer-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "integer", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [{ "id": "required" }],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "path-boolean-array",
+                "loc": "1;1;0"
+              },
+              "typeName": {
+                "value": "boolean",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [{ "id": "required" }],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-string",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-enum",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "exhaustiveParamsHeaderEnum" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": false,
+              "rules": [
+                {
+                  "id": "string-enum",
+                  "values": [
+                    { "value": "one", "loc": "1;1;0" },
+                    { "value": "two", "loc": "1;1;0" },
+                    { "value": "three", "loc": "1;1;0" }
+                  ],
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-number",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "number", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-integer",
+                "loc": "1;1;0"
+              },
+              "typeName": {
+                "value": "integer",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-boolean",
+                "loc": "1;1;0"
+              },
+              "typeName": {
+                "value": "boolean",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-string-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "string", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-enum-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "exhaustiveParamsHeaderEnumArray" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": true,
+              "rules": [
+                {
+                  "id": "string-enum",
+                  "values": [
+                    { "value": "one", "loc": "1;1;0" },
+                    { "value": "two", "loc": "1;1;0" },
+                    { "value": "three", "loc": "1;1;0" }
+                  ],
+                  "loc": "1;1;0"
+                }
+              ],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-number-array",
+                "loc": "1;1;0"
+              },
+              "typeName": { "value": "number", "loc": "1;1;0" },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-integer-array",
+                "loc": "1;1;0"
+              },
+              "typeName": {
+                "value": "integer",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": {
+                "value": "header-boolean-array",
+                "loc": "1;1;0"
+              },
+              "typeName": {
+                "value": "boolean",
+                "loc": "1;1;0"
+              },
+              "isUnknown": false,
+              "isLocal": false,
+              "isArray": true,
+              "rules": [],
+              "loc": "1;1;0"
+            },
+            {
+              "name": { "value": "body", "loc": "1;1;0" },
+              "typeName": { "value": "exhaustiveParamsBody" },
+              "isUnknown": false,
+              "isLocal": true,
+              "isArray": false,
+              "rules": [],
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        }
+      ],
+      "protocols": {
+        "http": [
+          {
+            "path": { "value": "/exhaustive", "loc": "1;1;0" },
+            "methods": [
+              {
+                "name": {
+                  "value": "exhaustiveFormats",
+                  "loc": "1;1;0"
+                },
+                "verb": { "value": "get", "loc": "1;1;0" },
+                "parameters": [
+                  {
+                    "name": {
+                      "value": "string-no-format",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "string-date",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "string-date-time",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "integer-no-format",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "integer-int32",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "integer-int64",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "number-no-format",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "number-float",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "number-double",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  }
+                ],
+                "successCode": { "value": 204, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            "loc": "1;1;0"
+          },
+          {
+            "path": {
+              "value": "/exhaustive/{path-string}/{path-enum}/{path-number}/{path-integer}/{path-boolean}/{path-string-array}/{path-enum-array}/{path-number-array}/{path-integer-array}/{path-boolean-array}",
+              "loc": "1;1;0"
+            },
+            "methods": [
+              {
+                "name": {
+                  "value": "exhaustiveParams",
+                  "loc": "1;1;0"
+                },
+                "verb": { "value": "get", "loc": "1;1;0" },
+                "parameters": [
+                  {
+                    "name": {
+                      "value": "query-string",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-enum",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-number",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-integer",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-boolean",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-string-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "array": { "value": "csv" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-enum-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "array": { "value": "csv" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-number-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "array": { "value": "csv" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-integer-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "array": { "value": "csv" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "query-boolean-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "query", "loc": "1;1;0" },
+                    "array": { "value": "csv" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-string",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-enum",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-number",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-integer",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-boolean",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-string-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "array": { "value": "csv", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-enum-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "array": { "value": "pipes", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-number-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "array": { "value": "ssv", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-integer-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "array": { "value": "tsv", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "path-boolean-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "path", "loc": "1;1;0" },
+                    "array": { "value": "csv" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-string",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-enum",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-number",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-integer",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-boolean",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-string-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "array": { "value": "csv" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-enum-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "array": { "value": "csv", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-number-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "array": {
+                      "value": "pipes",
+                      "loc": "1;1;0"
+                    },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-integer-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "array": { "value": "ssv", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": {
+                      "value": "header-boolean-array",
+                      "loc": "1;1;0"
+                    },
+                    "in": { "value": "header", "loc": "1;1;0" },
+                    "array": { "value": "tsv", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  },
+                  {
+                    "name": { "value": "body", "loc": "1;1;0" },
+                    "in": { "value": "body", "loc": "1;1;0" },
+                    "loc": "1;1;0"
+                  }
+                ],
+                "successCode": { "value": 204, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            "loc": "1;1;0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "authPermutation",
+      "methods": [
+        {
+          "name": {
+            "value": "all-auth-schemes",
+            "loc": "1;1;0"
+          },
+          "security": [
+            [
+              {
+                "type": { "value": "basic", "loc": "1;1;0" },
+                "name": { "value": "basicAuth", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            [
+              {
+                "type": { "value": "basic", "loc": "1;1;0" },
+                "name": {
+                  "value": "alternate-basic-auth",
+                  "loc": "1;1;0"
+                },
+                "loc": "1;1;0"
+              }
+            ],
+            [
+              {
+                "type": { "value": "apiKey", "loc": "1;1;0" },
+                "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
+                "parameter": { "value": "x-apikey", "loc": "1;1;0" },
+                "in": { "value": "header", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            [
+              {
+                "type": { "value": "oauth2", "loc": "1;1;0" },
+                "name": { "value": "oauth2Auth", "loc": "1;1;0" },
+                "flows": [
+                  {
+                    "type": {
+                      "value": "implicit",
+                      "loc": "1;1;0"
+                    },
+                    "authorizationUrl": {
+                      "value": "https://example.com/auth",
+                      "loc": "1;1;0"
+                    },
+                    "scopes": [
+                      {
+                        "name": {
+                          "value": "admin:gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "description": {
+                          "value": "Manage gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "loc": "1;1;0"
+                      }
+                    ],
+                    "loc": "1;1;0"
+                  }
+                ],
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [],
+          "loc": "1;1;0"
+        },
+        {
+          "name": {
+            "value": "combo-auth-schemes",
+            "loc": "1;1;0"
+          },
+          "security": [
+            [
+              {
+                "type": { "value": "basic", "loc": "1;1;0" },
+                "name": { "value": "basicAuth", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              },
+              {
+                "type": { "value": "apiKey", "loc": "1;1;0" },
+                "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
+                "parameter": { "value": "x-apikey", "loc": "1;1;0" },
+                "in": { "value": "header", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            [
+              {
+                "type": { "value": "basic", "loc": "1;1;0" },
+                "name": { "value": "basicAuth", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              },
+              {
+                "type": { "value": "apiKey", "loc": "1;1;0" },
+                "name": {
+                  "value": "alternateApiKeyAuth",
+                  "loc": "1;1;0"
+                },
+                "parameter": { "value": "apikey", "loc": "1;1;0" },
+                "in": { "value": "query", "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            [
+              {
+                "type": { "value": "basic", "loc": "1;1;0" },
+                "name": {
+                  "value": "alternate-basic-auth",
+                  "loc": "1;1;0"
+                },
+                "loc": "1;1;0"
+              },
+              {
+                "type": { "value": "oauth2", "loc": "1;1;0" },
+                "name": { "value": "oauth2Auth", "loc": "1;1;0" },
+                "flows": [
+                  {
+                    "type": {
+                      "value": "implicit",
+                      "loc": "1;1;0"
+                    },
+                    "authorizationUrl": {
+                      "value": "https://example.com/auth",
+                      "loc": "1;1;0"
+                    },
+                    "scopes": [
+                      {
+                        "name": {
+                          "value": "admin:gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "description": {
+                          "value": "Manage gizmos",
+                          "loc": "1;1;0"
+                        },
+                        "loc": "1;1;0"
+                      }
+                    ],
+                    "loc": "1;1;0"
+                  }
+                ],
+                "loc": "1;1;0"
+              }
+            ]
+          ],
+          "parameters": [],
+          "loc": "1;1;0"
+        }
+      ],
+      "protocols": {
+        "http": [
+          {
+            "path": {
+              "value": "/authPermutations",
+              "loc": "1;1;0"
+            },
+            "methods": [
+              {
+                "name": {
+                  "value": "all-auth-schemes",
+                  "loc": "1;1;0"
+                },
+                "verb": { "value": "get", "loc": "1;1;0" },
+                "parameters": [],
+                "successCode": { "value": 200, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              },
+              {
+                "name": {
+                  "value": "combo-auth-schemes",
+                  "loc": "1;1;0"
+                },
+                "verb": { "value": "put", "loc": "1;1;0" },
+                "parameters": [],
+                "successCode": { "value": 200, "loc": "1;1;0" },
+                "loc": "1;1;0"
+              }
+            ],
+            "loc": "1;1;0"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": { "value": "gizmo", "loc": "1;1;0" },
+      "properties": [
+        {
+          "name": { "value": "id", "loc": "1;1;0" },
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            {
+              "id": "string-max-length",
+              "length": { "value": 30, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "name", "loc": "1;1;0" },
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "size", "loc": "1;1;0" },
+          "typeName": { "value": "productSize", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": true,
+          "rules": [
+            {
+              "id": "string-enum",
+              "values": [
+                { "value": "small", "loc": "1;1;0" },
+                { "value": "medium", "loc": "1;1;0" },
+                { "value": "large", "loc": "1;1;0" }
+              ],
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        }
+      ],
+      "rules": [],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "widget", "loc": "1;1;0" },
+      "properties": [
+        {
+          "name": { "value": "id", "loc": "1;1;0" },
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            { "id": "required" },
+            {
+              "id": "string-max-length",
+              "length": { "value": 30, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "name", "loc": "1;1;0" },
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            {
+              "id": "string-max-length",
+              "length": { "value": 30, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            },
+            {
+              "id": "string-pattern",
+              "pattern": {
+                "value": "[0-9a-fA-F]+",
+                "loc": "1;1;0"
+              },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "fiz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            { "id": "required" },
+            {
+              "id": "number-multiple-of",
+              "value": { "value": 3, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "buzz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            {
+              "id": "number-multiple-of",
+              "value": { "value": 5, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "fizbuzz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            {
+              "id": "number-multiple-of",
+              "value": { "value": 15, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "foo", "loc": "1;1;0" },
+          "typeName": { "value": "widgetFoo" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": true,
+          "rules": [],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "size", "loc": "1;1;0" },
+          "typeName": { "value": "productSize", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": true,
+          "rules": [
+            {
+              "id": "string-enum",
+              "values": [
+                { "value": "small", "loc": "1;1;0" },
+                { "value": "medium", "loc": "1;1;0" },
+                { "value": "large", "loc": "1;1;0" }
+              ],
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        }
+      ],
+      "rules": [
+        {
+          "id": "object-additional-properties",
+          "forbidden": true,
+          "loc": "1;1;0"
+        }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "newWidget", "loc": "1;1;0" },
+      "properties": [
+        {
+          "name": { "value": "name", "loc": "1;1;0" },
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            {
+              "id": "string-max-length",
+              "length": { "value": 30, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            },
+            {
+              "id": "string-pattern",
+              "pattern": {
+                "value": "[0-9a-fA-F]+",
+                "loc": "1;1;0"
+              },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "fiz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            { "id": "required" },
+            {
+              "id": "number-multiple-of",
+              "value": { "value": 3, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "buzz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            {
+              "id": "number-multiple-of",
+              "value": { "value": 5, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "fizbuzz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [
+            {
+              "id": "number-multiple-of",
+              "value": { "value": 15, "loc": "1;1;0" },
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "foo", "loc": "1;1;0" },
+          "typeName": { "value": "newWidgetFoo" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": true,
+          "rules": [],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "size", "loc": "1;1;0" },
+          "typeName": { "value": "productSize", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": true,
+          "rules": [
+            {
+              "id": "string-enum",
+              "values": [
+                { "value": "small", "loc": "1;1;0" },
+                { "value": "medium", "loc": "1;1;0" },
+                { "value": "large", "loc": "1;1;0" }
+              ],
+              "loc": "1;1;0"
+            }
+          ],
+          "loc": "1;1;0"
+        }
+      ],
+      "rules": [],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "gizmosResponse" },
+      "properties": [
+        {
+          "name": { "value": "data", "loc": "1;1;0" },
+          "typeName": { "value": "gizmo", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": true,
+          "isLocal": true,
+          "rules": [{ "id": "required" }],
+          "loc": "1;1;0"
+        }
+      ],
+      "rules": [],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "createWidgetBody" },
+      "properties": [
+        {
+          "name": { "value": "name", "loc": "1;1;0" },
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [{ "id": "required" }],
+          "loc": "1;1;0"
+        }
+      ],
+      "rules": [
+        {
+          "id": "object-additional-properties",
+          "forbidden": true,
+          "loc": "1;1;0"
+        }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "exhaustiveParamsBody" },
+      "properties": [
+        {
+          "name": { "value": "foo", "loc": "1;1;0" },
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "bar", "loc": "1;1;0" },
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [],
+          "loc": "1;1;0"
+        }
+      ],
+      "rules": [],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "widgetFoo" },
+      "properties": [
+        {
+          "name": { "value": "fiz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "buzz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [{ "id": "required" }],
+          "loc": "1;1;0"
+        }
+      ],
+      "rules": [],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "newWidgetFoo" },
+      "properties": [
+        {
+          "name": { "value": "fiz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [],
+          "loc": "1;1;0"
+        },
+        {
+          "name": { "value": "buzz", "loc": "1;1;0" },
+          "typeName": { "value": "number", "loc": "1;1;0" },
+          "isUnknown": false,
+          "isArray": false,
+          "isLocal": false,
+          "rules": [{ "id": "required" }],
+          "loc": "1;1;0"
+        }
+      ],
+      "rules": [],
+      "loc": "1;1;0"
+    }
+  ],
+  "enums": [
+    {
+      "name": { "value": "createGizmoSize" },
+      "values": [
+        { "value": "small", "loc": "1;1;0" },
+        { "value": "medium", "loc": "1;1;0" },
+        { "value": "big", "loc": "1;1;0" },
+        { "value": "XL", "loc": "1;1;0" }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "exhaustiveParamsQueryEnum" },
+      "values": [
+        { "value": "one", "loc": "1;1;0" },
+        { "value": "two", "loc": "1;1;0" },
+        { "value": "three", "loc": "1;1;0" }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "exhaustiveParamsQueryEnumArray" },
+      "values": [
+        { "value": "one", "loc": "1;1;0" },
+        { "value": "two", "loc": "1;1;0" },
+        { "value": "three", "loc": "1;1;0" }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "exhaustiveParamsPathEnum" },
+      "values": [
+        { "value": "one", "loc": "1;1;0" },
+        { "value": "two", "loc": "1;1;0" },
+        { "value": "three", "loc": "1;1;0" }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "exhaustiveParamsPathEnumArray" },
+      "values": [
+        { "value": "one", "loc": "1;1;0" },
+        { "value": "two", "loc": "1;1;0" },
+        { "value": "three", "loc": "1;1;0" }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "exhaustiveParamsHeaderEnum" },
+      "values": [
+        { "value": "one", "loc": "1;1;0" },
+        { "value": "two", "loc": "1;1;0" },
+        { "value": "three", "loc": "1;1;0" }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "exhaustiveParamsHeaderEnumArray" },
+      "values": [
+        { "value": "one", "loc": "1;1;0" },
+        { "value": "two", "loc": "1;1;0" },
+        { "value": "three", "loc": "1;1;0" }
+      ],
+      "loc": "1;1;0"
+    },
+    {
+      "name": { "value": "productSize", "loc": "1;1;0" },
+      "values": [
+        { "value": "small", "loc": "1;1;0" },
+        { "value": "medium", "loc": "1;1;0" },
+        { "value": "large", "loc": "1;1;0" }
+      ],
+      "loc": "1;1;0"
+    }
+  ],
+  "loc": "1;1;0"
+}
