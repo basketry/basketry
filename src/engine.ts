@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from 'fs/promises';
 import { join, resolve, sep } from 'path';
 
 import { merge as webpackMerge } from 'webpack-merge';
+import { withGitattributes } from './helpers';
 
 import {
   BasketryError,
@@ -283,7 +284,7 @@ function runGenerators(options: { fns: Generator[]; service: Service }): {
     }
   }
 
-  return { files, errors, violations };
+  return { files: withGitattributes(files), errors, violations };
 }
 
 async function getSource(

@@ -4,6 +4,7 @@ import { File, Output } from './types';
 import { setParser } from './test-modules/parser';
 import { setFiles } from './test-modules/generator';
 import { setViolations as setRuleViolations } from './test-modules/rule';
+import { withGitattributes } from './helpers';
 
 describe('engine', () => {
   beforeEach(() => {
@@ -46,7 +47,7 @@ describe('engine', () => {
     expect(result).toEqual<Output>({
       violations: [],
       errors: [],
-      files,
+      files: withGitattributes(files),
     });
   });
 
@@ -79,13 +80,13 @@ describe('engine', () => {
     expect(result).toEqual<Output>({
       violations: [],
       errors: [],
-      files: [
+      files: withGitattributes([
         ...files,
         {
           path: ['with', 'options'],
           contents: '{"foo":"bar"}',
         },
-      ],
+      ]),
     });
   });
 
@@ -116,13 +117,13 @@ describe('engine', () => {
     expect(result).toEqual<Output>({
       violations: [],
       errors: [],
-      files: [
+      files: withGitattributes([
         ...files,
         {
           path: ['with', 'options'],
           contents: '{"foo":"bar"}',
         },
-      ],
+      ]),
     });
   });
 
@@ -156,13 +157,13 @@ describe('engine', () => {
     expect(result).toEqual<Output>({
       violations: [],
       errors: [],
-      files: [
+      files: withGitattributes([
         ...files,
         {
           path: ['with', 'options'],
           contents: '{"foo":"not bar"}',
         },
-      ],
+      ]),
     });
   });
 
@@ -196,13 +197,13 @@ describe('engine', () => {
     expect(result).toEqual<Output>({
       violations: [],
       errors: [],
-      files: [
+      files: withGitattributes([
         ...files,
         {
           path: ['with', 'options'],
           contents: '{"foo":"bar","fiz":"buz"}',
         },
-      ],
+      ]),
     });
   });
 
@@ -253,7 +254,7 @@ describe('engine', () => {
         },
       ],
       errors: [],
-      files,
+      files: withGitattributes(files),
     });
   });
 

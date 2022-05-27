@@ -1,6 +1,9 @@
+import { EOL } from 'os';
+import { join } from 'path';
 import {
   ApiKeyScheme,
   BasicScheme,
+  File,
   Method,
   OAuth2Scheme,
   Range,
@@ -116,4 +119,17 @@ export function decodeRange(range: string | null | undefined): Range {
       },
     };
   }
+}
+
+export function withGitattributes(files: File[]): File[] {
+  if (!files.length) return files;
+  return [
+    ...files,
+    {
+      path: ['.gitattributes'],
+      contents: files
+        .map((file) => `${join(...file.path)} linguist-generated=true${EOL}`)
+        .join(''),
+    },
+  ];
 }
