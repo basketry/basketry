@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import { join, resolve, sep } from 'path';
+import { performance } from 'perf_hooks';
 
 import { merge as webpackMerge } from 'webpack-merge';
 import { withGitattributes } from './helpers';
@@ -26,6 +27,8 @@ import { validate } from './validator';
 require('ts-node').register({
   transpileOnly: true,
 });
+
+const componentNames = new WeakMap<Function, string>();
 
 export async function getInput(
   configPath: string | undefined,
@@ -105,6 +108,7 @@ export function run(input: Input): Output {
   const files: File[] = [];
 
   try {
+    performance.mark('run-start');
     const parser = getParser(input.parser, input.configPath);
     push(errors, parser.errors);
 
@@ -143,6 +147,9 @@ export function run(input: Input): Output {
     }
   } catch (ex) {
     errors.push(fatal(ex));
+  } finally {
+    performance.mark('run-end');
+    performance.measure('run', 'run-start', 'run-end');
   }
 
   return { violations, errors, files };
@@ -219,6 +226,7 @@ function runParser(options: {
   if (!fn) return { value, errors, violations };
 
   try {
+    performance.mark('parser-start');
     const result = fn(sourceContent, sourcePath);
     push(violations, result.violations);
 
@@ -231,6 +239,13 @@ function runParser(options: {
       code: 'PARSER_ERROR',
       message: 'Unhandled exception running parser', // TODO: Use ex,
       filepath: sourcePath,
+    });
+  } finally {
+    performance.mark('parser-end');
+    performance.measure('parser', {
+      start: 'parser-start',
+      end: 'parser-end',
+      detail: componentNames.get(fn),
     });
   }
 
@@ -249,16 +264,27 @@ function runRules(options: {
   const errors: BasketryError[] = [];
   const violations: Violation[] = [];
 
+  performance.mark('rules-start');
   for (const fn of fns) {
     try {
+      performance.mark('rule-start');
       push(violations, fn(service, sourcePath));
     } catch (ex) {
       errors.push({
         code: 'RULE_ERROR',
         message: 'Unhandled exception running rule', // TODO: Use ex
       });
+    } finally {
+      performance.mark('rule-end');
+      performance.measure('rule', {
+        start: 'rule-start',
+        end: 'rule-end',
+        detail: componentNames.get(fn),
+      });
     }
   }
+  performance.mark('rules-end');
+  performance.measure('rules', 'rules-start', 'rules-end');
 
   return { errors, violations };
 }
@@ -273,16 +299,27 @@ function runGenerators(options: { fns: Generator[]; service: Service }): {
   const errors: BasketryError[] = [];
   const violations: Violation[] = [];
 
+  performance.mark('generators-start');
   for (const fn of fns) {
     try {
+      performance.mark('generator-start');
       push(files, fn(service));
     } catch (ex) {
       errors.push({
         code: 'GENERATOR_ERROR',
         message: 'Unhandled exception running generator', // TODO: Use ex
       });
+    } finally {
+      performance.mark('generator-end');
+      performance.measure('generator', {
+        start: 'generator-start',
+        end: 'generator-end',
+        detail: componentNames.get(fn),
+      });
     }
   }
+  performance.mark('generators-end');
+  performance.measure('generators', 'generators-start', 'generators-end');
 
   return { files: withGitattributes(files), errors, violations };
 }
@@ -324,32 +361,44 @@ function getRules(
   fns: Rule[];
   errors: BasketryError[];
 } {
-  return moduleNames.reduce(
-    (acc, item) => {
-      const moduleName = typeof item === 'string' ? item : item.rule;
+  try {
+    performance.mark('load-rules-start');
+    const rules = moduleNames.reduce(
+      (acc, item) => {
+        const moduleName = typeof item === 'string' ? item : item.rule;
 
-      const ruleOptions: any =
-        typeof item === 'string' ? undefined : item.options;
+        const ruleOptions: any =
+          typeof item === 'string' ? undefined : item.options;
 
-      const { fn, errors } = loadModule<Rule>(moduleName, configPath);
+        const { fn, errors } = loadModule<Rule>(moduleName, configPath);
 
-      const rule: Rule | undefined = fn
-        ? (service, sourcePath, localOptions) =>
-            fn(service, sourcePath, merge(ruleOptions, localOptions))
-        : undefined;
+        const rule: Rule | undefined = fn
+          ? (service, sourcePath, localOptions) =>
+              fn(service, sourcePath, merge(ruleOptions, localOptions))
+          : undefined;
 
-      return {
-        fns: [...acc.fns, rule].filter(
-          (f): f is Rule => typeof f === 'function',
-        ),
-        errors: [...acc.errors, ...errors],
-      };
-    },
-    {
-      fns: [] as Rule[],
-      errors: [] as BasketryError[],
-    },
-  );
+        if (rule) componentNames.set(rule, moduleName);
+
+        return {
+          fns: [...acc.fns, rule].filter(
+            (f): f is Rule => typeof f === 'function',
+          ),
+          errors: [...acc.errors, ...errors],
+        };
+      },
+      {
+        fns: [] as Rule[],
+        errors: [] as BasketryError[],
+      },
+    );
+    return rules;
+  } finally {
+    performance.mark('load-rules-end');
+    performance.measure('load-rules', {
+      start: 'load-rules-start',
+      end: 'load-rules-end',
+    });
+  }
 }
 
 function getGenerators(
@@ -360,32 +409,44 @@ function getGenerators(
   fns: Generator[];
   errors: BasketryError[];
 } {
-  return moduleNames.reduce(
-    (acc, item) => {
-      const moduleName = typeof item === 'string' ? item : item.generator;
+  try {
+    performance.mark('load-generators-start');
+    const generators = moduleNames.reduce(
+      (acc, item) => {
+        const moduleName = typeof item === 'string' ? item : item.generator;
 
-      const generatorOptions: any =
-        typeof item === 'string' ? undefined : item.options;
+        const generatorOptions: any =
+          typeof item === 'string' ? undefined : item.options;
 
-      const { fn, errors } = loadModule<Generator>(moduleName, configPath);
+        const { fn, errors } = loadModule<Generator>(moduleName, configPath);
 
-      const gen: Generator | undefined = fn
-        ? (service, localOptions) =>
-            fn(service, merge(commonOptions, generatorOptions, localOptions))
-        : undefined;
+        const gen: Generator | undefined = fn
+          ? (service, localOptions) =>
+              fn(service, merge(commonOptions, generatorOptions, localOptions))
+          : undefined;
 
-      return {
-        fns: [...acc.fns, gen].filter(
-          (f): f is Generator => typeof f === 'function',
-        ),
-        errors: [...acc.errors, ...errors],
-      };
-    },
-    {
-      fns: [] as Generator[],
-      errors: [] as BasketryError[],
-    },
-  );
+        if (gen) componentNames.set(gen, moduleName);
+
+        return {
+          fns: [...acc.fns, gen].filter(
+            (f): f is Generator => typeof f === 'function',
+          ),
+          errors: [...acc.errors, ...errors],
+        };
+      },
+      {
+        fns: [] as Generator[],
+        errors: [] as BasketryError[],
+      },
+    );
+    return generators;
+  } finally {
+    performance.mark('load-generators-end');
+    performance.measure('load-generators', {
+      start: 'load-generators-start',
+      end: 'load-generators-end',
+    });
+  }
 }
 
 function prepend(output: string | undefined, files: File[]): File[] {
@@ -453,6 +514,8 @@ function loadModule<T extends Function>(
       filepath,
     });
   }
+
+  if (fn) componentNames.set(fn, moduleName);
 
   return { fn, errors };
 }

@@ -1,16 +1,37 @@
 #!/usr/bin/env node
 
 import { readFileSync, StatWatcher, watchFile } from 'fs';
-import { EOL } from 'os';
+import { EOL, type } from 'os';
+import { performance, PerformanceEntry, PerformanceObserver } from 'perf_hooks';
 
 import Ajv from 'ajv';
 import chalk from 'chalk';
-import yargs = require('yargs/yargs');
 import { hideBin } from 'yargs/helpers';
 
 import schema from './config-schema.json';
 import { BasketryError, Violation, FileStatus, CliOutput } from './types';
 import { getInput, run, writeFiles } from './engine';
+
+let events: PerformanceEntry[] = [];
+const performanceObserver = new PerformanceObserver((items, observer) => {
+  events.push(...items.getEntries());
+
+  if (done) {
+    if (j) {
+      console.log(JSON.stringify({ ...cliOutput, perf: events }));
+    } else {
+      printPerformance();
+    }
+
+    observer.disconnect();
+  }
+});
+
+let cliOutput: CliOutput = { errors: [], files: {}, violations: [] };
+let done = false;
+let j = false;
+
+import yargs = require('yargs/yargs');
 
 const ajv = new Ajv({ allErrors: false });
 const runner = ajv.compile(schema);
@@ -77,10 +98,16 @@ const { argv } = yargs(hideBin(process.argv))
     default: false,
     description: 'Outputs validation results as JSON',
     nargs: 0,
+  })
+  .option('perf', {
+    boolean: true,
+    default: false,
+    description: 'Report performance',
+    nargs: 0,
   });
 
 (async () => {
-  let j = false;
+  let p = false;
   const errors: BasketryError[] = [];
   const violations: Violation[] = [];
   let files: Record<string, FileStatus> = {};
@@ -96,8 +123,14 @@ const { argv } = yargs(hideBin(process.argv))
       watch,
       validate,
       json,
+      perf,
     } = await argv;
     j = json;
+    p = perf;
+
+    if (perf) performanceObserver.observe({ type: 'measure' });
+
+    performance.mark('basketry-start');
     const stdin = !process.stdin.isTTY;
     if (!j) bold(`🧺 Basketry v${require('../package.json').version}`);
 
@@ -135,6 +168,7 @@ const { argv } = yargs(hideBin(process.argv))
         errors.push(...writeResult.errors);
         files = writeResult.value;
         if (!j) printFiles(writeResult.value);
+        done = true;
       }
 
       if (!watcher && watch && !stdin && !json) {
@@ -152,13 +186,19 @@ const { argv } = yargs(hideBin(process.argv))
   } catch (ex) {
     error('FATAL ERROR!', ex.message);
     process.exit(1);
-  }
+  } finally {
+    performance.mark('basketry-end');
+    performance.measure('basketry', 'basketry-start', 'basketry-end');
 
-  if (j) {
-    const output: CliOutput = { errors, violations, files };
-    console.log(JSON.stringify({ errors, violations, files }));
-  } else if (errors.length) {
-    process.exit(1);
+    process.nextTick(() => {
+      if (j) {
+        cliOutput = { errors, violations, files };
+        done = true;
+        if (!p) console.log(JSON.stringify(cliOutput));
+      } else if (errors.length) {
+        process.exit(1);
+      }
+    });
   }
 })();
 
@@ -273,4 +313,32 @@ function printFiles(files: Record<string, FileStatus>): void {
 
 export function validateConfig(service: any): boolean {
   return runner(service);
+}
+
+function printPerformance() {
+  console.log('⌛ Component Performance:');
+  console.log();
+  for (const event of events.sort((a, b) => b.duration - a.duration)) {
+    if (event.detail && ['rule', 'parser', 'generator'].includes(event.name)) {
+      let ms = `(${Math.round(event.duration)}ms)`;
+
+      if (event.duration > 100) {
+        ms = chalk.red(ms);
+      } else if (event.duration > 50) {
+        ms = chalk.yellow(ms);
+      } else {
+        ms = chalk.greenBright(ms);
+      }
+
+      const line = `   ${pad(`${event.name}:`, 10)} ${event.detail} ${ms}`;
+
+      console.log(line);
+    }
+  }
+  events = [];
+  console.log();
+}
+
+function pad(text: string, length: number): string {
+  return `${text}${' '.repeat(length)}`.substring(0, length);
 }
