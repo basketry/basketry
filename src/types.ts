@@ -100,6 +100,15 @@ export type CliOutput = {
   violations: Violation[];
   errors: BasketryError[];
   files: Record<string, FileStatus>;
+  perf?: PerfEvent[];
+};
+
+export type PerfEvent = {
+  readonly duration: number;
+  readonly name: string;
+  readonly startTime: number;
+  readonly entryType: string;
+  readonly detail?: string | null | undefined;
 };
 
 export type Overrides = {
