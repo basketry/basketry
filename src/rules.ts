@@ -9,6 +9,7 @@ import {
   Property,
   Rule,
   Service,
+  Severity,
   Type,
   Violation,
 } from './types';
@@ -169,6 +170,20 @@ export function enumValueRule(
 export function combineRules(...rules: Rule[]): Rule {
   return (service, sourcePath, options) =>
     rules.flatMap((rule) => rule(service, sourcePath, options));
+}
+
+export function parseSeverity(
+  input: any,
+  fallback: Severity = 'error',
+): Severity {
+  switch (input) {
+    case 'info':
+    case 'warning':
+    case 'error':
+      return input;
+    default:
+      return fallback;
+  }
 }
 
 const methodMapsByService = new WeakMap<
