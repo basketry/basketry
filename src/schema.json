@@ -144,36 +144,75 @@
       },
       "additionalProperties": false
     },
+    "primitive": {
+      "type": "string",
+      "enum": [
+        "string",
+        "number",
+        "integer",
+        "long",
+        "float",
+        "double",
+        "boolean",
+        "date",
+        "date-time",
+        "untyped"
+      ]
+    },
+    "primitiveValue": {
+      "type": "object",
+      "required": ["typeName", "isArray", "isPrimitive"],
+      "properties": {
+        "typeName": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "value": { "$ref": "#/definitions/primitive" },
+            "loc": { "$ref": "#/definitions/range" }
+          }
+        },
+        "isArray": { "type": "boolean" },
+        "isPrimitive": { "type": "boolean", "const": true }
+      }
+    },
+    "customValue": {
+      "type": "object",
+      "required": ["typeName", "isArray", "isPrimitive"],
+      "properties": {
+        "typeName": { "$ref": "#/definitions/string" },
+        "isArray": { "type": "boolean" },
+        "isPrimitive": { "type": "boolean", "const": false }
+      }
+    },
+    "typedValue": {
+      "oneOf": [
+        { "$ref": "#/definitions/primitiveValue" },
+        { "$ref": "#/definitions/customValue" }
+      ]
+    },
     "property": {
       "type": "object",
-      "required": [
-        "name",
-        "typeName",
-        "isUnknown",
-        "isArray",
-        "isLocal",
-        "rules",
-        "loc"
-      ],
-      "properties": {
-        "name": { "$ref": "#/definitions/string" },
-        "description": {
-          "oneOf": [
-            { "$ref": "#/definitions/string" },
-            { "type": "array", "items": { "$ref": "#/definitions/string" } }
-          ]
+      "allOf": [
+        {
+          "type": "object",
+          "required": ["name", "rules", "loc"],
+          "properties": {
+            "name": { "$ref": "#/definitions/string" },
+            "description": {
+              "oneOf": [
+                { "$ref": "#/definitions/string" },
+                { "type": "array", "items": { "$ref": "#/definitions/string" } }
+              ]
+            },
+            "rules": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/validationRule" }
+            },
+            "loc": { "$ref": "#/definitions/range" }
+          }
         },
-        "typeName": { "$ref": "#/definitions/string" },
-        "isUnknown": { "type": "boolean" },
-        "isArray": { "type": "boolean" },
-        "isLocal": { "type": "boolean" },
-        "rules": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/validationRule" }
-        },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
+        { "$ref": "#/definitions/typedValue" }
+      ]
     },
     "method": {
       "type": "object",
@@ -201,57 +240,44 @@
     },
     "parameter": {
       "type": "object",
-      "required": [
-        "name",
-        "typeName",
-        "isUnknown",
-        "isArray",
-        "isLocal",
-        "rules",
-        "loc"
-      ],
-      "properties": {
-        "name": { "$ref": "#/definitions/string" },
-        "description": {
-          "oneOf": [
-            { "$ref": "#/definitions/string" },
-            { "type": "array", "items": { "$ref": "#/definitions/string" } }
-          ]
+      "allOf": [
+        {
+          "type": "object",
+          "required": ["name", "rules", "loc"],
+          "properties": {
+            "name": { "$ref": "#/definitions/string" },
+            "description": {
+              "oneOf": [
+                { "$ref": "#/definitions/string" },
+                { "type": "array", "items": { "$ref": "#/definitions/string" } }
+              ]
+            },
+            "rules": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/validationRule" }
+            },
+            "loc": { "$ref": "#/definitions/range" }
+          }
         },
-        "typeName": { "$ref": "#/definitions/string" },
-        "isUnknown": { "type": "boolean" },
-        "isArray": { "type": "boolean" },
-        "isLocal": { "type": "boolean" },
-        "rules": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/validationRule" }
-        },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
+        { "$ref": "#/definitions/typedValue" }
+      ]
     },
     "returnType": {
       "type": "object",
-      "required": [
-        "typeName",
-        "isUnknown",
-        "isArray",
-        "isLocal",
-        "rules",
-        "loc"
-      ],
-      "properties": {
-        "typeName": { "$ref": "#/definitions/string" },
-        "isUnknown": { "type": "boolean" },
-        "isArray": { "type": "boolean" },
-        "isLocal": { "type": "boolean" },
-        "rules": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/validationRule" }
+      "allOf": [
+        {
+          "type": "object",
+          "required": ["rules", "loc"],
+          "properties": {
+            "rules": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/validationRule" }
+            },
+            "loc": { "$ref": "#/definitions/range" }
+          }
         },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
+        { "$ref": "#/definitions/typedValue" }
+      ]
     },
     "pathSpec": {
       "type": "object",

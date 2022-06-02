@@ -179,6 +179,19 @@ export type Literal<T extends string | number | boolean | null> = {
   loc?: string;
 };
 
+export type Primitive =
+  | 'null'
+  | 'string'
+  | 'number'
+  | 'integer'
+  | 'long'
+  | 'float'
+  | 'double'
+  | 'boolean'
+  | 'date'
+  | 'date-time'
+  | 'untyped';
+
 /**
  * Intermediate Representation (IR) of a service
  */
@@ -206,16 +219,26 @@ export type Enum = {
   loc: string;
 };
 
+export type PrimitiveValue = {
+  typeName: Literal<Primitive>;
+  isArray: boolean;
+  isPrimitive: true;
+};
+
+export type CustomValue = {
+  typeName: Literal<string>;
+  isArray: boolean;
+  isPrimitive: false;
+};
+
+export type TypedValue = PrimitiveValue | CustomValue;
+
 export type Property = {
   name: Literal<string>;
   description?: Literal<string> | Literal<string>[];
-  typeName: Literal<string>;
-  isUnknown: boolean;
-  isArray: boolean;
-  isLocal: boolean;
   rules: ValidationRule[];
   loc: string;
-};
+} & TypedValue;
 
 export type Interface = {
   name: string;
@@ -334,22 +357,14 @@ export type OAuth2Scope = {
 export type Parameter = {
   name: Literal<string>;
   description?: Literal<string> | Literal<string>[];
-  typeName: Literal<string>;
-  isUnknown: boolean;
-  isArray: boolean;
-  isLocal: boolean;
   rules: ValidationRule[];
   loc: string;
-};
+} & TypedValue;
 
 export type ReturnType = {
-  typeName: Literal<string>;
-  isUnknown: boolean;
-  isArray: boolean;
-  isLocal: boolean;
   rules: ValidationRule[];
   loc: string;
-};
+} & TypedValue;
 
 export type RequiredRule = {
   id: 'required';
