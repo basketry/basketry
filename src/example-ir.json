@@ -47,8 +47,7 @@
             {
               "name": { "value": "search", "loc": "1;1;0" },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -60,8 +59,7 @@
           },
           "returnType": {
             "typeName": { "value": "gizmosResponse" },
-            "isUnknown": false,
-            "isLocal": true,
+            "isPrimitive": false,
             "isArray": false,
             "rules": [],
             "loc": "1;1;0"
@@ -113,8 +111,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "createGizmoSize" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": false,
               "rules": [
                 {
@@ -143,8 +140,7 @@
           ],
           "returnType": {
             "typeName": { "value": "gizmo", "loc": "1;1;0" },
-            "isUnknown": false,
-            "isLocal": true,
+            "isPrimitive": false,
             "isArray": false,
             "rules": [],
             "loc": "1;1;0"
@@ -207,8 +203,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [
                 {
@@ -235,8 +230,7 @@
           ],
           "returnType": {
             "typeName": { "value": "gizmo", "loc": "1;1;0" },
-            "isUnknown": false,
-            "isLocal": true,
+            "isPrimitive": false,
             "isArray": false,
             "rules": [],
             "loc": "1;1;0"
@@ -320,8 +314,7 @@
           "parameters": [],
           "returnType": {
             "typeName": { "value": "widget", "loc": "1;1;0" },
-            "isUnknown": false,
-            "isLocal": true,
+            "isPrimitive": false,
             "isArray": false,
             "rules": [],
             "loc": "1;1;0"
@@ -349,8 +342,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "createWidgetBody" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -395,8 +387,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [
                 { "id": "required" },
@@ -411,8 +402,7 @@
           ],
           "returnType": {
             "typeName": { "value": "widget", "loc": "1;1;0" },
-            "isUnknown": false,
-            "isLocal": true,
+            "isPrimitive": false,
             "isArray": false,
             "rules": [],
             "loc": "1;1;0"
@@ -440,8 +430,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [
                 { "id": "required" },
@@ -555,8 +544,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -564,8 +552,7 @@
             {
               "name": { "value": "string-date", "loc": "1;1;0" },
               "typeName": { "value": "date", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [
                 {
@@ -585,8 +572,7 @@
                 "value": "date-time",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [
                 {
@@ -606,8 +592,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "integer", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -621,8 +606,7 @@
                 "value": "integer",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -633,8 +617,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "long", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -645,8 +628,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "number", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -657,8 +639,7 @@
                 "value": "float",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -672,8 +653,7 @@
                 "value": "double",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -688,8 +668,7 @@
             {
               "name": { "value": "query-string", "loc": "1;1;0" },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -697,8 +676,7 @@
             {
               "name": { "value": "query-enum", "loc": "1;1;0" },
               "typeName": { "value": "exhaustiveParamsQueryEnum" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": false,
               "rules": [
                 {
@@ -716,8 +694,7 @@
             {
               "name": { "value": "query-number", "loc": "1;1;0" },
               "typeName": { "value": "number", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -728,8 +705,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "integer", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -740,8 +716,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "boolean", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -752,8 +727,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [],
               "loc": "1;1;0"
@@ -764,8 +738,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "exhaustiveParamsQueryEnumArray" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": true,
               "rules": [
                 {
@@ -786,8 +759,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "number", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [],
               "loc": "1;1;0"
@@ -798,8 +770,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "integer", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [],
               "loc": "1;1;0"
@@ -810,8 +781,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "boolean", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [],
               "loc": "1;1;0"
@@ -819,8 +789,7 @@
             {
               "name": { "value": "path-string", "loc": "1;1;0" },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [{ "id": "required" }],
               "loc": "1;1;0"
@@ -828,8 +797,7 @@
             {
               "name": { "value": "path-enum", "loc": "1;1;0" },
               "typeName": { "value": "exhaustiveParamsPathEnum" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": false,
               "rules": [
                 { "id": "required" },
@@ -848,8 +816,7 @@
             {
               "name": { "value": "path-number", "loc": "1;1;0" },
               "typeName": { "value": "number", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [{ "id": "required" }],
               "loc": "1;1;0"
@@ -857,8 +824,7 @@
             {
               "name": { "value": "path-integer", "loc": "1;1;0" },
               "typeName": { "value": "integer", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [{ "id": "required" }],
               "loc": "1;1;0"
@@ -866,8 +832,7 @@
             {
               "name": { "value": "path-boolean", "loc": "1;1;0" },
               "typeName": { "value": "boolean", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [{ "id": "required" }],
               "loc": "1;1;0"
@@ -878,8 +843,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [{ "id": "required" }],
               "loc": "1;1;0"
@@ -890,8 +854,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "exhaustiveParamsPathEnumArray" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": true,
               "rules": [
                 { "id": "required" },
@@ -913,8 +876,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "number", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [{ "id": "required" }],
               "loc": "1;1;0"
@@ -925,8 +887,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "integer", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [{ "id": "required" }],
               "loc": "1;1;0"
@@ -940,8 +901,7 @@
                 "value": "boolean",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [{ "id": "required" }],
               "loc": "1;1;0"
@@ -952,8 +912,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -964,8 +923,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "exhaustiveParamsHeaderEnum" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": false,
               "rules": [
                 {
@@ -986,8 +944,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "number", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -1001,8 +958,7 @@
                 "value": "integer",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -1016,8 +972,7 @@
                 "value": "boolean",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -1028,8 +983,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "string", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [],
               "loc": "1;1;0"
@@ -1040,8 +994,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "exhaustiveParamsHeaderEnumArray" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": true,
               "rules": [
                 {
@@ -1062,8 +1015,7 @@
                 "loc": "1;1;0"
               },
               "typeName": { "value": "number", "loc": "1;1;0" },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [],
               "loc": "1;1;0"
@@ -1077,8 +1029,7 @@
                 "value": "integer",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [],
               "loc": "1;1;0"
@@ -1092,8 +1043,7 @@
                 "value": "boolean",
                 "loc": "1;1;0"
               },
-              "isUnknown": false,
-              "isLocal": false,
+              "isPrimitive": true,
               "isArray": true,
               "rules": [],
               "loc": "1;1;0"
@@ -1101,8 +1051,7 @@
             {
               "name": { "value": "body", "loc": "1;1;0" },
               "typeName": { "value": "exhaustiveParamsBody" },
-              "isUnknown": false,
-              "isLocal": true,
+              "isPrimitive": false,
               "isArray": false,
               "rules": [],
               "loc": "1;1;0"
@@ -1685,9 +1634,8 @@
         {
           "name": { "value": "id", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             {
               "id": "string-max-length",
@@ -1700,18 +1648,16 @@
         {
           "name": { "value": "name", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [],
           "loc": "1;1;0"
         },
         {
           "name": { "value": "size", "loc": "1;1;0" },
           "typeName": { "value": "productSize", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": false,
           "isArray": false,
-          "isLocal": true,
           "rules": [
             {
               "id": "string-enum",
@@ -1735,9 +1681,8 @@
         {
           "name": { "value": "id", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             { "id": "required" },
             {
@@ -1751,9 +1696,8 @@
         {
           "name": { "value": "name", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             {
               "id": "string-max-length",
@@ -1774,9 +1718,8 @@
         {
           "name": { "value": "fiz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             { "id": "required" },
             {
@@ -1790,9 +1733,8 @@
         {
           "name": { "value": "buzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             {
               "id": "number-multiple-of",
@@ -1805,9 +1747,8 @@
         {
           "name": { "value": "fizbuzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             {
               "id": "number-multiple-of",
@@ -1820,18 +1761,16 @@
         {
           "name": { "value": "foo", "loc": "1;1;0" },
           "typeName": { "value": "widgetFoo" },
-          "isUnknown": false,
+          "isPrimitive": false,
           "isArray": false,
-          "isLocal": true,
           "rules": [],
           "loc": "1;1;0"
         },
         {
           "name": { "value": "size", "loc": "1;1;0" },
           "typeName": { "value": "productSize", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": false,
           "isArray": false,
-          "isLocal": true,
           "rules": [
             {
               "id": "string-enum",
@@ -1861,9 +1800,8 @@
         {
           "name": { "value": "name", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             {
               "id": "string-max-length",
@@ -1884,9 +1822,8 @@
         {
           "name": { "value": "fiz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             { "id": "required" },
             {
@@ -1900,9 +1837,8 @@
         {
           "name": { "value": "buzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             {
               "id": "number-multiple-of",
@@ -1915,9 +1851,8 @@
         {
           "name": { "value": "fizbuzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [
             {
               "id": "number-multiple-of",
@@ -1930,18 +1865,16 @@
         {
           "name": { "value": "foo", "loc": "1;1;0" },
           "typeName": { "value": "newWidgetFoo" },
-          "isUnknown": false,
+          "isPrimitive": false,
           "isArray": false,
-          "isLocal": true,
           "rules": [],
           "loc": "1;1;0"
         },
         {
           "name": { "value": "size", "loc": "1;1;0" },
           "typeName": { "value": "productSize", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": false,
           "isArray": false,
-          "isLocal": true,
           "rules": [
             {
               "id": "string-enum",
@@ -1965,9 +1898,8 @@
         {
           "name": { "value": "data", "loc": "1;1;0" },
           "typeName": { "value": "gizmo", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": false,
           "isArray": true,
-          "isLocal": true,
           "rules": [{ "id": "required" }],
           "loc": "1;1;0"
         }
@@ -1981,9 +1913,8 @@
         {
           "name": { "value": "name", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [{ "id": "required" }],
           "loc": "1;1;0"
         }
@@ -2003,18 +1934,16 @@
         {
           "name": { "value": "foo", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [],
           "loc": "1;1;0"
         },
         {
           "name": { "value": "bar", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [],
           "loc": "1;1;0"
         }
@@ -2028,18 +1957,16 @@
         {
           "name": { "value": "fiz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [],
           "loc": "1;1;0"
         },
         {
           "name": { "value": "buzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [{ "id": "required" }],
           "loc": "1;1;0"
         }
@@ -2053,18 +1980,16 @@
         {
           "name": { "value": "fiz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [],
           "loc": "1;1;0"
         },
         {
           "name": { "value": "buzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
-          "isUnknown": false,
+          "isPrimitive": true,
           "isArray": false,
-          "isLocal": false,
           "rules": [{ "id": "required" }],
           "loc": "1;1;0"
         }
