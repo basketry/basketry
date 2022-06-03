@@ -2,10 +2,10 @@ import {
   Enum,
   Interface,
   Method,
-  MethodSpec,
+  HttpMethod,
   Parameter,
-  ParameterSpec,
-  PathSpec,
+  HttpParameter,
+  HttpPath,
   Property,
   Rule,
   Service,
@@ -59,7 +59,7 @@ export const allInterfaces: ContextIterator<InterfaceRuleContext> = (
 
 export interface MethodRuleContext extends InterfaceRuleContext {
   method: Method;
-  httpMethod?: MethodSpec;
+  httpMethod?: HttpMethod;
 }
 export function methodRule(
   rule: (context: MethodRuleContext) => Violation | undefined,
@@ -86,7 +86,7 @@ export const allMethods: ContextIterator<MethodRuleContext> = (
     }));
 
 export interface HttpPathRuleContext extends InterfaceRuleContext {
-  httpPath: PathSpec;
+  httpPath: HttpPath;
 }
 export function httpPathRule(
   rule: (context: HttpPathRuleContext) => Violation | undefined,
@@ -102,7 +102,7 @@ export const allHttpPaths: ContextIterator<HttpPathRuleContext> = (
   options,
 ) =>
   service.interfaces
-    .flatMap((i) => i.protocols.http.map<[PathSpec, Interface]>((p) => [p, i]))
+    .flatMap((i) => i.protocols.http.map<[HttpPath, Interface]>((p) => [p, i]))
     .map(([p, i]) => ({
       httpPath: p,
       interface: i,
@@ -113,7 +113,7 @@ export const allHttpPaths: ContextIterator<HttpPathRuleContext> = (
 
 export interface ParameterRuleContext extends MethodRuleContext {
   parameter: Parameter;
-  httpParameter?: ParameterSpec;
+  httpParameter?: HttpParameter;
 }
 export function parameterRule(
   rule: (context: ParameterRuleContext) => Violation | undefined,
@@ -242,16 +242,16 @@ export function parseSeverity(
 
 const methodMapsByService = new WeakMap<
   Service,
-  ReadonlyMap<string, MethodSpec>
+  ReadonlyMap<string, HttpMethod>
 >();
 export function getHttpMethodByName(
   service: Service,
   methodName: string | undefined,
-): MethodSpec | undefined {
+): HttpMethod | undefined {
   if (!methodName) return;
 
   if (!methodMapsByService.has(service)) {
-    const httpMethodsByName: ReadonlyMap<string, MethodSpec> = new Map(
+    const httpMethodsByName: ReadonlyMap<string, HttpMethod> = new Map(
       service.interfaces
         .flatMap((i) => i.protocols.http)
         .flatMap((p) => p.methods)
