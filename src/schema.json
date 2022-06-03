@@ -99,7 +99,7 @@
           "properties": {
             "http": {
               "type": "array",
-              "items": { "$ref": "#/definitions/pathSpec" }
+              "items": { "$ref": "#/definitions/httpPath" }
             }
           },
           "additionalProperties": false
@@ -279,20 +279,20 @@
         { "$ref": "#/definitions/typedValue" }
       ]
     },
-    "pathSpec": {
+    "httpPath": {
       "type": "object",
       "required": ["path", "methods", "loc"],
       "properties": {
         "path": { "$ref": "#/definitions/string" },
         "methods": {
           "type": "array",
-          "items": { "$ref": "#/definitions/methodSpec" }
+          "items": { "$ref": "#/definitions/httpMethod" }
         },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
     },
-    "methodSpec": {
+    "httpMethod": {
       "type": "object",
       "required": ["name", "verb", "parameters", "successCode", "loc"],
       "properties": {
@@ -320,7 +320,7 @@
         },
         "parameters": {
           "type": "array",
-          "items": { "$ref": "#/definitions/parameterSpec" }
+          "items": { "$ref": "#/definitions/httpParameter" }
         },
         "successCode": {
           "type": "object",
@@ -338,7 +338,7 @@
       },
       "additionalProperties": false
     },
-    "parameterSpec": {
+    "httpParameter": {
       "type": "object",
       "required": ["name", "in", "loc"],
       "properties": {

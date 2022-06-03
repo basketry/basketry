@@ -234,27 +234,27 @@ export type Interface = {
   description?: string;
   methods: Method[];
   protocols: {
-    http: PathSpec[];
+    http: HttpPath[];
   };
 };
 
-export type PathSpec = {
+export type HttpPath = {
   path: Literal<string>;
-  methods: MethodSpec[];
+  methods: HttpMethod[];
   loc: string;
 };
 
-export type MethodSpec = {
+export type HttpMethod = {
   name: Literal<string>;
   verb: Literal<
     'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options' | 'trace'
   >;
-  parameters: ParameterSpec[];
+  parameters: HttpParameter[];
   successCode: Literal<number>;
   loc: string;
 };
 
-export type ParameterSpec = {
+export type HttpParameter = {
   name: Literal<string>;
   in: Literal<'header' | 'query' | 'path' | 'formData' | 'body'>;
   array?: Literal<'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi'>;
