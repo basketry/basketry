@@ -136,17 +136,6 @@ export type BasketryError = {
   filepath?: string;
 };
 
-/** @deprecated */
-export interface ServiceFactory {
-  parse(): Service;
-}
-
-/** @deprecated */
-export interface FileFactory {
-  get target(): string;
-  build(service: Service): File[];
-}
-
 export type File = {
   path: string[];
   contents: string;
