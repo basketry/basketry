@@ -16,6 +16,7 @@ describe('engine', () => {
         interfaces: [],
         types: [],
         enums: [],
+        unions: [],
         loc: '0;0;0',
       },
       violations: [],
@@ -446,6 +447,10 @@ describe('engine', () => {
         {
           code: 'PARSER_ERROR',
           message: "Invalid IR: `#` must have required property 'enums'",
+        },
+        {
+          code: 'PARSER_ERROR',
+          message: "Invalid IR: `#` must have required property 'unions'",
         },
         {
           code: 'PARSER_ERROR',

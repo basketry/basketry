@@ -2073,5 +2073,25 @@
       "loc": "1;1;0"
     }
   ],
+  "unions": [
+    {
+      "name": { "value": "example-union", "loc": "1;1;0" },
+      "members": [
+        {
+          "typeName": { "value": "gizmo", "loc": "1;1;0" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        },
+        {
+          "typeName": { "value": "string", "loc": "1;1;0" },
+          "isPrimitive": true,
+          "isArray": true,
+          "rules": []
+        }
+      ],
+      "loc": "1;1;0"
+    }
+  ],
   "loc": "1;1;0"
 }

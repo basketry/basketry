@@ -9,6 +9,7 @@ let parser: Parser = () => {
       interfaces: [],
       types: [],
       enums: [],
+      unions: [],
       loc: '0;0;0',
     },
     violations: [],

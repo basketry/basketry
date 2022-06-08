@@ -12,6 +12,7 @@ import {
   Severity,
   Type,
   Violation,
+  Union,
 } from './types';
 
 export type ContextIterator<Context> = (
@@ -221,6 +222,23 @@ export const allEnumValues: ContextIterator<EnumValueRuleContext> = (
     .flatMap((e) => e.values.map<[Enum['values'][number], Enum]>((v) => [v, e]))
     .map(([v, e]) => ({ value: v, enum: e, service, sourcePath, options }));
 
+export interface UnionRuleContext extends ServiceRuleContext {
+  union: Union;
+}
+export function unionRule(
+  rule: (context: UnionRuleContext) => Violation | undefined,
+): Rule {
+  return (service, sourcePath, options) =>
+    allUnions(service, sourcePath, options)
+      .map((context) => rule(context))
+      .filter((v): v is Violation => !!v);
+}
+export const allUnions: ContextIterator<UnionRuleContext> = (
+  service,
+  sourcePath,
+  options,
+) => service.unions.map((union) => ({ union, service, sourcePath, options }));
+
 export function combineRules(...rules: Rule[]): Rule {
   return (service, sourcePath, options) =>
     rules.flatMap((rule) => rule(service, sourcePath, options));
@@ -292,4 +310,20 @@ export function getEnumByName(
     enumMapsByService.set(service, enumsByName);
   }
   return enumMapsByService.get(service)?.get(enumName.toLowerCase());
+}
+
+const unionMapsByService = new WeakMap<Service, ReadonlyMap<string, Union>>();
+export function getUnionByName(
+  service: Service,
+  unionName: string | undefined,
+): Union | undefined {
+  if (!unionName) return;
+
+  if (!unionMapsByService.has(service)) {
+    const unionsByName: ReadonlyMap<string, Union> = new Map(
+      service.unions.map((e) => [e.name.value.toLowerCase(), e]),
+    );
+    unionMapsByService.set(service, unionsByName);
+  }
+  return unionMapsByService.get(service)?.get(unionName.toLowerCase());
 }
