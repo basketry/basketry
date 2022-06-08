@@ -51,7 +51,10 @@ export function isOAuth2Scheme(scheme: SecurityScheme): scheme is OAuth2Scheme {
   return scheme.type.value === 'oauth2';
 }
 
-export function encodeRange(range: Range): string {
+const emptyRange = '1;1;0';
+
+export function encodeRange(range: Range | null | undefined): string {
+  if (!range) return emptyRange;
   if (range.start.offset === range.end.offset) {
     return [range.start.line, range.start.column, range.start.offset].join(';');
   } else if (range.start.line === range.end.line) {
@@ -75,7 +78,7 @@ export function encodeRange(range: Range): string {
 }
 
 export function decodeRange(range: string | null | undefined): Range {
-  if (!range) return decodeRange('1;1;0');
+  if (!range) return decodeRange(emptyRange);
 
   const parts = range.split(';').map((x) => Number(x));
 
