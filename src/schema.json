@@ -161,7 +161,7 @@
     },
     "primitiveValue": {
       "type": "object",
-      "required": ["typeName", "isArray", "isPrimitive"],
+      "required": ["typeName", "isArray", "isPrimitive", "rules"],
       "properties": {
         "typeName": {
           "type": "object",
@@ -172,16 +172,24 @@
           }
         },
         "isArray": { "type": "boolean" },
-        "isPrimitive": { "type": "boolean", "const": true }
+        "isPrimitive": { "type": "boolean", "const": true },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/validationRule" }
+        }
       }
     },
     "customValue": {
       "type": "object",
-      "required": ["typeName", "isArray", "isPrimitive"],
+      "required": ["typeName", "isArray", "isPrimitive", "rules"],
       "properties": {
         "typeName": { "$ref": "#/definitions/string" },
         "isArray": { "type": "boolean" },
-        "isPrimitive": { "type": "boolean", "const": false }
+        "isPrimitive": { "type": "boolean", "const": false },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/validationRule" }
+        }
       }
     },
     "typedValue": {
@@ -195,7 +203,7 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["name", "rules", "loc"],
+          "required": ["name", "loc"],
           "properties": {
             "name": { "$ref": "#/definitions/string" },
             "description": {
@@ -203,10 +211,6 @@
                 { "$ref": "#/definitions/string" },
                 { "type": "array", "items": { "$ref": "#/definitions/string" } }
               ]
-            },
-            "rules": {
-              "type": "array",
-              "items": { "$ref": "#/definitions/validationRule" }
             },
             "loc": { "$ref": "#/definitions/range" }
           }
@@ -243,7 +247,7 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["name", "rules", "loc"],
+          "required": ["name", "loc"],
           "properties": {
             "name": { "$ref": "#/definitions/string" },
             "description": {
@@ -251,10 +255,6 @@
                 { "$ref": "#/definitions/string" },
                 { "type": "array", "items": { "$ref": "#/definitions/string" } }
               ]
-            },
-            "rules": {
-              "type": "array",
-              "items": { "$ref": "#/definitions/validationRule" }
             },
             "loc": { "$ref": "#/definitions/range" }
           }
@@ -267,12 +267,8 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["rules", "loc"],
+          "required": ["loc"],
           "properties": {
-            "rules": {
-              "type": "array",
-              "items": { "$ref": "#/definitions/validationRule" }
-            },
             "loc": { "$ref": "#/definitions/range" }
           }
         },

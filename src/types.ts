@@ -212,12 +212,14 @@ export type PrimitiveValue = {
   typeName: Literal<Primitive>;
   isArray: boolean;
   isPrimitive: true;
+  rules: ValidationRule[];
 };
 
 export type CustomValue = {
   typeName: Literal<string>;
   isArray: boolean;
   isPrimitive: false;
+  rules: ValidationRule[];
 };
 
 export type TypedValue = PrimitiveValue | CustomValue;
@@ -225,7 +227,6 @@ export type TypedValue = PrimitiveValue | CustomValue;
 export type Property = {
   name: Literal<string>;
   description?: Literal<string> | Literal<string>[];
-  rules: ValidationRule[];
   loc: string;
 } & TypedValue;
 
@@ -346,12 +347,10 @@ export type OAuth2Scope = {
 export type Parameter = {
   name: Literal<string>;
   description?: Literal<string> | Literal<string>[];
-  rules: ValidationRule[];
   loc: string;
 } & TypedValue;
 
 export type ReturnType = {
-  rules: ValidationRule[];
   loc: string;
 } & TypedValue;
 
