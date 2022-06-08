@@ -191,6 +191,7 @@ export type Service = {
   interfaces: Interface[];
   types: Type[];
   enums: Enum[];
+  unions: Union[];
   loc: string;
 };
 
@@ -205,6 +206,12 @@ export type Type = {
 export type Enum = {
   name: Literal<string>;
   values: Literal<string>[];
+  loc: string;
+};
+
+export type Union = {
+  name: Literal<string>;
+  members: TypedValue[];
   loc: string;
 };
 

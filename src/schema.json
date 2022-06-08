@@ -9,6 +9,7 @@
     "interfaces",
     "types",
     "enums",
+    "unions",
     "loc"
   ],
   "properties": {
@@ -27,6 +28,10 @@
     "enums": {
       "type": "array",
       "items": { "$ref": "#/definitions/enum" }
+    },
+    "unions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/union" }
     },
     "loc": { "$ref": "#/definitions/range" }
   },
@@ -138,6 +143,19 @@
         "values": {
           "type": "array",
           "items": { "$ref": "#/definitions/string" },
+          "minItems": 1
+        },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "union": {
+      "type": "object",
+      "properties": {
+        "name": { "$ref": "#/definitions/string" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/typedValue" },
           "minItems": 1
         },
         "loc": { "$ref": "#/definitions/range" }
