@@ -1,5 +1,5 @@
 import { mkdir, readFile, writeFile } from 'fs/promises';
-import { join, resolve, sep } from 'path';
+import { join, relative, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
 
 import { merge as webpackMerge } from 'webpack-merge';
@@ -230,7 +230,12 @@ function runParser(options: {
     const result = fn(sourceContent, sourcePath);
     push(violations, result.violations);
 
-    const validation = validate({ ...result.service, sourcePath });
+    const relativePath = relative(process.cwd(), sourcePath);
+
+    const validation = validate({
+      ...result.service,
+      sourcePath: relativePath,
+    });
     push(errors, validation.errors);
 
     value = validation.service;
