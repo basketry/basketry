@@ -2,6 +2,7 @@
   "basketry": "1",
   "title": { "value": "BasketryExample", "loc": "1;1;0" },
   "majorVersion": { "value": 1, "loc": "1;1;0" },
+  "sourcePath": "source/path.ext",
   "interfaces": [
     {
       "name": "gizmo",

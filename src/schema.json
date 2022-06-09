@@ -6,6 +6,7 @@
     "basketry",
     "title",
     "majorVersion",
+    "sourcePath",
     "interfaces",
     "types",
     "enums",
@@ -17,6 +18,10 @@
     "basketry": { "type": "string", "const": "1" },
     "title": { "$ref": "#/definitions/string" },
     "majorVersion": { "$ref": "#/definitions/integer" },
+    "sourcePath": {
+      "type": "string",
+      "description": "The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document."
+    },
     "interfaces": {
       "type": "array",
       "items": { "$ref": "#/definitions/interface" }

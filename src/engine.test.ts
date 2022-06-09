@@ -13,6 +13,7 @@ describe('engine', () => {
         basketry: '1',
         title: { value: 'test' },
         majorVersion: { value: 1 },
+        sourcePath: 'overwritten.ext',
         interfaces: [],
         types: [],
         enums: [],

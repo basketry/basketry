@@ -188,6 +188,8 @@ export type Service = {
   basketry: '1';
   title: Literal<string>;
   majorVersion: Literal<number>;
+  /** The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document. */
+  sourcePath: string;
   interfaces: Interface[];
   types: Type[];
   enums: Enum[];

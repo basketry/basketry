@@ -230,7 +230,7 @@ function runParser(options: {
     const result = fn(sourceContent, sourcePath);
     push(violations, result.violations);
 
-    const validation = validate(result.service);
+    const validation = validate({ ...result.service, sourcePath });
     push(errors, validation.errors);
 
     value = validation.service;
