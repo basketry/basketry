@@ -242,7 +242,7 @@ function runParser(options: {
   } catch (ex) {
     errors.push({
       code: 'PARSER_ERROR',
-      message: 'Unhandled exception running parser', // TODO: Use ex,
+      message: 'Unhandled exception running parser', // TODO: Use ex (#25)
       filepath: sourcePath,
     });
   } finally {
@@ -277,7 +277,7 @@ function runRules(options: {
     } catch (ex) {
       errors.push({
         code: 'RULE_ERROR',
-        message: 'Unhandled exception running rule', // TODO: Use ex
+        message: 'Unhandled exception running rule', // TODO: Use ex (#25)
       });
     } finally {
       performance.mark('rule-end');
@@ -312,7 +312,7 @@ function runGenerators(options: { fns: Generator[]; service: Service }): {
     } catch (ex) {
       errors.push({
         code: 'GENERATOR_ERROR',
-        message: 'Unhandled exception running generator', // TODO: Use ex
+        message: 'Unhandled exception running generator', // TODO: Use ex (#25)
       });
     } finally {
       performance.mark('generator-end');

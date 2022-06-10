@@ -153,7 +153,7 @@ const { argv } = yargs(hideBin(process.argv))
       errors.push(...inputs.errors);
       if (!j) printErrors(inputs.errors);
 
-      // TODO: fail if multiplexed with stdin
+      // TODO: fail if multiplexed with stdin (#24)
 
       for (const input of inputs.values) {
         if (!j) console.log(info(`Parsing ${input.sourcePath}`));

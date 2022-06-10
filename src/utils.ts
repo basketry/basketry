@@ -35,7 +35,7 @@ export async function resolveConfig(
     // TOOD: look for SyntaxError
     errors.push({
       code: 'CONFIG_ERROR',
-      message: 'Unhandled exception resolving config', // TODO: Use ex
+      message: 'Unhandled exception resolving config', // TODO: Use ex (#25)
       filepath: path,
     });
   }
@@ -73,7 +73,7 @@ export async function getConfigs(
     // TOOD: look for SyntaxError
     errors.push({
       code: 'CONFIG_ERROR',
-      message: 'Unhandled exception loading configs', // TODO: Use ex
+      message: 'Unhandled exception loading configs', // TODO: Use ex (#25)
       filepath: configPath,
     });
   }
