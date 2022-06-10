@@ -156,7 +156,7 @@ const { argv } = yargs(hideBin(process.argv))
       // TODO: fail if multiplexed with stdin
 
       for (const input of inputs.values) {
-        if (!j) blue(`Parsing ${input.sourcePath}`);
+        if (!j) console.log(info(`Parsing ${input.sourcePath}`));
         const result = run(input);
         errors.push(...result.errors);
         if (!j) printErrors(result.errors);
@@ -206,8 +206,12 @@ function bold(message: string): void {
   console.log(chalk.bold(message));
 }
 
-function blue(message: string): void {
-  console.log(chalk.blue(message));
+function info(...text: unknown[]) {
+  return chalk.blueBright(text);
+}
+
+function warning(...text: unknown[]) {
+  return chalk.yellow(text);
 }
 
 async function readStreamToString(stream: NodeJS.ReadStream) {
@@ -245,21 +249,21 @@ function printViolations(violations: Violation[]): void {
 
       console.error();
       console.error(
-        `${chalk.cyan(violation.sourcePath)}:${chalk.yellow(
-          start.line,
-        )}:${chalk.yellow(start.column)}`,
+        `${chalk.cyan(violation.sourcePath)}:${warning(start.line)}:${warning(
+          start.column,
+        )}`,
       );
       let severity: string;
       let underline: string;
 
       switch (violation.severity) {
         case 'info':
-          severity = chalk.blue(violation.severity);
-          underline = chalk.blue('~'.repeat(violationLength));
+          severity = info(violation.severity);
+          underline = info('~'.repeat(violationLength));
           break;
         case 'warning':
-          severity = chalk.yellow(violation.severity);
-          underline = chalk.yellow('~'.repeat(violationLength));
+          severity = warning(violation.severity);
+          underline = warning('~'.repeat(violationLength));
           break;
         case 'error':
           severity = chalk.redBright(violation.severity);
@@ -301,12 +305,12 @@ function printFiles(files: Record<string, FileStatus>): void {
           console.log(chalk.bold.red(`E ${file}`));
           break;
         case 'modified':
-          console.log(chalk.blue(`m ${file}`));
+          console.log(info(`m ${file}`));
           break;
       }
     }
   } else {
-    console.log(chalk.blue('No changes'));
+    console.log(info('No changes'));
   }
   console.log();
 }
@@ -325,7 +329,7 @@ function printPerformance() {
       if (event.duration > 100) {
         ms = chalk.red(ms);
       } else if (event.duration > 50) {
-        ms = chalk.yellow(ms);
+        ms = warning(ms);
       } else {
         ms = chalk.greenBright(ms);
       }
