@@ -307,6 +307,9 @@ function printFiles(files: Record<string, FileStatus>): void {
         case 'modified':
           console.log(info(`m ${file}`));
           break;
+        case 'removed':
+          console.log(chalk.bold.red(`- ${file}`));
+          break;
       }
     }
   } else {
