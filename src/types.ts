@@ -75,7 +75,12 @@ export type Rule = (
 
 export type Generator = (service: Service, options?: any) => File[];
 
-export type FileStatus = 'added' | 'modified' | 'no-change' | 'error';
+export type FileStatus =
+  | 'added'
+  | 'modified'
+  | 'removed'
+  | 'no-change'
+  | 'error';
 
 export type Input = {
   sourcePath: string;

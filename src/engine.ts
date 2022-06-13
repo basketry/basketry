@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from 'fs/promises';
+import { readFileSync } from 'fs';
+import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
 import { join, relative, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
 
@@ -161,6 +162,26 @@ export async function writeFiles(
   const value: Record<string, FileStatus> = {};
   const errors: BasketryError[] = [];
 
+  const removed = await getRemoved(files);
+
+  for (const file of removed) {
+    value[file] = 'removed';
+  }
+
+  await Promise.all(
+    removed.map(async (file) => {
+      try {
+        await unlink(file);
+      } catch (ex) {
+        errors.push({
+          code: 'WRITE_ERROR',
+          message: `Unable to remove file. (${ex.message})`,
+          filepath: file,
+        });
+      }
+    }),
+  );
+
   for (const file of files) {
     const result = await write(file);
     value[join(...file.path)] = result.value;
@@ -168,6 +189,39 @@ export async function writeFiles(
   }
 
   return { value, errors };
+}
+
+async function getRemoved(created: File[]): Promise<string[]> {
+  try {
+    // Find the path of the NEW .gitattributes file
+    const gitattributesPath = created.find((file) =>
+      file.path.some((seg) => seg === '.gitattributes'),
+    )?.path;
+    if (!gitattributesPath) return [];
+
+    // Read the contents of the PREVIOUS .gitattributes file from disk
+    const gitattributes = (
+      await readFile(join(...gitattributesPath))
+    ).toString();
+
+    const [, ...outputPath] = [...gitattributesPath].reverse();
+    outputPath.reverse();
+
+    const createdPaths = new Set(created.map((file) => join(...file.path)));
+
+    return gitattributes
+      .split('\n')
+      .map((line) => line.split(' '))
+      .filter(
+        ([, attribute]) =>
+          attribute === 'linguist-generated' ||
+          attribute === 'linguist-generated=true',
+      )
+      .map(([file]) => join(...outputPath, file))
+      .filter((file) => !createdPaths.has(file));
+  } catch {
+    return [];
+  }
 }
 
 async function write(
