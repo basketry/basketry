@@ -162,12 +162,12 @@ const { argv } = yargs(hideBin(process.argv))
         if (!j) printErrors(result.errors);
 
         violations.push(...result.violations);
-        if (!j) printViolations(result.violations);
+        if (!j) printViolations(result.violations, validate);
 
         const writeResult = await writeFiles(result.files);
         errors.push(...writeResult.errors);
         files = writeResult.value;
-        if (!j) printFiles(writeResult.value);
+        if (!j && !validate) printFiles(writeResult.value);
         done = true;
       }
 
@@ -228,7 +228,7 @@ function error(...lines: string[]): void {
   console.error();
 }
 
-function printViolations(violations: Violation[]): void {
+function printViolations(violations: Violation[], validateOnly: boolean): void {
   if (violations.length) {
     const contentBySource = new Map<string, string[]>();
 
@@ -283,6 +283,9 @@ function printViolations(violations: Violation[]): void {
       );
     }
     console.error();
+  } else if (validateOnly) {
+    console.log(info('No violations'));
+    console.log();
   }
 }
 
