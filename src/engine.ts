@@ -269,7 +269,8 @@ async function write(
  * This optimization is not applied to files with only one line, or files with only whitespace after the first line.
  */
 function areEquivalent(previous: string | null, next: string): boolean {
-  if (previous === null || previous === next) return true;
+  if (previous === null) return false;
+  if (previous === next) return true;
   try {
     // If either the previous or next versions don't have a line break, then all of the differences must be on the first line
     const firstLineBreakPrevious = previous.indexOf('\n');
