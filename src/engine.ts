@@ -240,7 +240,7 @@ async function write(
     await mkdir(join(...path.split(sep).slice(0, -1)), { recursive: true });
   }
 
-  if (file.contents === previous) {
+  if (areEquivalent(previous, file.contents)) {
     value = 'no-change';
   } else {
     try {
@@ -261,6 +261,34 @@ async function write(
   }
 
   return { value, errors };
+}
+
+/**
+ * Determine if two versions of a file are equivalent by comparing everything but the first line.
+ * This prevents diff noise when the only change is the generator's version number.
+ * This optimization is not applied to files with only one line, or files with only whitespace after the first line.
+ */
+function areEquivalent(previous: string | null, next: string): boolean {
+  if (previous === null || previous === next) return true;
+  try {
+    // If either the previous or next versions don't have a line break, then all of the differences must be on the first line
+    const firstLineBreakPrevious = previous.indexOf('\n');
+    if (firstLineBreakPrevious === -1) return false;
+
+    const firstLineBreakNext = previous.indexOf('\n');
+    if (firstLineBreakNext === -1) return false;
+
+    // If either the previous or next versions only contain whitespace after the first line break, then all of the significant differences must be on the first line
+    const afterFirstLinePrevious = previous.substring(firstLineBreakPrevious);
+    if (!afterFirstLinePrevious.trim()) return false;
+
+    const afterFirstLineNext = next.substring(firstLineBreakNext);
+    if (!afterFirstLineNext.trim()) return false;
+
+    return afterFirstLinePrevious === afterFirstLineNext;
+  } catch {
+    return false;
+  }
 }
 
 function runParser(options: {
