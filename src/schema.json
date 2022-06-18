@@ -38,7 +38,8 @@
       "type": "array",
       "items": { "$ref": "#/definitions/union" }
     },
-    "loc": { "$ref": "#/definitions/range" }
+    "loc": { "$ref": "#/definitions/range" },
+    "meta": { "$ref": "#/definitions/meta" }
   },
   "additionalProperties": false,
   "definitions": {
@@ -88,6 +89,27 @@
       "additionalProperties": false
     },
     "range": { "type": "string" },
+    "meta": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/metaValue"
+      }
+    },
+    "metaValue": {
+      "type": "object",
+      "required": ["key", "value"],
+      "properties": {
+        "key": { "$ref": "#/definitions/string" },
+        "value": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "value": {},
+            "loc": { "type": "string" }
+          }
+        }
+      }
+    },
     "interface": {
       "type": "object",
       "required": ["name", "methods", "protocols"],
@@ -113,7 +135,8 @@
             }
           },
           "additionalProperties": false
-        }
+        },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -136,7 +159,8 @@
           "type": "array",
           "items": { "$ref": "#/definitions/objectValidationRule" }
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -150,7 +174,8 @@
           "items": { "$ref": "#/definitions/string" },
           "minItems": 1
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -163,7 +188,8 @@
           "items": { "$ref": "#/definitions/typedValue" },
           "minItems": 1
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -235,7 +261,8 @@
                 { "type": "array", "items": { "$ref": "#/definitions/string" } }
               ]
             },
-            "loc": { "$ref": "#/definitions/range" }
+            "loc": { "$ref": "#/definitions/range" },
+            "meta": { "$ref": "#/definitions/meta" }
           }
         },
         { "$ref": "#/definitions/typedValue" }
@@ -261,7 +288,8 @@
           "items": { "$ref": "#/definitions/parameter" }
         },
         "returnType": { "$ref": "#/definitions/returnType" },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -279,7 +307,8 @@
                 { "type": "array", "items": { "$ref": "#/definitions/string" } }
               ]
             },
-            "loc": { "$ref": "#/definitions/range" }
+            "loc": { "$ref": "#/definitions/range" },
+            "meta": { "$ref": "#/definitions/meta" }
           }
         },
         { "$ref": "#/definitions/typedValue" }
@@ -292,7 +321,8 @@
           "type": "object",
           "required": ["loc"],
           "properties": {
-            "loc": { "$ref": "#/definitions/range" }
+            "loc": { "$ref": "#/definitions/range" },
+            "meta": { "$ref": "#/definitions/meta" }
           }
         },
         { "$ref": "#/definitions/typedValue" }
@@ -419,7 +449,8 @@
         },
         "name": { "$ref": "#/definitions/string" },
         "description": { "$ref": "#/definitions/string" },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -454,7 +485,8 @@
           },
           "additionalProperties": false
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -477,7 +509,8 @@
           "type": "array",
           "items": { "$ref": "#/definitions/oauth2Flow" }
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -508,7 +541,8 @@
           "type": "array",
           "items": { "$ref": "#/definitions/oauth2Scope" }
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -531,7 +565,8 @@
           "type": "array",
           "items": { "$ref": "#/definitions/oauth2Scope" }
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -554,7 +589,8 @@
           "type": "array",
           "items": { "$ref": "#/definitions/oauth2Scope" }
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -578,7 +614,8 @@
           "type": "array",
           "items": { "$ref": "#/definitions/oauth2Scope" }
         },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
@@ -588,7 +625,8 @@
       "properties": {
         "name": { "$ref": "#/definitions/string" },
         "description": { "$ref": "#/definitions/string" },
-        "loc": { "$ref": "#/definitions/range" }
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
