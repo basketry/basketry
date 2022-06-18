@@ -200,6 +200,7 @@ export type Service = {
   enums: Enum[];
   unions: Union[];
   loc: string;
+  meta?: Meta;
 };
 
 export type Type = {
@@ -208,18 +209,21 @@ export type Type = {
   properties: Property[];
   rules: ObjectValidationRule[];
   loc: string;
+  meta?: Meta;
 };
 
 export type Enum = {
   name: Literal<string>;
   values: Literal<string>[];
   loc: string;
+  meta?: Meta;
 };
 
 export type Union = {
   name: Literal<string>;
   members: TypedValue[];
   loc: string;
+  meta?: Meta;
 };
 
 export type PrimitiveValue = {
@@ -242,6 +246,7 @@ export type Property = {
   name: Literal<string>;
   description?: Literal<string> | Literal<string>[];
   loc: string;
+  meta?: Meta;
 } & TypedValue;
 
 export type Interface = {
@@ -251,12 +256,14 @@ export type Interface = {
   protocols: {
     http: HttpPath[];
   };
+  meta?: Meta;
 };
 
 export type HttpPath = {
   path: Literal<string>;
   methods: HttpMethod[];
   loc: string;
+  meta?: Meta;
 };
 
 export type HttpMethod = {
@@ -283,6 +290,7 @@ export type Method = {
   parameters: Parameter[];
   returnType: ReturnType | undefined;
   loc: string;
+  meta?: Meta;
 };
 
 export type SecurityOption = SecurityScheme[];
@@ -294,6 +302,7 @@ export type BasicScheme = {
   name: Literal<string>;
   description?: Literal<string>;
   loc: string;
+  meta?: Meta;
 };
 
 export type ApiKeyScheme = {
@@ -303,6 +312,7 @@ export type ApiKeyScheme = {
   parameter: Literal<string>;
   in: Literal<'header' | 'query' | 'cookie'>;
   loc: string;
+  meta?: Meta;
 };
 
 export type OAuth2Scheme = {
@@ -311,6 +321,7 @@ export type OAuth2Scheme = {
   description?: Literal<string>;
   flows: OAuth2Flow[];
   loc: string;
+  meta?: Meta;
 };
 
 export type OAuth2Flow =
@@ -325,6 +336,7 @@ export type OAuth2ImplicitFlow = {
   refreshUrl?: Literal<string>;
   scopes: OAuth2Scope[];
   loc: string;
+  meta?: Meta;
 };
 
 export type OAuth2PasswordFlow = {
@@ -333,6 +345,7 @@ export type OAuth2PasswordFlow = {
   refreshUrl?: Literal<string>;
   scopes: OAuth2Scope[];
   loc: string;
+  meta?: Meta;
 };
 
 export type OAuth2ClientCredentialsFlow = {
@@ -341,6 +354,7 @@ export type OAuth2ClientCredentialsFlow = {
   refreshUrl?: Literal<string>;
   scopes: OAuth2Scope[];
   loc: string;
+  meta?: Meta;
 };
 
 export type OAuth2AuthorizationCodeFlow = {
@@ -350,23 +364,34 @@ export type OAuth2AuthorizationCodeFlow = {
   refreshUrl?: Literal<string>;
   scopes: OAuth2Scope[];
   loc: string;
+  meta?: Meta;
 };
 
 export type OAuth2Scope = {
   name: Literal<string>;
   description: Literal<string>;
   loc: string;
+  meta?: Meta;
 };
 
 export type Parameter = {
   name: Literal<string>;
   description?: Literal<string> | Literal<string>[];
   loc: string;
+  meta?: Meta;
 } & TypedValue;
 
 export type ReturnType = {
   loc: string;
+  meta?: Meta;
 } & TypedValue;
+
+export type Meta = MetaValue[];
+
+export type MetaValue = {
+  key: Literal<string>;
+  value: { value: any; loc?: string };
+};
 
 export type RequiredRule = {
   id: 'required';
