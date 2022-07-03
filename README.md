@@ -5,6 +5,8 @@
 
 Generate service-oriented code from popular API definition languages.
 
+See the [project wiki](https://github.com/basketry/basketry/wiki) for a complete set of documentation and articles.
+
 ## Quick Start
 
 The following example converts a "Swagger" doc into Typescript types:
@@ -40,9 +42,9 @@ Add the following script to `package.json`:
 
 Now you can generate code by running `npm run basketry`. Note that you can mix and match CLI arguments and config file settings—CLI arguments will override the config file if the same setting is specified in both places.
 
-## CLI Usage
+## `generate` command
 
-Code can be generated using the `basketry` command.
+Generate code with the `basketry generate` command or just `basketry`.
 
 ### Source file
 
@@ -78,7 +80,7 @@ See the "How does it work?" section below for info on what values can be used as
 
 ### Generators
 
-Use `-g`, `--generators` to specify one or more generator to use:
+Use `-g`, `--generators` to specify one or more generators to use:
 
 ```
 basketry --generators @basketry/typescript
@@ -120,7 +122,7 @@ basketry --source src/petstore.json --watch
 
 You can also run Basketry in watch mode by passing the `-w` option to an npm script: `npm run basketry -- -w`. While in watch mode, Basketry will re-run all rules and generators whenever the source file is updated.
 
-### Validate only
+### Validate only (deprecated)
 
 Use `-v`, `--validate` to only run the parser and rules but skip file generation:
 
@@ -138,65 +140,17 @@ basketry --json
 
 Note that `--json` cannot be used with `--watch`.
 
-## How does it work?
+## `validate` command
 
-Internally, basketry is a plugable pipeline that translates a service from a Service Definition Language (SDL) to one or more programatic or human readable langugages. The first step is to use a Parser to convert and SDL in an Intermediate Representation (IR) of the service. In the second step, this IR is passed to one or more Generators which convert the IR into the final target language.
+Validate the source per the supplied rules with the `basketry validate` command (previously `basketry --validate`). This command will run the parser and rules, but will not generate any files.
 
-Basketry coordinates the pipeline and writes the resulting output to the file system. It also exposes an lightweight set of types and tools to build custom Parsers and Generators. By decoupling the SDL parsing and code generating steps, Parsers and Generators can be easily mixed and matched.
+This command takes the same `source`, `parser`, `rules`, `config`, `json`, and `perf` arguments as the `generate` command.
 
-### Parser
+## `clean` command
 
-A "Parser" is a JavaScript module whose default export is a parsing function that converts in input SDL into the intermediate representation of a Service:
+Remove previously generated files with the `basketry clean` command.
 
-```ts
-type Parser = (content: string, path: string) => { service: Service };
-
-const parser: Parser = (content, path) => {
-  // Parser implementation goes here
-};
-
-export default parser;
-```
-
-### Generators
-
-A "Generator" is a JavaScript module whose default export is a generator function that converts in input intermediate representation of the service into one or more files:
-
-```ts
-type Generator = (service: Service) => File[];
-
-const generator: Generator = (service) => {
-  // Generator implementation goes here
-};
-
-export default generator;
-```
-
-### Rules
-
-A "Rule" is a JavaScript module whose default export is a rule function that looks at the intermediate representation of a service and returns an array of any rule violations:
-
-```ts
-type Rule = (service: Service, path: string) => Violation[];
-
-const rule: Rule = (service, path) => {
-  // Rule implementation goes here
-};
-
-export default rule;
-```
-
-Rules can be used to enforce specific opinions about service design. For example, a rule could enforce names and types for paging parameters. Another rule might establish a naming convention for method and types.
-
-Note that rules are run against the Intermediate Representation (IR); therefore, any rule may be used with any Basketry parser. The IR contains source map data which allows the violations to point to specific ranges of the source Serivce Definition without needing to implement the same rule for each SDL.
-
-### Using parsers, generators, and rules
-
-Any string that can be used to "require" a CommonJS module can be used to specify a parser, generator, or rule.
-
-For example, any parser (as described above) that can be required with `const myParser = require('./path/to/my/parser')` can be used with Basketry with `basketry --parser ./path/to/my/parser`. This applies to both modules defined within your project and packages installed from NPM. If it can be required from within your project, it can be used as a Parser, Generator, or Rule.
-
-Although Basketry is written in the JavaScript family of languages, it can be used to generate code in any language.
+This command takes the same `config` and `output` arguments as the `generate` command.
 
 ## Advanced Usage
 
