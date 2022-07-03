@@ -7,7 +7,7 @@ import chalk from 'chalk';
 
 import schema from '../config-schema.json';
 import { BasketryError, CliOutput, FileStatus, Violation } from '../types';
-import { getInput, run, writeFiles } from '../engine';
+import { Engine, getInput } from '../engine';
 import { CommmonArgs } from './types';
 
 let events: PerformanceEntry[] = [];
@@ -93,17 +93,32 @@ export async function generate(args: GenerateArgs) {
 
       for (const input of inputs.values) {
         if (!j) console.log(info(`Parsing ${input.sourcePath}`));
-        const result = run(input);
-        errors.push(...result.errors);
-        if (!j) printErrors(result.errors);
 
-        violations.push(...result.violations);
-        if (!j) printViolations(result.violations, validate || false);
+        const pipeline = new Engine(input);
 
-        const writeResult = await writeFiles(result.files);
-        errors.push(...writeResult.errors);
-        files = writeResult.value;
-        if (!j && !validate) printFiles(writeResult.value);
+        performance.mark('run-start');
+
+        pipeline.loadParser();
+        pipeline.loadRules();
+        pipeline.loadGenerators();
+        pipeline.runParser();
+        pipeline.runRules();
+        pipeline.runGenerators();
+
+        performance.mark('run-end');
+        performance.measure('run', 'run-start', 'run-end');
+
+        await pipeline.compareFiles();
+        await pipeline.commitFiles();
+
+        errors.push(...pipeline.errors);
+        if (!j) printErrors(pipeline.errors);
+
+        violations.push(...pipeline.violations);
+        if (!j) printViolations(pipeline.violations, validate || false);
+
+        files = pipeline.changes;
+        if (!j && !validate) printFiles(pipeline.changes);
         done = true;
       }
 

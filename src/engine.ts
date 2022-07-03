@@ -37,9 +37,13 @@ export class Engine {
   private readonly _changes: Record<string, FileStatus> = {};
   private readonly _errors: BasketryError[] = [];
   private readonly _violations: Violation[] = [];
+  private readonly _filesByFilepath: Map<string, File> = new Map();
 
   public get files() {
     return this._files;
+  }
+  public get changes() {
+    return this._changes;
   }
   public get errors() {
     return this._errors;
@@ -180,8 +184,10 @@ export class Engine {
       }
 
       for (const file of this.files) {
+        const filepath = join(...file.path);
+        this._filesByFilepath.set(filepath, file);
         const status = await this.compare(file);
-        this._changes[join(...file.path)] = status;
+        this._changes[filepath] = status;
       }
     }
   }
@@ -192,6 +198,47 @@ export class Engine {
       return areEquivalent(previous, file.contents) ? 'no-change' : 'modified';
     } catch {
       return 'added';
+    }
+  }
+
+  public async commitFiles() {
+    for (const filepath of Object.keys(this._changes)) {
+      const status = this._changes[filepath];
+
+      if (status === 'removed') {
+        try {
+          await unlink(filepath);
+        } catch (ex) {
+          this._errors.push({
+            code: 'WRITE_ERROR',
+            message: `Unable to remove file. (${ex.message})`,
+            filepath: filepath,
+          });
+        }
+      }
+
+      if (status === 'added' || status === 'modified') {
+        const file = this._filesByFilepath.get(filepath);
+        if (file) {
+          if (file.path.length > 1 && status === 'added') {
+            // Create subfolder for added file with subfolder
+            try {
+              await readFile(filepath);
+            } catch {
+              await mkdir(join(...file.path.slice(0, -1)), { recursive: true });
+            }
+          }
+
+          try {
+            await writeFile(filepath, file.contents);
+          } catch (ex) {
+            this._errors.push({
+              code: 'WRITE_ERROR',
+              message: `Error writing ${filepath} (${ex.message})`,
+            });
+          }
+        }
+      }
     }
   }
 }
@@ -285,6 +332,7 @@ export function run(input: Input): Output {
   return runner.output;
 }
 
+/** @deprecated Use the Engine class instead */
 export async function writeFiles(
   files: File[],
 ): Promise<{ value: Record<string, FileStatus>; errors: BasketryError[] }> {
