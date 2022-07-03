@@ -107,16 +107,16 @@ export async function generate(args: GenerateArgs) {
 
         pipeline.loadParser();
         pipeline.loadRules();
-        pipeline.loadGenerators();
+        if (!validate) pipeline.loadGenerators();
         pipeline.runParser();
         pipeline.runRules();
-        pipeline.runGenerators();
+        if (!validate) pipeline.runGenerators();
 
         performance.mark('run-end');
         performance.measure('run', 'run-start', 'run-end');
 
-        await pipeline.compareFiles();
-        await pipeline.commitFiles();
+        if (!validate) await pipeline.compareFiles();
+        if (!validate) await pipeline.commitFiles();
 
         errors.push(...pipeline.errors);
 
