@@ -1,5 +1,4 @@
-import { readFileSync, StatWatcher, watchFile } from 'fs';
-import { EOL } from 'os';
+import { StatWatcher, watchFile } from 'fs';
 import { performance, PerformanceEntry, PerformanceObserver } from 'perf_hooks';
 
 import Ajv from 'ajv';
@@ -94,7 +93,15 @@ export async function generate(args: GenerateArgs) {
       for (const input of inputs.values) {
         if (!j) console.log(info(`Parsing ${input.sourcePath}`));
 
-        const pipeline = new Engine(input);
+        const pipeline = new Engine(
+          input,
+          json
+            ? undefined
+            : {
+                onError: printError,
+                onViolation: printViolation,
+              },
+        );
 
         performance.mark('run-start');
 
@@ -112,10 +119,8 @@ export async function generate(args: GenerateArgs) {
         await pipeline.commitFiles();
 
         errors.push(...pipeline.errors);
-        if (!j) printErrors(pipeline.errors);
 
         violations.push(...pipeline.violations);
-        if (!j) printViolations(pipeline.violations, validate || false);
 
         files = pipeline.changes;
         if (!j && !validate) printFiles(pipeline.changes);
@@ -179,65 +184,60 @@ function error(...lines: string[]): void {
   console.error();
 }
 
-function printViolations(violations: Violation[], validateOnly: boolean): void {
-  if (violations.length) {
-    const contentBySource = new Map<string, string[]>();
+function printError(e: BasketryError): void {
+  console.error();
+  console.error(e);
+}
 
-    for (const violation of violations) {
-      const { start, end } = violation.range;
+function printViolation(violation: Violation, line: string): void {
+  const { start, end } = violation.range;
 
-      if (!contentBySource.has(violation.sourcePath)) {
-        contentBySource.set(
-          violation.sourcePath,
-          readFileSync(violation.sourcePath).toString().split(EOL),
-        );
-      }
-      const line = contentBySource.get(violation.sourcePath)![start.line - 1];
-      const violationLength =
-        start.line === end.line
-          ? end.column - start.column
-          : line.length - start.column + 1;
+  // if (!contentBySource.has(violation.sourcePath)) {
+  //   contentBySource.set(
+  //     violation.sourcePath,
+  //     readFileSync(violation.sourcePath).toString().split(EOL),
+  //   );
+  // }
+  // const line = contentBySource.get(violation.sourcePath)![start.line - 1];
+  const violationLength =
+    start.line === end.line
+      ? end.column - start.column
+      : line.length - start.column + 1;
 
-      console.error();
-      console.error(
-        `${chalk.cyan(violation.sourcePath)}:${warning(start.line)}:${warning(
-          start.column,
-        )}`,
-      );
-      let severity: string;
-      let underline: string;
+  console.error();
+  console.error(
+    `${chalk.cyan(violation.sourcePath)}:${warning(start.line)}:${warning(
+      start.column,
+    )}`,
+  );
+  let severity: string;
+  let underline: string;
 
-      switch (violation.severity) {
-        case 'info':
-          severity = info(violation.severity);
-          underline = info('~'.repeat(violationLength));
-          break;
-        case 'warning':
-          severity = warning(violation.severity);
-          underline = warning('~'.repeat(violationLength));
-          break;
-        case 'error':
-          severity = chalk.redBright(violation.severity);
-          underline = chalk.redBright('~'.repeat(violationLength));
-          break;
-      }
-
-      console.error(
-        `${severity} ${chalk.gray(`${violation.code}:`)} ${violation.message}`,
-      );
-      console.error();
-      console.error(`${chalk.bgWhite.black(start.line)}${line}`);
-      console.error(
-        `${chalk.bgWhite.black(' '.repeat(`${start.line}`.length))}${' '.repeat(
-          start.column - 1,
-        )}${underline}`,
-      );
-    }
-    console.error();
-  } else if (validateOnly) {
-    console.log(info('No violations'));
-    console.log();
+  switch (violation.severity) {
+    case 'info':
+      severity = info(violation.severity);
+      underline = info('~'.repeat(violationLength));
+      break;
+    case 'warning':
+      severity = warning(violation.severity);
+      underline = warning('~'.repeat(violationLength));
+      break;
+    case 'error':
+      severity = chalk.redBright(violation.severity);
+      underline = chalk.redBright('~'.repeat(violationLength));
+      break;
   }
+
+  console.error(
+    `${severity} ${chalk.gray(`${violation.code}:`)} ${violation.message}`,
+  );
+  console.error();
+  console.error(`${chalk.bgWhite.black(start.line)}${line}`);
+  console.error(
+    `${chalk.bgWhite.black(' '.repeat(`${start.line}`.length))}${' '.repeat(
+      start.column - 1,
+    )}${underline}`,
+  );
 }
 
 function printErrors(errors: BasketryError[]): void {
@@ -277,6 +277,7 @@ export function validateConfig(service: any): boolean {
 }
 
 function printPerformance() {
+  console.log();
   console.log('⌛ Component Performance:');
   console.log();
   for (const event of events.sort((a, b) => b.duration - a.duration)) {
