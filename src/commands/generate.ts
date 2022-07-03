@@ -191,14 +191,6 @@ function printError(e: BasketryError): void {
 
 function printViolation(violation: Violation, line: string): void {
   const { start, end } = violation.range;
-
-  // if (!contentBySource.has(violation.sourcePath)) {
-  //   contentBySource.set(
-  //     violation.sourcePath,
-  //     readFileSync(violation.sourcePath).toString().split(EOL),
-  //   );
-  // }
-  // const line = contentBySource.get(violation.sourcePath)![start.line - 1];
   const violationLength =
     start.line === end.line
       ? end.column - start.column
