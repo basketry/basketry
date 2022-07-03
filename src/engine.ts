@@ -1,4 +1,5 @@
 import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
+import { EOL } from 'os';
 import { join, relative, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
 
@@ -31,7 +32,13 @@ require('ts-node').register({
 const componentNames = new WeakMap<Function, string>();
 
 export class Engine {
-  constructor(private readonly input: Input) {}
+  constructor(
+    private readonly input: Input,
+    private readonly events?: {
+      onError?: (error: BasketryError) => void;
+      onViolation?: (violation: Violation, line: string) => void;
+    },
+  ) {}
 
   private readonly _files: File[] = [];
   private readonly _changes: Record<string, FileStatus> = {};
@@ -82,10 +89,10 @@ export class Engine {
           this.input.configPath,
         );
         this.parser = fn;
-        this._errors.push(...errors);
+        this.pushErrors(...errors);
         this.parserLoaded = true;
       } catch (ex) {
-        this._errors.push(fatal(ex));
+        this.pushErrors(fatal(ex));
       }
     }
   }
@@ -98,10 +105,10 @@ export class Engine {
           this.input.configPath,
         );
         this.rules = fns;
-        this._errors.push(...errors);
+        this.pushErrors(...errors);
         this.rulesLoaded = true;
       } catch (ex) {
-        this._errors.push(fatal(ex));
+        this.pushErrors(fatal(ex));
       }
     }
   }
@@ -115,10 +122,10 @@ export class Engine {
           this.input.options,
         );
         this.generators = fns;
-        this._errors.push(...errors);
+        this.pushErrors(...errors);
         this.generatorsLoaded = true;
       } catch (ex) {
-        this._errors.push(fatal(ex));
+        this.pushErrors(fatal(ex));
       }
     }
   }
@@ -132,11 +139,11 @@ export class Engine {
           sourceContent: this.input.sourceContent,
         });
         this.service = value;
-        this._errors.push(...errors);
-        this._violations.push(...violations);
+        this.pushErrors(...errors);
+        this.pushViolations(...violations);
         this.parserRun = true;
       } catch (ex) {
-        this._errors.push(fatal(ex));
+        this.pushErrors(fatal(ex));
       }
     }
   }
@@ -149,11 +156,11 @@ export class Engine {
           service: this.service,
           sourcePath: this.input.sourcePath,
         });
-        this._errors.push(...errors);
-        this._violations.push(...violations);
+        this.pushErrors(...errors);
+        this.pushViolations(...violations);
         this.rulesRun = true;
       } catch (ex) {
-        this._errors.push(fatal(ex));
+        this.pushErrors(fatal(ex));
       }
     }
   }
@@ -166,11 +173,11 @@ export class Engine {
           service: this.service,
         });
         this._files.push(...files);
-        this._errors.push(...errors);
-        this._violations.push(...violations);
+        this.pushErrors(...errors);
+        this.pushViolations(...violations);
         this.generatorsRun = true;
       } catch (ex) {
-        this._errors.push(fatal(ex));
+        this.pushErrors(fatal(ex));
       }
     }
   }
@@ -209,7 +216,7 @@ export class Engine {
         try {
           await unlink(filepath);
         } catch (ex) {
-          this._errors.push({
+          this.pushErrors({
             code: 'WRITE_ERROR',
             message: `Unable to remove file. (${ex.message})`,
             filepath: filepath,
@@ -232,7 +239,7 @@ export class Engine {
           try {
             await writeFile(filepath, file.contents);
           } catch (ex) {
-            this._errors.push({
+            this.pushErrors({
               code: 'WRITE_ERROR',
               message: `Error writing ${filepath} (${ex.message})`,
             });
@@ -240,6 +247,47 @@ export class Engine {
         }
       }
     }
+  }
+
+  private pushErrors(...errors: BasketryError[]) {
+    this._errors.push(...errors);
+    if (this.events?.onError) {
+      for (const error of errors) {
+        try {
+          this.events.onError(error);
+        } catch {}
+      }
+    }
+  }
+
+  private pushViolations(...violations: Violation[]) {
+    this._violations.push(...violations);
+    if (this.events?.onViolation) {
+      for (const violation of violations) {
+        this.getLine(violation.sourcePath, violation.range.start.line).then(
+          (line) => {
+            try {
+              this.events?.onViolation?.(violation, line);
+            } catch {}
+          },
+        );
+      }
+    }
+  }
+
+  private readonly _contentBySource = new Map<string, string[]>();
+
+  private async getLine(
+    sourcePath: string,
+    lineNumber: number,
+  ): Promise<string> {
+    if (!this._contentBySource.has(sourcePath)) {
+      this._contentBySource.set(
+        sourcePath,
+        (await readFile(sourcePath)).toString().split(EOL),
+      );
+    }
+    return this._contentBySource.get(sourcePath)![lineNumber - 1];
   }
 }
 
