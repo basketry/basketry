@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
 import { EOL } from 'os';
 import { join, relative, resolve, sep } from 'path';
@@ -264,27 +265,24 @@ export class Engine {
     this._violations.push(...violations);
     if (this.events?.onViolation) {
       for (const violation of violations) {
-        this.getLine(violation.sourcePath, violation.range.start.line).then(
-          (line) => {
-            try {
-              this.events?.onViolation?.(violation, line);
-            } catch {}
-          },
-        );
+        try {
+          const line = this.getLine(
+            violation.sourcePath,
+            violation.range.start.line,
+          );
+          this.events?.onViolation?.(violation, line);
+        } catch {}
       }
     }
   }
 
   private readonly _contentBySource = new Map<string, string[]>();
 
-  private async getLine(
-    sourcePath: string,
-    lineNumber: number,
-  ): Promise<string> {
+  private getLine(sourcePath: string, lineNumber: number): string {
     if (!this._contentBySource.has(sourcePath)) {
       this._contentBySource.set(
         sourcePath,
-        (await readFile(sourcePath)).toString().split(EOL),
+        readFileSync(sourcePath).toString().split(EOL),
       );
     }
     return this._contentBySource.get(sourcePath)![lineNumber - 1];
