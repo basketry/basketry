@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs';
 import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
 import { join, relative, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
@@ -30,6 +29,172 @@ require('ts-node').register({
 });
 
 const componentNames = new WeakMap<Function, string>();
+
+export class Engine {
+  constructor(private readonly input: Input) {}
+
+  private readonly _files: File[] = [];
+  private readonly _changes: Record<string, FileStatus> = {};
+  private readonly _errors: BasketryError[] = [];
+  private readonly _violations: Violation[] = [];
+
+  public get files() {
+    return this._files;
+  }
+  public get errors() {
+    return this._errors;
+  }
+  public get violations() {
+    return this._violations;
+  }
+  public get output(): Output {
+    return {
+      files: this._files,
+      errors: this._errors,
+      violations: this._violations,
+    };
+  }
+
+  private parser: Parser | undefined;
+  private parserLoaded: boolean = false;
+
+  private rules: Rule[] = [];
+  private rulesLoaded: boolean = false;
+
+  private generators: Generator[] = [];
+  private generatorsLoaded: boolean = false;
+
+  private service: Service | undefined;
+  private parserRun: boolean = false;
+
+  private rulesRun: boolean = false;
+  private generatorsRun: boolean = false;
+
+  public loadParser() {
+    if (!this.parserLoaded) {
+      try {
+        const { fn, errors } = getParser(
+          this.input.parser,
+          this.input.configPath,
+        );
+        this.parser = fn;
+        this._errors.push(...errors);
+        this.parserLoaded = true;
+      } catch (ex) {
+        this._errors.push(fatal(ex));
+      }
+    }
+  }
+
+  public loadRules() {
+    if (!this.rulesLoaded) {
+      try {
+        const { fns, errors } = getRules(
+          this.input.rules,
+          this.input.configPath,
+        );
+        this.rules = fns;
+        this._errors.push(...errors);
+        this.rulesLoaded = true;
+      } catch (ex) {
+        this._errors.push(fatal(ex));
+      }
+    }
+  }
+
+  public loadGenerators() {
+    if (!this.generatorsLoaded) {
+      try {
+        const { fns, errors } = getGenerators(
+          this.input.generators,
+          this.input.configPath,
+          this.input.options,
+        );
+        this.generators = fns;
+        this._errors.push(...errors);
+        this.generatorsLoaded = true;
+      } catch (ex) {
+        this._errors.push(fatal(ex));
+      }
+    }
+  }
+
+  public runParser() {
+    if (this.parser && !this.parserRun) {
+      try {
+        const { value, errors, violations } = runParser({
+          fn: this.parser,
+          sourcePath: this.input.sourcePath,
+          sourceContent: this.input.sourceContent,
+        });
+        this.service = value;
+        this._errors.push(...errors);
+        this._violations.push(...violations);
+        this.parserRun = true;
+      } catch (ex) {
+        this._errors.push(fatal(ex));
+      }
+    }
+  }
+
+  public runRules() {
+    if (this.service && this.rules.length && !this.rulesRun) {
+      try {
+        const { errors, violations } = runRules({
+          fns: this.rules,
+          service: this.service,
+          sourcePath: this.input.sourcePath,
+        });
+        this._errors.push(...errors);
+        this._violations.push(...violations);
+        this.rulesRun = true;
+      } catch (ex) {
+        this._errors.push(fatal(ex));
+      }
+    }
+  }
+
+  public runGenerators() {
+    if (this.service && this.generators.length && !this.generatorsRun) {
+      try {
+        const { files, errors, violations } = runGenerators({
+          fns: this.generators,
+          service: this.service,
+        });
+        this._files.push(...files);
+        this._errors.push(...errors);
+        this._violations.push(...violations);
+        this.generatorsRun = true;
+      } catch (ex) {
+        this._errors.push(fatal(ex));
+      }
+    }
+  }
+
+  public async compareFiles() {
+    if (this.generatorsRun) {
+      const removed = await getRemoved(this.files);
+
+      for (const file of removed) {
+        this._changes[file] = 'removed';
+      }
+
+      for (const file of this.files) {
+        const status = await this.compare(file);
+        this._changes[join(...file.path)] = status;
+      }
+    }
+  }
+
+  private async compare(file: File): Promise<FileStatus> {
+    try {
+      const previous = (await readFile(join(...file.path))).toString();
+      return areEquivalent(previous, file.contents) ? 'no-change' : 'modified';
+    } catch {
+      return 'added';
+    }
+  }
+}
 
 export async function getInput(
   configPath: string | undefined,
@@ -101,59 +266,23 @@ export async function getInput(
   return { values, errors };
 }
 
+/** @deprecated Use the Engine class instead */
 export function run(input: Input): Output {
-  const { sourcePath, sourceContent } = input;
+  const runner = new Engine(input);
 
-  const violations: Violation[] = [];
-  const errors: BasketryError[] = [];
-  const files: File[] = [];
+  performance.mark('run-start');
 
-  try {
-    performance.mark('run-start');
-    const parser = getParser(input.parser, input.configPath);
-    push(errors, parser.errors);
+  runner.loadParser();
+  runner.loadRules();
+  runner.loadGenerators();
+  runner.runParser();
+  runner.runRules();
+  runner.runGenerators();
 
-    const rules = getRules(input.rules, input.configPath);
-    push(errors, rules.errors);
+  performance.mark('run-end');
+  performance.measure('run', 'run-start', 'run-end');
 
-    const generators = getGenerators(
-      input.generators,
-      input.configPath,
-      input.options,
-    );
-    push(errors, generators.errors);
-
-    const service = runParser({ fn: parser.fn, sourcePath, sourceContent });
-    push(violations, service.violations);
-    push(errors, service.errors);
-
-    if (service.value) {
-      const ruleResults = runRules({
-        fns: rules.fns,
-        service: service.value,
-        sourcePath,
-      });
-      push(violations, ruleResults.violations);
-      push(errors, ruleResults.errors);
-    }
-
-    if (service.value && !input.validate) {
-      const generatorResults = runGenerators({
-        fns: generators.fns,
-        service: service.value,
-      });
-      push(files, prepend(input.output, generatorResults.files));
-      push(violations, generatorResults.violations);
-      push(errors, generatorResults.errors);
-    }
-  } catch (ex) {
-    errors.push(fatal(ex));
-  } finally {
-    performance.mark('run-end');
-    performance.measure('run', 'run-start', 'run-end');
-  }
-
-  return { violations, errors, files };
+  return runner.output;
 }
 
 export async function writeFiles(
