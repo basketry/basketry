@@ -8,24 +8,7 @@ import schema from '../config-schema.json';
 import { BasketryError, CliOutput, FileStatus, Violation } from '../types';
 import { Engine, getInput } from '../engine';
 import { CommmonArgs } from './types';
-
-let events: PerformanceEntry[] = [];
-const performanceObserver = new PerformanceObserver((items, observer) => {
-  events.push(...items.getEntries());
-
-  if (done) {
-    if (j) {
-      console.log(JSON.stringify({ ...cliOutput, perf: events }));
-    } else {
-      printPerformance();
-    }
-
-    observer.disconnect();
-  }
-});
-let cliOutput: CliOutput = { errors: [], files: {}, violations: [] };
-let done = false;
-let j = false;
+import * as perf from '../performance';
 
 const ajv = new Ajv({ allErrors: false });
 const runner = ajv.compile(schema);
@@ -42,12 +25,14 @@ export type GenerateArgs = {
 } & CommmonArgs;
 
 export async function generate(args: GenerateArgs) {
-  let p = false;
   const errors: BasketryError[] = [];
   const violations: Violation[] = [];
   let files: Record<string, FileStatus> = {};
 
   try {
+    if (args.perf) perf.track();
+    if (args.perf) performance.mark('basketry-start');
+
     const {
       config,
       parser,
@@ -58,16 +43,9 @@ export async function generate(args: GenerateArgs) {
       watch,
       validate,
       json,
-      perf,
     } = args;
-    j = json || false;
-    p = perf || false;
-
-    if (perf) performanceObserver.observe({ type: 'measure' });
-
-    performance.mark('basketry-start');
     const stdin = !process.stdin.isTTY;
-    if (!j) bold(`🧺 Basketry v${require('../../package.json').version}`);
+    if (!json) bold(`🧺 Basketry v${require('../../package.json').version}`);
 
     const sourceContent = stdin
       ? await readStreamToString(process.stdin)
@@ -86,12 +64,12 @@ export async function generate(args: GenerateArgs) {
         sourcePath: source,
       });
       errors.push(...inputs.errors);
-      if (!j) printErrors(inputs.errors);
+      if (!json) printErrors(inputs.errors);
 
       // TODO: fail if multiplexed with stdin (#24)
 
       for (const input of inputs.values) {
-        if (!j) console.log(info(`Parsing ${input.sourcePath}`));
+        if (!json) console.log(info(`Parsing ${input.sourcePath}`));
 
         const pipeline = new Engine(
           input,
@@ -123,8 +101,7 @@ export async function generate(args: GenerateArgs) {
         violations.push(...pipeline.violations);
 
         files = pipeline.changes;
-        if (!j && !validate) printFiles(pipeline.changes);
-        done = true;
+        if (!json && !validate) printFiles(pipeline.changes);
       }
 
       if (!watcher && watch && !stdin && !json) {
@@ -144,17 +121,20 @@ export async function generate(args: GenerateArgs) {
     process.exit(1);
   } finally {
     performance.mark('basketry-end');
-    performance.measure('basketry', 'basketry-start', 'basketry-end');
+    if (args.perf) {
+      performance.measure('basketry', 'basketry-start', 'basketry-end');
+    }
 
-    process.nextTick(() => {
-      if (j) {
-        cliOutput = { errors, violations, files };
-        done = true;
-        if (!p) console.log(JSON.stringify(cliOutput));
-      } else if (errors.length) {
-        process.exit(1);
-      }
-    });
+    const events = args.perf ? await perf.drain() : [];
+
+    if (args.json) {
+      const cliOutput: CliOutput = { errors, violations, files };
+      if (args.perf) cliOutput.perf = events as any;
+      console.log(JSON.stringify(cliOutput));
+    } else {
+      if (args.perf) printPerformance(events);
+      if (error.length) process.exit(1);
+    }
   }
 }
 
@@ -268,7 +248,7 @@ export function validateConfig(service: any): boolean {
   return runner(service);
 }
 
-function printPerformance() {
+function printPerformance(events: PerformanceEntry[]) {
   console.log();
   console.log('⌛ Component Performance:');
   console.log();
@@ -289,7 +269,6 @@ function printPerformance() {
       console.log(line);
     }
   }
-  events = [];
   console.log();
 }
 
