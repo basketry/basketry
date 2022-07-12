@@ -4,5 +4,6 @@
 !/lib/**/*.*
 
 **/*.test.*
+**/test-utils.*
 **/test-modules/*.*
 **/test-modules/**/*.*
