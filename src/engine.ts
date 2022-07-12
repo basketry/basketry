@@ -66,6 +66,9 @@ export class Engine {
       violations: this._violations,
     };
   }
+  public get service(): Service | undefined {
+    return this._service;
+  }
 
   private parser: Parser | undefined;
   private parserLoaded: boolean = false;
@@ -76,7 +79,7 @@ export class Engine {
   private generators: Generator[] = [];
   private generatorsLoaded: boolean = false;
 
-  private service: Service | undefined;
+  private _service: Service | undefined;
   private parserRun: boolean = false;
 
   private rulesRun: boolean = false;
@@ -139,7 +142,7 @@ export class Engine {
           sourcePath: this.input.sourcePath,
           sourceContent: this.input.sourceContent,
         });
-        this.service = value;
+        this._service = value;
         this.pushErrors(...errors);
         this.pushViolations(...violations);
         this.parserRun = true;
@@ -150,11 +153,11 @@ export class Engine {
   }
 
   public runRules() {
-    if (this.service && this.rules.length && !this.rulesRun) {
+    if (this._service && this.rules.length && !this.rulesRun) {
       try {
         const { errors, violations } = runRules({
           fns: this.rules,
-          service: this.service,
+          service: this._service,
           sourcePath: this.input.sourcePath,
         });
         this.pushErrors(...errors);
@@ -167,11 +170,11 @@ export class Engine {
   }
 
   public runGenerators() {
-    if (this.service && this.generators.length && !this.generatorsRun) {
+    if (this._service && this.generators.length && !this.generatorsRun) {
       try {
         const { files, errors, violations } = runGenerators({
           fns: this.generators,
-          service: this.service,
+          service: this._service,
         });
         this._files.push(...files);
         this.pushErrors(...errors);

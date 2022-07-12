@@ -66,10 +66,6 @@ export type ChangeTarget =
   | 'output-enum-name-casing'
   | 'output-enum-value'
   | 'output-enum-value-casing'
-  | 'enum'
-  | 'enum-description'
-  | 'enum-value'
-  | 'enum-value-description'
   | ValidationRule['id'];
 
 export type ChangeContext =

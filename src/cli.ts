@@ -4,7 +4,7 @@ import { hideBin } from 'yargs/helpers';
 import yargs = require('yargs/yargs');
 import chalk from 'chalk';
 
-import { clean, generate, validate } from './commands';
+import { clean, diff, generate, validate } from './commands';
 
 const { argv } = yargs(hideBin(process.argv))
   .strictCommands()
@@ -180,5 +180,42 @@ const { argv } = yargs(hideBin(process.argv))
     (args) => {
       const { config, parser, source, rules, json, perf } = args;
       validate({ config, parser, source, rules, json, perf });
+    },
+  )
+  .command(
+    ['diff <reference>'],
+    'Compares the service definition with another version and returns the differences.',
+    (y) => {
+      return y
+        .positional('reference', {
+          string: true,
+          description: 'Path to the original file to compare against',
+          requiresArg: true,
+        })
+        .option('config', {
+          alias: 'c',
+          string: true,
+          description:
+            'Path to the config file. Defaults to basketry.conifg.json.',
+          default: 'basketry.config.json',
+          requiresArg: true,
+        })
+        .option('parser', {
+          alias: 'p',
+          string: true,
+          description: 'The parser',
+          requiresArg: true,
+        })
+        .option('source', {
+          alias: 's',
+          string: true,
+          description:
+            'Path to an SDL file. Reads from stdin if omitted and config is not found.',
+          requiresArg: true,
+        });
+    },
+    (args) => {
+      const { config, parser, source, reference } = args;
+      diff({ config, parser, source, reference: reference as any });
     },
   );
