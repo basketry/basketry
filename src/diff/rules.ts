@@ -1,10 +1,10 @@
 import {
-  ChangeContext,
   ChangeInfo,
   MethodScope,
   ParameterScope,
   PropertyScope,
   ReturnTypeScope,
+  RuleContext,
 } from '.';
 import { isRequired } from '..';
 
@@ -13,7 +13,7 @@ import { ValidationRule } from '../types';
 function buildContext(
   mode: Mode,
   scope: ParameterScope | ReturnTypeScope | PropertyScope,
-): ChangeContext {
+): RuleContext {
   if (isParameterScope(scope)) {
     return {
       scope: 'parameter',

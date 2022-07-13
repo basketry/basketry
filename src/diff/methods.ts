@@ -1,7 +1,7 @@
 import {
-  ChangeContext,
   ChangeInfo,
   InterfaceScope,
+  MethodContext,
   ReturnTypeContext,
   ReturnTypeScope,
 } from '.';
@@ -16,7 +16,7 @@ export function* methods(
   b: InterfaceScope,
 ): Iterable<ChangeInfo> {
   for (const a_method of a.interface.methods) {
-    const a_context: ChangeContext = {
+    const a_context: MethodContext = {
       scope: 'method',
       service: a.service.title.value,
       interface: a.interface.name,
@@ -24,7 +24,7 @@ export function* methods(
     };
     const b_method = cache.getMethod(b.service, a_method.name.value);
     if (b_method) {
-      const b_context: ChangeContext = {
+      const b_context: MethodContext = {
         scope: 'method',
         service: b.service.title.value,
         interface: b.interface.name,
@@ -134,7 +134,7 @@ export function* methods(
   }
 
   for (const b_method of b.interface.methods) {
-    const b_context: ChangeContext = {
+    const b_context: MethodContext = {
       scope: 'method',
       service: b.service.title.value,
       interface: b.interface.name,
@@ -162,7 +162,7 @@ function* returnTypes(
 ): Iterable<ChangeInfo> {
   yield* rules('return-type', a, b);
 
-  const a_context: ChangeContext = {
+  const a_context: ReturnTypeContext = {
     scope: 'return-type',
     service: a.service.title.value,
     interface: a.interface.name,
@@ -170,7 +170,7 @@ function* returnTypes(
     returnType: a.returnType.typeName.value,
   };
 
-  const b_context: ChangeContext = {
+  const b_context: ReturnTypeContext = {
     scope: 'return-type',
     service: b.service.title.value,
     interface: b.interface.name,

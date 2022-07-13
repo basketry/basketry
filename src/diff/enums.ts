@@ -1,11 +1,11 @@
-import { ChangeContext, ChangeInfo, ServiceScope } from '.';
+import { ChangeInfo, EnumContext, ServiceScope } from '.';
 import { Enum } from '../types';
 import * as cache from './cache';
 import { asValue, eq, getInputs, getOutputs } from './utils';
 
 export type Mode = 'input' | 'output';
 
-function buildContext(mode: Mode, scope: ServiceScope, e: Enum): ChangeContext {
+function buildContext(mode: Mode, scope: ServiceScope, e: Enum): EnumContext {
   return {
     scope: `${mode}-enum`,
     service: scope.service.title.value,

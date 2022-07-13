@@ -1,10 +1,12 @@
 import {
-  ChangeContext,
-  ChangeInfo,
-  MethodScope,
+  ParameterContext,
   ParameterScope,
+  PropertyContext,
   PropertyScope,
+  ReturnTypeContext,
   ReturnTypeScope,
+  RuleChangeInfo,
+  RuleContext,
 } from '.';
 import { ValidationRule } from '../types';
 import { Mode, rules } from './rules';
@@ -215,9 +217,9 @@ function describeRules<T extends ValidationRule['id']>(
 }
 
 function forEachContext(
-  fn: (setup: SetupFunction, context: ChangeContext, mode: Mode) => void,
+  fn: (setup: SetupFunction, context: RuleContext, mode: Mode) => void,
 ) {
-  const parameterContext: ChangeContext = {
+  const parameterContext: ParameterContext = {
     scope: 'parameter',
     service: title,
     interface: interfaceName,
@@ -226,7 +228,7 @@ function forEachContext(
     required: false,
   };
 
-  const returnTypeContext: ChangeContext = {
+  const returnTypeContext: ReturnTypeContext = {
     scope: 'return-type',
     service: title,
     interface: interfaceName,
@@ -234,14 +236,14 @@ function forEachContext(
     returnType: 'string',
   };
 
-  const inputPropertyContext: ChangeContext = {
+  const inputPropertyContext: PropertyContext = {
     scope: 'input-property',
     service: title,
     type: typeName,
     property: propertyName,
   };
 
-  const outputPropertyContext: ChangeContext = {
+  const outputPropertyContext: PropertyContext = {
     scope: 'output-property',
     service: title,
     type: typeName,
@@ -280,7 +282,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
       });
 
       it('identifies an added rule', () => {
@@ -291,7 +293,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'added',
             target: id,
@@ -308,7 +310,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'removed',
             target: id,
@@ -328,7 +330,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'increased',
             target: id,
@@ -349,7 +351,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'decreased',
             target: id,
@@ -372,7 +374,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
       });
 
       it('identifies an added rule', () => {
@@ -383,7 +385,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'added',
             target: id,
@@ -400,7 +402,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'removed',
             target: id,
@@ -420,7 +422,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'increased',
             target: id,
@@ -441,7 +443,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'decreased',
             target: id,
@@ -464,7 +466,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
       });
 
       it('identifies an added rule', () => {
@@ -475,7 +477,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'added',
             target: id,
@@ -492,7 +494,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'removed',
             target: id,
@@ -522,7 +524,7 @@ describe(rules, () => {
           const result = rules(mode, a, b);
 
           // ASSERT
-          expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
         });
 
         it('identifies an added rule', () => {
@@ -533,7 +535,7 @@ describe(rules, () => {
           const result = rules(mode, a, b);
 
           // ASSERT
-          expect(Array.from(result)).toEqual<ChangeInfo[]>([
+          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
             {
               kind: 'added',
               target: id,
@@ -550,7 +552,7 @@ describe(rules, () => {
           const result = rules(mode, a, b);
 
           // ASSERT
-          expect(Array.from(result)).toEqual<ChangeInfo[]>([
+          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
             {
               kind: 'removed',
               target: id,
@@ -570,7 +572,7 @@ describe(rules, () => {
           const result = rules(mode, a, b);
 
           // ASSERT
-          expect(Array.from(result)).toEqual<ChangeInfo[]>([
+          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
             {
               kind: 'increased',
               target: id,
@@ -591,7 +593,7 @@ describe(rules, () => {
           const result = rules(mode, a, b);
 
           // ASSERT
-          expect(Array.from(result)).toEqual<ChangeInfo[]>([
+          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
             {
               kind: 'decreased',
               target: id,
@@ -615,7 +617,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
       });
 
       it('identifies an added rule', () => {
@@ -626,7 +628,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'added',
             target: id,
@@ -643,7 +645,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'removed',
             target: id,
@@ -663,7 +665,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'changed',
             target: id,
@@ -686,7 +688,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
       });
 
       it('identifies an added rule', () => {
@@ -697,7 +699,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'added',
             target: id,
@@ -714,7 +716,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'removed',
             target: id,
@@ -734,7 +736,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'increased',
             target: id,
@@ -755,7 +757,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'decreased',
             target: id,
@@ -778,7 +780,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
       });
 
       it('identifies an added rule', () => {
@@ -793,7 +795,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'added',
             target: id,
@@ -813,7 +815,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'removed',
             target: id,
@@ -833,7 +835,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'changed',
             target: id,
@@ -853,7 +855,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
       });
 
       it('identifies an added rule', () => {
@@ -868,7 +870,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'added',
             target: id,
@@ -889,7 +891,7 @@ describe(rules, () => {
         const result = rules(mode, a, b);
 
         // ASSERT
-        expect(Array.from(result)).toEqual<ChangeInfo[]>([
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
           {
             kind: 'removed',
             target: id,

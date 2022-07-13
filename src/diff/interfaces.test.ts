@@ -1,4 +1,4 @@
-import { ChangeInfo, ServiceScope } from '.';
+import { InterfaceChangeInfo, ServiceScope } from '.';
 import { Interface } from '..';
 import { interfaces } from './interfaces';
 import { buildInterface, buildService } from './test-utils';
@@ -30,7 +30,7 @@ describe(interfaces, () => {
     const result = interfaces(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([]);
   });
 
   it('identifies an added interface', () => {
@@ -41,7 +41,7 @@ describe(interfaces, () => {
     const result = interfaces(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([
       {
         kind: 'added',
         target: 'interface',
@@ -65,7 +65,7 @@ describe(interfaces, () => {
     const result = interfaces(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([
       {
         kind: 'removed',
         target: 'interface',
@@ -95,7 +95,7 @@ describe(interfaces, () => {
     const result = interfaces(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([
       {
         kind: 'changed',
         target: 'interface-name-casing',
@@ -131,7 +131,7 @@ describe(interfaces, () => {
     const result = interfaces(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([
       {
         kind: 'added',
         target: 'interface-description',
@@ -159,7 +159,7 @@ describe(interfaces, () => {
     const result = interfaces(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([
       {
         kind: 'removed',
         target: 'interface-description',
@@ -188,7 +188,7 @@ describe(interfaces, () => {
     const result = interfaces(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([
       {
         kind: 'changed',
         target: 'interface-description',

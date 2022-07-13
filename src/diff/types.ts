@@ -1,4 +1,4 @@
-import { ChangeContext, ChangeInfo, ServiceScope } from '.';
+import { ChangeInfo, ServiceScope, TypeContext } from '.';
 import { Type } from '../types';
 import * as cache from './cache';
 import { properties } from './properties';
@@ -10,7 +10,7 @@ function buildContext(
   mode: Mode,
   scope: ServiceScope,
   type: Type,
-): ChangeContext {
+): TypeContext {
   return {
     scope: `${mode}-type`,
     service: scope.service.title.value,

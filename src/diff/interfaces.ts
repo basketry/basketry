@@ -1,4 +1,4 @@
-import { ChangeContext, ChangeInfo, ServiceScope } from '.';
+import { ChangeInfo, InterfaceContext, ServiceScope } from '.';
 import * as cache from './cache';
 import { methods } from './methods';
 import { asValue, eq } from './utils';
@@ -8,14 +8,14 @@ export function* interfaces(
   b: ServiceScope,
 ): Iterable<ChangeInfo> {
   for (const a_int of a.service.interfaces) {
-    const a_context: ChangeContext = {
+    const a_context: InterfaceContext = {
       scope: 'interface',
       service: a.service.title.value,
       interface: a_int.name,
     };
     const b_int = cache.getInterface(b.service, a_int.name);
     if (b_int) {
-      const b_context: ChangeContext = {
+      const b_context: InterfaceContext = {
         scope: 'interface',
         service: b.service.title.value,
         interface: b_int.name,
@@ -61,7 +61,7 @@ export function* interfaces(
   }
 
   for (const b_int of b.service.interfaces) {
-    const b_context: ChangeContext = {
+    const b_context: InterfaceContext = {
       scope: 'interface',
       service: b.service.title.value,
       interface: b_int.name,
