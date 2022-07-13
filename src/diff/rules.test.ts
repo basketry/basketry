@@ -223,6 +223,7 @@ function forEachContext(
     interface: interfaceName,
     method: methodName,
     parameter: parameterName,
+    required: false,
   };
 
   const returnTypeContext: ChangeContext = {
@@ -858,6 +859,10 @@ describe(rules, () => {
       it('identifies an added rule', () => {
         // ARRANGE
         const [a, b] = setup(undefined, { id });
+        const ctx =
+          mode === 'parameter'
+            ? { ...(context as any), required: true }
+            : context;
 
         // ACT
         const result = rules(mode, a, b);
@@ -867,7 +872,7 @@ describe(rules, () => {
           {
             kind: 'added',
             target: id,
-            b: { context, value: true },
+            b: { context: ctx, value: true },
           },
         ]);
       });
@@ -875,6 +880,10 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup({ id }, undefined);
+        const ctx =
+          mode === 'parameter'
+            ? { ...(context as any), required: true }
+            : context;
 
         // ACT
         const result = rules(mode, a, b);
@@ -884,7 +893,7 @@ describe(rules, () => {
           {
             kind: 'removed',
             target: id,
-            a: { context, value: true },
+            a: { context: ctx, value: true },
           },
         ]);
       });
