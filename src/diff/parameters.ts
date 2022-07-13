@@ -12,6 +12,7 @@ function buildContext(scope: MethodScope, parameter: Parameter): ChangeContext {
     interface: scope.interface.name,
     method: scope.method.name.value,
     parameter: parameter.name.value,
+    required: isRequired(parameter),
   };
 }
 

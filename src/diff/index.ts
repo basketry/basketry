@@ -120,6 +120,7 @@ export type MethodScope = InterfaceScope & {
 
 export type ParameterContext = MethodContext & {
   parameter: string;
+  required: boolean;
 };
 
 export type ParameterScope = MethodScope & {

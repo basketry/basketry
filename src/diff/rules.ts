@@ -6,6 +6,7 @@ import {
   PropertyScope,
   ReturnTypeScope,
 } from '.';
+import { isRequired } from '..';
 
 import { ValidationRule } from '../types';
 
@@ -20,6 +21,7 @@ function buildContext(
       interface: scope.interface.name,
       method: scope.method.name.value,
       parameter: scope.parameter.name.value,
+      required: isRequired(scope.parameter),
     };
   } else if (isReturnTypeScope(scope)) {
     return {
