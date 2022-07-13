@@ -1,4 +1,4 @@
-import { ChangeInfo, ServiceScope } from '.';
+import { EnumChangeInfo, ServiceScope } from '.';
 import { Enum } from '../types';
 import { enums, Mode } from './enums';
 import {
@@ -94,7 +94,7 @@ describe(enums, () => {
       const result = enums(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([]);
     });
 
     it('identifies an added enum', () => {
@@ -109,7 +109,7 @@ describe(enums, () => {
       const result = enums(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'added',
           target: `${mode}-enum`,
@@ -138,7 +138,7 @@ describe(enums, () => {
       const result = enums(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'removed',
           target: `${mode}-enum`,
@@ -169,7 +169,7 @@ describe(enums, () => {
       const result = enums(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'changed',
           target: `${mode}-enum-name-casing`,
@@ -214,7 +214,7 @@ describe(enums, () => {
       const result = enums(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'added',
           target: `${mode}-enum-value`,
@@ -252,7 +252,7 @@ describe(enums, () => {
       const result = enums(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'removed',
           target: `${mode}-enum-value`,
@@ -289,7 +289,7 @@ describe(enums, () => {
       const result = enums(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'changed',
           target: `${mode}-enum-value-casing`,

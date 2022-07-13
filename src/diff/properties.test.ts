@@ -1,4 +1,4 @@
-import { ChangeInfo, TypeScope } from '.';
+import { PropertyChangeInfo, RuleChangeInfo, TypeScope } from '.';
 import { Property } from '../types';
 import { properties, Mode } from './properties';
 import {
@@ -107,7 +107,7 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([]);
     });
 
     it('identifies an added optional property', () => {
@@ -122,7 +122,7 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
         {
           kind: 'added',
           target: `${mode}-property`,
@@ -155,7 +155,9 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<
+        (PropertyChangeInfo | RuleChangeInfo)[]
+      >([
         {
           kind: 'added',
           target: `${mode}-property`,
@@ -199,7 +201,7 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
         {
           kind: 'removed',
           target: `${mode}-property`,
@@ -232,7 +234,9 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<
+        (PropertyChangeInfo | RuleChangeInfo)[]
+      >([
         {
           kind: 'removed',
           target: `${mode}-property`,
@@ -278,7 +282,7 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
         {
           kind: 'changed',
           target: `${mode}-property-name-casing`,
@@ -324,7 +328,7 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
         {
           kind: 'changed',
           target: `${mode}-property-type`,
@@ -368,7 +372,7 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
         {
           kind: 'changed',
           target: `${mode}-property-type-array`,
@@ -414,7 +418,7 @@ describe(properties, () => {
       const result = properties(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
         {
           kind: 'changed',
           target: `${mode}-property-type-primitive`,

@@ -1,4 +1,4 @@
-import { ChangeContext, ChangeInfo, ChangeTarget, ServiceScope } from '.';
+import { ServiceScope, TypeChangeInfo } from '.';
 import { Type } from '../types';
 import { types, Mode } from './types';
 import {
@@ -93,7 +93,7 @@ describe(types, () => {
       const result = types(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+      expect(Array.from(result)).toEqual<TypeChangeInfo[]>([]);
     });
 
     it('identifies an added type', () => {
@@ -108,7 +108,7 @@ describe(types, () => {
       const result = types(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<TypeChangeInfo[]>([
         {
           kind: 'added',
           target: `${mode}-type`,
@@ -137,7 +137,7 @@ describe(types, () => {
       const result = types(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<TypeChangeInfo[]>([
         {
           kind: 'removed',
           target: `${mode}-type`,
@@ -168,7 +168,7 @@ describe(types, () => {
       const result = types(mode, a, b);
 
       // ASSERT
-      expect(Array.from(result)).toEqual<ChangeInfo[]>([
+      expect(Array.from(result)).toEqual<TypeChangeInfo[]>([
         {
           kind: 'changed',
           target: `${mode}-type-name-casing`,

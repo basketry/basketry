@@ -1,4 +1,4 @@
-import { ChangeInfo, MethodScope } from '.';
+import { MethodScope, ParameterChangeInfo, RuleChangeInfo } from '.';
 import { Parameter } from '../types';
 import { parameters } from './parameters';
 import {
@@ -55,7 +55,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([]);
   });
 
   it('identifies an added optional parameter', () => {
@@ -69,7 +69,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'added',
         target: 'parameter',
@@ -103,7 +103,9 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<
+      (ParameterChangeInfo | RuleChangeInfo)[]
+    >([
       {
         kind: 'added',
         target: 'parameter',
@@ -150,7 +152,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'removed',
         target: 'parameter',
@@ -184,7 +186,9 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<
+      (ParameterChangeInfo | RuleChangeInfo)[]
+    >([
       {
         kind: 'removed',
         target: 'parameter',
@@ -234,7 +238,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'changed',
         target: 'parameter-name-casing',
@@ -279,7 +283,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'added',
         target: 'parameter-description',
@@ -313,7 +317,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'removed',
         target: 'parameter-description',
@@ -351,7 +355,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'changed',
         target: 'parameter-description',
@@ -398,7 +402,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'changed',
         target: 'parameter-type',
@@ -445,7 +449,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'changed',
         target: 'parameter-type-array',
@@ -494,7 +498,7 @@ describe(parameters, () => {
     const result = parameters(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
       {
         kind: 'changed',
         target: 'parameter-type-primitive',

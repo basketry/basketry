@@ -1,4 +1,4 @@
-import { ChangeInfo, InterfaceScope } from '.';
+import { InterfaceScope, MethodChangeInfo, ReturnTypeChangeInfo } from '.';
 import { Method } from '..';
 import { methods } from './methods';
 import {
@@ -47,7 +47,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([]);
   });
 
   it('identifies an added method', () => {
@@ -61,7 +61,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
       {
         kind: 'added',
         target: 'method',
@@ -90,7 +90,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
       {
         kind: 'removed',
         target: 'method',
@@ -121,7 +121,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
       {
         kind: 'changed',
         target: 'method-name-casing',
@@ -162,7 +162,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
       {
         kind: 'added',
         target: 'method-description',
@@ -194,7 +194,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
       {
         kind: 'removed',
         target: 'method-description',
@@ -230,7 +230,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
       {
         kind: 'changed',
         target: 'method-description',
@@ -273,7 +273,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([]);
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([]);
   });
 
   it('identifies an added method return type', () => {
@@ -290,7 +290,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'added',
         target: 'return-type',
@@ -323,7 +323,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'removed',
         target: 'return-type',
@@ -359,7 +359,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'changed',
         target: 'return-type',
@@ -410,7 +410,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'changed',
         target: 'return-type-array',
@@ -463,7 +463,7 @@ describe(methods, () => {
     const result = methods(a, b);
 
     // ASSERT
-    expect(Array.from(result)).toEqual<ChangeInfo[]>([
+    expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'changed',
         target: 'return-type-primitive',

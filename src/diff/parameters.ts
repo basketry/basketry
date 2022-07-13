@@ -1,11 +1,14 @@
-import { ChangeContext, ChangeInfo, MethodScope } from '.';
+import { MethodScope, ParameterContext, ChangeInfo } from '.';
 import * as cache from './cache';
 import { Parameter } from '../types';
 import { isRequired } from '..';
 import { eq, asValue } from './utils';
 import { rules } from './rules';
 
-function buildContext(scope: MethodScope, parameter: Parameter): ChangeContext {
+function buildContext(
+  scope: MethodScope,
+  parameter: Parameter,
+): ParameterContext {
   return {
     scope: 'parameter',
     service: scope.service.title.value,
