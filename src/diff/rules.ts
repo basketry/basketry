@@ -37,6 +37,7 @@ function buildContext(
       service: scope.service.title.value,
       type: scope.type.name.value,
       property: scope.property.name.value,
+      required: isRequired(scope.property),
     };
   }
 }
