@@ -174,6 +174,7 @@ type ChangeInfoKind<
 > = {
   kind: ChangeKind;
   target: Target;
+  category: Category;
   a?: ChangeState<Context>;
   b?: ChangeState<Context>;
 };
@@ -282,3 +283,5 @@ export function diff(a: Service, b: Service): ChangeInfo[] {
 
   return changes;
 }
+
+export type Category = 'major' | 'minor' | 'patch';

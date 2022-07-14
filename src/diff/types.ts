@@ -35,6 +35,7 @@ export function* types(
         yield {
           kind: 'changed',
           target: `${mode}-type-name-casing`,
+          category: 'patch',
           a: { context: a_context, value: a_type.name.value, loc: a_type.loc },
           b: { context: b_context, value: b_type.name.value, loc: b_type.loc },
         };
@@ -45,6 +46,7 @@ export function* types(
       yield {
         kind: 'removed',
         target: `${mode}-type`,
+        category: 'major',
         a: { context: a_context, value: a_type.name.value, loc: a_type.loc },
       };
     }
@@ -60,6 +62,7 @@ export function* types(
       yield {
         kind: 'added',
         target: `${mode}-type`,
+        category: 'minor',
         b: { context: b_context, value: b_type.name.value, loc: b_type.loc },
       };
     }

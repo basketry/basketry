@@ -89,6 +89,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
       yield {
         kind: 'removed',
         target: a_rule.id,
+        category: 'minor',
         a: { context: a_context, ...asValue(a_rule) },
       };
     } else {
@@ -100,6 +101,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'increased',
                 target: a_rule.id,
+                category: 'minor',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -107,6 +109,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'decreased',
                 target: a_rule.id,
+                category: 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -119,6 +122,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'increased',
                 target: a_rule.id,
+                category: 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -126,6 +130,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'decreased',
                 target: a_rule.id,
+                category: 'minor',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -138,6 +143,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'changed',
                 target: a_rule.id,
+                category: b_rule.required ? 'major' : 'minor',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -154,6 +160,10 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'increased',
                 target: a_rule.id,
+                category:
+                  a_rule.id === 'number-lt' || a_rule.id === 'number-lte'
+                    ? 'minor'
+                    : 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -161,6 +171,10 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'decreased',
                 target: a_rule.id,
+                category:
+                  a_rule.id === 'number-gt' || a_rule.id === 'number-gte'
+                    ? 'minor'
+                    : 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -173,6 +187,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'changed',
                 target: a_rule.id,
+                category: 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -186,6 +201,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'increased',
                 target: a_rule.id,
+                category: a_rule.id === 'string-max-length' ? 'minor' : 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -193,6 +209,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'decreased',
                 target: a_rule.id,
+                category: a_rule.id === 'string-max-length' ? 'major' : 'minor',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -205,6 +222,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'changed',
                 target: a_rule.id,
+                category: 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -227,6 +245,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
       yield {
         kind: 'added',
         target: b_rule.id,
+        category: 'major',
         b: { context: b_context, ...asValue(b_rule) },
       };
     }

@@ -45,6 +45,7 @@ describe(interfaces, () => {
       {
         kind: 'added',
         target: 'interface',
+        category: 'minor',
         b: {
           context: {
             scope: 'interface',
@@ -69,6 +70,7 @@ describe(interfaces, () => {
       {
         kind: 'removed',
         target: 'interface',
+        category: 'major',
         a: {
           context: {
             scope: 'interface',
@@ -99,6 +101,7 @@ describe(interfaces, () => {
       {
         kind: 'changed',
         target: 'interface-name-casing',
+        category: 'patch',
         a: {
           context: {
             scope: 'interface',
@@ -135,6 +138,7 @@ describe(interfaces, () => {
       {
         kind: 'added',
         target: 'interface-description',
+        category: 'patch',
         b: {
           context: {
             scope: 'interface',
@@ -163,6 +167,7 @@ describe(interfaces, () => {
       {
         kind: 'removed',
         target: 'interface-description',
+        category: 'patch',
         a: {
           context: {
             scope: 'interface',
@@ -192,6 +197,7 @@ describe(interfaces, () => {
       {
         kind: 'changed',
         target: 'interface-description',
+        category: 'patch',
         a: {
           context: {
             scope: 'interface',

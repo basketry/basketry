@@ -34,6 +34,7 @@ export function* parameters(
         yield {
           kind: 'changed',
           target: 'parameter-name-casing',
+          category: 'patch',
           a: { context: a_context, ...asValue(a_param.name) },
           b: { context: b_context, ...asValue(b_param.name) },
         };
@@ -44,18 +45,21 @@ export function* parameters(
         yield {
           kind: 'removed',
           target: 'parameter-description',
+          category: 'patch',
           a: { context: a_context, ...asValue(a_param.description) },
         };
       } else if (!a_param.description && b_param.description) {
         yield {
           kind: 'added',
           target: 'parameter-description',
+          category: 'patch',
           b: { context: b_context, ...asValue(b_param.description) },
         };
       } else if (a_param.description !== b_param.description) {
         yield {
           kind: 'changed',
           target: 'parameter-description',
+          category: 'patch',
           a: { context: a_context, ...asValue(a_param.description) },
           b: { context: b_context, ...asValue(b_param.description) },
         };
@@ -66,6 +70,7 @@ export function* parameters(
         yield {
           kind: 'changed',
           target: 'parameter-type',
+          category: 'major',
           a: { context: a_context, ...asValue(a_param.typeName) },
           b: { context: b_context, ...asValue(b_param.typeName) },
         };
@@ -74,6 +79,7 @@ export function* parameters(
         yield {
           kind: 'changed',
           target: 'parameter-type-primitive',
+          category: 'major',
           a: {
             context: a_context,
             value: a_param.isPrimitive,
@@ -90,6 +96,7 @@ export function* parameters(
         yield {
           kind: 'changed',
           target: 'parameter-type-array',
+          category: 'major',
           a: {
             context: a_context,
             value: a_param.isArray,
@@ -112,6 +119,7 @@ export function* parameters(
       yield {
         kind: 'removed',
         target: 'parameter',
+        category: 'major',
         a: {
           context: a_context,
           value: a_param.name.value,
@@ -123,6 +131,7 @@ export function* parameters(
         yield {
           kind: 'removed',
           target: 'required',
+          category: 'minor',
           a: {
             context: a_context,
             value: a_param.name.value,
@@ -142,6 +151,7 @@ export function* parameters(
       yield {
         kind: 'added',
         target: 'parameter',
+        category: isRequired(b_param) ? 'major' : 'minor',
         b: {
           context: b_context,
           value: b_param.name.value,
@@ -153,6 +163,7 @@ export function* parameters(
         yield {
           kind: 'added',
           target: 'required',
+          category: 'major',
           b: {
             context: b_context,
             value: b_param.name.value,
