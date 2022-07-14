@@ -17,6 +17,7 @@ function buildContext(
     service: scope.service.title.value,
     type: scope.type.name.value,
     property: property.name.value,
+    required: isRequired(property),
   };
 }
 

@@ -241,6 +241,7 @@ function forEachContext(
     service: title,
     type: typeName,
     property: propertyName,
+    required: false,
   };
 
   const outputPropertyContext: PropertyContext = {
@@ -248,6 +249,7 @@ function forEachContext(
     service: title,
     type: typeName,
     property: propertyName,
+    required: false,
   };
 
   describe('parameter', () =>
@@ -862,9 +864,9 @@ describe(rules, () => {
         // ARRANGE
         const [a, b] = setup(undefined, { id });
         const ctx =
-          mode === 'parameter'
-            ? { ...(context as any), required: true }
-            : context;
+          mode === 'return-type'
+            ? context
+            : { ...(context as any), required: true };
 
         // ACT
         const result = rules(mode, a, b);
@@ -883,9 +885,9 @@ describe(rules, () => {
         // ARRANGE
         const [a, b] = setup({ id }, undefined);
         const ctx =
-          mode === 'parameter'
-            ? { ...(context as any), required: true }
-            : context;
+          mode === 'return-type'
+            ? context
+            : { ...(context as any), required: true };
 
         // ACT
         const result = rules(mode, a, b);

@@ -136,6 +136,7 @@ export type TypeScope = ServiceScope & {
 export type PropertyContext = Omit<TypeContext, 'scope'> & {
   scope: 'input-property' | 'output-property';
   property: string;
+  required: boolean;
 };
 
 export type PropertyScope = TypeScope & {
