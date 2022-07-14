@@ -30,6 +30,7 @@ export function* enums(
         yield {
           kind: 'changed',
           target: `${mode}-enum-name-casing`,
+          category: 'patch',
           a: { context: a_context, ...asValue(a_enum.name) },
           b: { context: b_context, ...asValue(b_enum.name) },
         };
@@ -43,6 +44,7 @@ export function* enums(
             yield {
               kind: 'changed',
               target: `${mode}-enum-value-casing`,
+              category: 'major',
               a: { context: a_context, ...asValue(a_value) },
               b: { context: b_context, ...asValue(b_value) },
             };
@@ -51,6 +53,7 @@ export function* enums(
           yield {
             kind: 'removed',
             target: `${mode}-enum-value`,
+            category: mode === 'input' ? 'major' : 'minor',
             a: { context: b_context, ...asValue(a_value) },
           };
         }
@@ -63,6 +66,7 @@ export function* enums(
           yield {
             kind: 'added',
             target: `${mode}-enum-value`,
+            category: mode === 'input' ? 'minor' : 'major',
             b: { context: b_context, ...asValue(b_value) },
           };
         }
@@ -71,6 +75,7 @@ export function* enums(
       yield {
         kind: 'removed',
         target: `${mode}-enum`,
+        category: 'major',
         a: { context: a_context, value: a_enum.name.value, loc: a_enum.loc },
       };
     }
@@ -86,6 +91,7 @@ export function* enums(
       yield {
         kind: 'added',
         target: `${mode}-enum`,
+        category: 'major',
         b: { context: b_context, value: b_enum.name.value, loc: b_enum.loc },
       };
     }

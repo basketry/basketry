@@ -299,6 +299,7 @@ describe(rules, () => {
           {
             kind: 'added',
             target: id,
+            category: 'major',
             b: { context, value: 5 },
           },
         ]);
@@ -316,6 +317,7 @@ describe(rules, () => {
           {
             kind: 'removed',
             target: id,
+            category: 'minor',
             a: { context, value: 5 },
           },
         ]);
@@ -336,6 +338,7 @@ describe(rules, () => {
           {
             kind: 'increased',
             target: id,
+            category: 'minor',
             a: { context, value: 5 },
             b: { context, value: 7 },
           },
@@ -357,6 +360,7 @@ describe(rules, () => {
           {
             kind: 'decreased',
             target: id,
+            category: 'major',
             a: { context, value: 5 },
             b: { context, value: 3 },
           },
@@ -391,6 +395,7 @@ describe(rules, () => {
           {
             kind: 'added',
             target: id,
+            category: 'major',
             b: { context, value: 5 },
           },
         ]);
@@ -408,6 +413,7 @@ describe(rules, () => {
           {
             kind: 'removed',
             target: id,
+            category: 'minor',
             a: { context, value: 5 },
           },
         ]);
@@ -428,6 +434,7 @@ describe(rules, () => {
           {
             kind: 'increased',
             target: id,
+            category: 'major',
             a: { context, value: 5 },
             b: { context, value: 7 },
           },
@@ -449,6 +456,7 @@ describe(rules, () => {
           {
             kind: 'decreased',
             target: id,
+            category: 'minor',
             a: { context, value: 5 },
             b: { context, value: 3 },
           },
@@ -483,6 +491,7 @@ describe(rules, () => {
           {
             kind: 'added',
             target: id,
+            category: 'major',
             b: { context, value: true },
           },
         ]);
@@ -500,6 +509,7 @@ describe(rules, () => {
           {
             kind: 'removed',
             target: id,
+            category: 'minor',
             a: { context, value: true },
           },
         ]);
@@ -541,6 +551,7 @@ describe(rules, () => {
             {
               kind: 'added',
               target: id,
+              category: 'major',
               b: { context, value: 5 },
             },
           ]);
@@ -558,6 +569,7 @@ describe(rules, () => {
             {
               kind: 'removed',
               target: id,
+              category: 'minor',
               a: { context, value: 5 },
             },
           ]);
@@ -578,6 +590,8 @@ describe(rules, () => {
             {
               kind: 'increased',
               target: id,
+              category:
+                id === 'number-lt' || id === 'number-lte' ? 'minor' : 'major',
               a: { context, value: 5 },
               b: { context, value: 7 },
             },
@@ -599,6 +613,8 @@ describe(rules, () => {
             {
               kind: 'decreased',
               target: id,
+              category:
+                id === 'number-gt' || id === 'number-gte' ? 'minor' : 'major',
               a: { context, value: 5 },
               b: { context, value: 3 },
             },
@@ -634,6 +650,7 @@ describe(rules, () => {
           {
             kind: 'added',
             target: id,
+            category: 'major',
             b: { context, value: 'date' },
           },
         ]);
@@ -651,6 +668,7 @@ describe(rules, () => {
           {
             kind: 'removed',
             target: id,
+            category: 'minor',
             a: { context, value: 'date' },
           },
         ]);
@@ -671,6 +689,7 @@ describe(rules, () => {
           {
             kind: 'changed',
             target: id,
+            category: 'major',
             a: { context, value: 'date' },
             b: { context, value: 'date-time' },
           },
@@ -705,6 +724,7 @@ describe(rules, () => {
           {
             kind: 'added',
             target: id,
+            category: 'major',
             b: { context, value: 50 },
           },
         ]);
@@ -722,6 +742,7 @@ describe(rules, () => {
           {
             kind: 'removed',
             target: id,
+            category: 'minor',
             a: { context, value: 50 },
           },
         ]);
@@ -742,6 +763,7 @@ describe(rules, () => {
           {
             kind: 'increased',
             target: id,
+            category: id === 'string-max-length' ? 'minor' : 'major',
             a: { context, value: 50 },
             b: { context, value: 100 },
           },
@@ -763,6 +785,7 @@ describe(rules, () => {
           {
             kind: 'decreased',
             target: id,
+            category: id === 'string-max-length' ? 'major' : 'minor',
             a: { context, value: 50 },
             b: { context, value: 25 },
           },
@@ -801,6 +824,7 @@ describe(rules, () => {
           {
             kind: 'added',
             target: id,
+            category: 'major',
             b: { context, value: '^asdf$' },
           },
         ]);
@@ -821,6 +845,7 @@ describe(rules, () => {
           {
             kind: 'removed',
             target: id,
+            category: 'minor',
             a: { context, value: '^asdf$' },
           },
         ]);
@@ -841,6 +866,7 @@ describe(rules, () => {
           {
             kind: 'changed',
             target: id,
+            category: 'major',
             a: { context, value: '^original$' },
             b: { context, value: '^new$' },
           },
@@ -876,6 +902,7 @@ describe(rules, () => {
           {
             kind: 'added',
             target: id,
+            category: 'major',
             b: { context: ctx, value: true },
           },
         ]);
@@ -897,6 +924,7 @@ describe(rules, () => {
           {
             kind: 'removed',
             target: id,
+            category: 'minor',
             a: { context: ctx, value: true },
           },
         ]);

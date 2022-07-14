@@ -73,6 +73,7 @@ describe(parameters, () => {
       {
         kind: 'added',
         target: 'parameter',
+        category: 'minor',
         b: {
           context: {
             scope: 'parameter',
@@ -109,6 +110,7 @@ describe(parameters, () => {
       {
         kind: 'added',
         target: 'parameter',
+        category: 'major',
         b: {
           context: {
             scope: 'parameter',
@@ -125,6 +127,7 @@ describe(parameters, () => {
       {
         kind: 'added',
         target: 'required',
+        category: 'major',
         b: {
           context: {
             scope: 'parameter',
@@ -156,6 +159,7 @@ describe(parameters, () => {
       {
         kind: 'removed',
         target: 'parameter',
+        category: 'major',
         a: {
           context: {
             scope: 'parameter',
@@ -192,6 +196,7 @@ describe(parameters, () => {
       {
         kind: 'removed',
         target: 'parameter',
+        category: 'major',
         a: {
           context: {
             scope: 'parameter',
@@ -208,6 +213,7 @@ describe(parameters, () => {
       {
         kind: 'removed',
         target: 'required',
+        category: 'minor',
         a: {
           context: {
             scope: 'parameter',
@@ -242,6 +248,7 @@ describe(parameters, () => {
       {
         kind: 'changed',
         target: 'parameter-name-casing',
+        category: 'patch',
         a: {
           context: {
             scope: 'parameter',
@@ -287,6 +294,7 @@ describe(parameters, () => {
       {
         kind: 'added',
         target: 'parameter-description',
+        category: 'patch',
         b: {
           context: {
             scope: 'parameter',
@@ -321,6 +329,7 @@ describe(parameters, () => {
       {
         kind: 'removed',
         target: 'parameter-description',
+        category: 'patch',
         a: {
           context: {
             scope: 'parameter',
@@ -359,6 +368,7 @@ describe(parameters, () => {
       {
         kind: 'changed',
         target: 'parameter-description',
+        category: 'patch',
         a: {
           context: {
             scope: 'parameter',
@@ -406,6 +416,7 @@ describe(parameters, () => {
       {
         kind: 'changed',
         target: 'parameter-type',
+        category: 'major',
         a: {
           context: {
             scope: 'parameter',
@@ -453,6 +464,7 @@ describe(parameters, () => {
       {
         kind: 'changed',
         target: 'parameter-type-array',
+        category: 'major',
         a: {
           context: {
             scope: 'parameter',
@@ -502,6 +514,7 @@ describe(parameters, () => {
       {
         kind: 'changed',
         target: 'parameter-type-primitive',
+        category: 'major',
         a: {
           context: {
             scope: 'parameter',

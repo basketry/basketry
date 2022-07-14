@@ -126,6 +126,7 @@ describe(properties, () => {
         {
           kind: 'added',
           target: `${mode}-property`,
+          category: 'minor',
           b: {
             context: {
               scope: `${mode}-property`,
@@ -162,6 +163,7 @@ describe(properties, () => {
         {
           kind: 'added',
           target: `${mode}-property`,
+          category: 'major',
           b: {
             context: {
               scope: `${mode}-property`,
@@ -177,6 +179,7 @@ describe(properties, () => {
         {
           kind: 'added',
           target: 'required',
+          category: 'major',
           b: {
             context: {
               scope: `${mode}-property`,
@@ -208,6 +211,7 @@ describe(properties, () => {
         {
           kind: 'removed',
           target: `${mode}-property`,
+          category: mode === 'input' ? 'major' : 'minor',
           a: {
             context: {
               scope: `${mode}-property`,
@@ -244,6 +248,7 @@ describe(properties, () => {
         {
           kind: 'removed',
           target: `${mode}-property`,
+          category: 'major',
           a: {
             context: {
               scope: `${mode}-property`,
@@ -259,6 +264,7 @@ describe(properties, () => {
         {
           kind: 'removed',
           target: 'required',
+          category: 'minor',
           a: {
             context: {
               scope: `${mode}-property`,
@@ -292,6 +298,7 @@ describe(properties, () => {
         {
           kind: 'changed',
           target: `${mode}-property-name-casing`,
+          category: 'patch',
           a: {
             context: {
               scope: `${mode}-property`,
@@ -340,6 +347,7 @@ describe(properties, () => {
         {
           kind: 'changed',
           target: `${mode}-property-type`,
+          category: 'major',
           a: {
             context: {
               scope: `${mode}-property`,
@@ -386,6 +394,7 @@ describe(properties, () => {
         {
           kind: 'changed',
           target: `${mode}-property-type-array`,
+          category: 'major',
           a: {
             context: {
               scope: `${mode}-property`,
@@ -434,6 +443,7 @@ describe(properties, () => {
         {
           kind: 'changed',
           target: `${mode}-property-type-primitive`,
+          category: 'major',
           a: {
             context: {
               scope: `${mode}-property`,

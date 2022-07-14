@@ -35,6 +35,7 @@ export function* methods(
         yield {
           kind: 'changed',
           target: 'method-name-casing',
+          category: 'patch',
           a: {
             context: a_context,
             value: a_method.name.value,
@@ -51,6 +52,7 @@ export function* methods(
         yield {
           kind: 'removed',
           target: 'method-description',
+          category: 'patch',
           a: {
             context: a_context,
             ...asValue(a_method.description),
@@ -60,6 +62,7 @@ export function* methods(
         yield {
           kind: 'added',
           target: 'method-description',
+          category: 'patch',
           b: {
             context: b_context,
             ...asValue(b_method.description),
@@ -69,6 +72,7 @@ export function* methods(
         yield {
           kind: 'changed',
           target: 'method-description',
+          category: 'patch',
           a: {
             context: a_context,
             ...asValue(a_method.description),
@@ -89,6 +93,7 @@ export function* methods(
         yield {
           kind: 'removed',
           target: 'return-type',
+          category: 'major',
           a: {
             context: {
               scope: 'return-type',
@@ -105,6 +110,7 @@ export function* methods(
         yield {
           kind: 'added',
           target: 'return-type',
+          category: 'major',
           b: {
             context: {
               scope: 'return-type',
@@ -124,6 +130,7 @@ export function* methods(
       yield {
         kind: 'removed',
         target: 'method',
+        category: 'major',
         a: {
           context: a_context,
           value: a_method.name.value,
@@ -146,6 +153,7 @@ export function* methods(
       yield {
         kind: 'added',
         target: 'method',
+        category: 'minor',
         b: {
           context: b_context,
           value: b_method.name.value,
@@ -182,6 +190,7 @@ function* returnTypes(
     yield {
       kind: 'changed',
       target: 'return-type',
+      category: 'major',
       a: { context: a_context, ...asValue(a.returnType.typeName) },
       b: { context: b_context, ...asValue(b.returnType.typeName) },
     };
@@ -191,6 +200,7 @@ function* returnTypes(
     yield {
       kind: 'changed',
       target: 'return-type-primitive',
+      category: 'major',
       a: {
         context: a_context,
         value: a.returnType.isPrimitive,
@@ -208,6 +218,7 @@ function* returnTypes(
     yield {
       kind: 'changed',
       target: 'return-type-array',
+      category: 'major',
       a: {
         context: a_context,
         value: a.returnType.isArray,

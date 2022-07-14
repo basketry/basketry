@@ -65,6 +65,7 @@ describe(methods, () => {
       {
         kind: 'added',
         target: 'method',
+        category: 'minor',
         b: {
           context: {
             interface: 'interface name',
@@ -94,6 +95,7 @@ describe(methods, () => {
       {
         kind: 'removed',
         target: 'method',
+        category: 'major',
         a: {
           context: {
             interface: 'interface name',
@@ -125,6 +127,7 @@ describe(methods, () => {
       {
         kind: 'changed',
         target: 'method-name-casing',
+        category: 'patch',
         a: {
           context: {
             scope: 'method',
@@ -166,6 +169,7 @@ describe(methods, () => {
       {
         kind: 'added',
         target: 'method-description',
+        category: 'patch',
         b: {
           context: {
             scope: 'method',
@@ -198,6 +202,7 @@ describe(methods, () => {
       {
         kind: 'removed',
         target: 'method-description',
+        category: 'patch',
         a: {
           context: {
             scope: 'method',
@@ -234,6 +239,7 @@ describe(methods, () => {
       {
         kind: 'changed',
         target: 'method-description',
+        category: 'patch',
         a: {
           context: {
             scope: 'method',
@@ -294,6 +300,7 @@ describe(methods, () => {
       {
         kind: 'added',
         target: 'return-type',
+        category: 'major',
         b: {
           context: {
             scope: 'return-type',
@@ -327,6 +334,7 @@ describe(methods, () => {
       {
         kind: 'removed',
         target: 'return-type',
+        category: 'major',
         a: {
           context: {
             scope: 'return-type',
@@ -363,6 +371,7 @@ describe(methods, () => {
       {
         kind: 'changed',
         target: 'return-type',
+        category: 'major',
         a: {
           context: {
             scope: 'return-type',
@@ -414,6 +423,7 @@ describe(methods, () => {
       {
         kind: 'changed',
         target: 'return-type-array',
+        category: 'major',
         a: {
           context: {
             scope: 'return-type',
@@ -467,6 +477,7 @@ describe(methods, () => {
       {
         kind: 'changed',
         target: 'return-type-primitive',
+        category: 'major',
         a: {
           context: {
             scope: 'return-type',

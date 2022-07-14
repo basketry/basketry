@@ -36,6 +36,7 @@ export function* properties(
         yield {
           kind: 'changed',
           target: `${mode}-property-name-casing`,
+          category: 'patch',
           a: { context: a_context, value: a_prop.name.value, loc: a_prop.loc },
           b: { context: b_context, value: b_prop.name.value, loc: b_prop.loc },
         };
@@ -46,6 +47,7 @@ export function* properties(
         yield {
           kind: 'changed',
           target: `${mode}-property-type`,
+          category: 'major',
           a: { context: a_context, ...asValue(a_prop.typeName) },
           b: { context: b_context, ...asValue(b_prop.typeName) },
         };
@@ -54,6 +56,7 @@ export function* properties(
         yield {
           kind: 'changed',
           target: `${mode}-property-type-primitive`,
+          category: 'major',
           a: {
             context: a_context,
             value: a_prop.isPrimitive,
@@ -70,6 +73,7 @@ export function* properties(
         yield {
           kind: 'changed',
           target: `${mode}-property-type-array`,
+          category: 'major',
           a: {
             context: a_context,
             value: a_prop.isArray,
@@ -92,6 +96,11 @@ export function* properties(
       yield {
         kind: 'removed',
         target: `${mode}-property`,
+        category: isRequired(a_prop)
+          ? 'major'
+          : mode === 'input'
+          ? 'major'
+          : 'minor',
         a: { context: a_context, value: a_prop.name.value, loc: a_prop.loc },
       };
 
@@ -99,6 +108,7 @@ export function* properties(
         yield {
           kind: 'removed',
           target: 'required',
+          category: 'minor',
           a: { context: a_context, value: a_prop.name.value, loc: a_prop.loc },
         };
       }
@@ -113,6 +123,7 @@ export function* properties(
       yield {
         kind: 'added',
         target: `${mode}-property`,
+        category: isRequired(b_prop) ? 'major' : 'minor',
         b: { context: b_context, value: b_prop.name.value, loc: b_prop.loc },
       };
 
@@ -120,6 +131,7 @@ export function* properties(
         yield {
           kind: 'added',
           target: 'required',
+          category: 'major',
           b: { context: b_context, value: b_prop.name.value, loc: b_prop.loc },
         };
       }

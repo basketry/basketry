@@ -113,6 +113,7 @@ describe(enums, () => {
         {
           kind: 'added',
           target: `${mode}-enum`,
+          category: 'major',
           b: {
             context: {
               scope: `${mode}-enum`,
@@ -142,6 +143,7 @@ describe(enums, () => {
         {
           kind: 'removed',
           target: `${mode}-enum`,
+          category: 'major',
           a: {
             context: {
               scope: `${mode}-enum`,
@@ -173,6 +175,7 @@ describe(enums, () => {
         {
           kind: 'changed',
           target: `${mode}-enum-name-casing`,
+          category: 'patch',
           a: {
             context: {
               scope: `${mode}-enum`,
@@ -218,6 +221,7 @@ describe(enums, () => {
         {
           kind: 'added',
           target: `${mode}-enum-value`,
+          category: mode === 'input' ? 'minor' : 'major',
           b: {
             context: {
               scope: `${mode}-enum`,
@@ -256,6 +260,7 @@ describe(enums, () => {
         {
           kind: 'removed',
           target: `${mode}-enum-value`,
+          category: mode === 'input' ? 'major' : 'minor',
           a: {
             context: {
               scope: `${mode}-enum`,
@@ -293,6 +298,7 @@ describe(enums, () => {
         {
           kind: 'changed',
           target: `${mode}-enum-value-casing`,
+          category: 'major',
           a: {
             context: {
               scope: `${mode}-enum`,

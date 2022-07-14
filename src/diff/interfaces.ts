@@ -25,6 +25,7 @@ export function* interfaces(
         yield {
           kind: 'changed',
           target: 'interface-name-casing',
+          category: 'patch',
           a: { context: a_context, ...asValue(a_int.name) },
           b: { context: b_context, ...asValue(b_int.name) },
         };
@@ -33,18 +34,21 @@ export function* interfaces(
         yield {
           kind: 'removed',
           target: 'interface-description',
+          category: 'patch',
           a: { context: a_context, ...asValue(a_int.description) },
         };
       } else if (!a_int.description && b_int.description) {
         yield {
           kind: 'added',
           target: 'interface-description',
+          category: 'patch',
           b: { context: b_context, ...asValue(b_int.description) },
         };
       } else if (!eq(a_int.description, b_int.description)) {
         yield {
           kind: 'changed',
           target: 'interface-description',
+          category: 'patch',
           a: { context: a_context, ...asValue(a_int.description) },
           b: { context: b_context, ...asValue(b_int.description) },
         };
@@ -55,6 +59,7 @@ export function* interfaces(
       yield {
         kind: 'removed',
         target: 'interface',
+        category: 'major',
         a: { context: a_context, value: a_int.name },
       };
     }
@@ -71,6 +76,7 @@ export function* interfaces(
       yield {
         kind: 'added',
         target: 'interface',
+        category: 'minor',
         b: { context: b_context, value: b_int.name },
       };
     }

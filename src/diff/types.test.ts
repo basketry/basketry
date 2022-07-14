@@ -112,6 +112,7 @@ describe(types, () => {
         {
           kind: 'added',
           target: `${mode}-type`,
+          category: 'minor',
           b: {
             context: {
               scope: `${mode}-type`,
@@ -141,6 +142,7 @@ describe(types, () => {
         {
           kind: 'removed',
           target: `${mode}-type`,
+          category: 'major',
           a: {
             context: {
               scope: `${mode}-type`,
@@ -172,6 +174,7 @@ describe(types, () => {
         {
           kind: 'changed',
           target: `${mode}-type-name-casing`,
+          category: 'patch',
           a: {
             context: {
               scope: `${mode}-type`,
