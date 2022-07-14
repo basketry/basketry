@@ -176,22 +176,6 @@ describe(properties, () => {
             value: propertyName,
           },
         },
-        {
-          kind: 'added',
-          target: 'required',
-          category: 'major',
-          b: {
-            context: {
-              scope: `${mode}-property`,
-              service: title,
-              type: typeName,
-              property: propertyName,
-              required: true,
-            },
-            loc: '1;1;0',
-            value: propertyName,
-          },
-        },
       ]);
     });
 
@@ -249,22 +233,6 @@ describe(properties, () => {
           kind: 'removed',
           target: `${mode}-property`,
           category: 'major',
-          a: {
-            context: {
-              scope: `${mode}-property`,
-              service: title,
-              type: typeName,
-              property: propertyName,
-              required: true,
-            },
-            loc: '1;1;0',
-            value: propertyName,
-          },
-        },
-        {
-          kind: 'removed',
-          target: 'required',
-          category: 'minor',
           a: {
             context: {
               scope: `${mode}-property`,

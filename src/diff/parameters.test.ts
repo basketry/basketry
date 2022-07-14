@@ -124,23 +124,6 @@ describe(parameters, () => {
           loc: '1;1;0',
         },
       },
-      {
-        kind: 'added',
-        target: 'required',
-        category: 'major',
-        b: {
-          context: {
-            scope: 'parameter',
-            service: title,
-            interface: interfaceName,
-            method: methodName,
-            parameter: parameterName,
-            required: true,
-          },
-          value: parameterName,
-          loc: '1;1;0',
-        },
-      },
     ]);
   });
 
@@ -197,23 +180,6 @@ describe(parameters, () => {
         kind: 'removed',
         target: 'parameter',
         category: 'major',
-        a: {
-          context: {
-            scope: 'parameter',
-            service: title,
-            interface: interfaceName,
-            method: methodName,
-            parameter: parameterName,
-            required: true,
-          },
-          value: parameterName,
-          loc: '1;1;0',
-        },
-      },
-      {
-        kind: 'removed',
-        target: 'required',
-        category: 'minor',
         a: {
           context: {
             scope: 'parameter',
