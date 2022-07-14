@@ -103,15 +103,6 @@ export function* properties(
           : 'minor',
         a: { context: a_context, value: a_prop.name.value, loc: a_prop.loc },
       };
-
-      if (isRequired(a_prop)) {
-        yield {
-          kind: 'removed',
-          target: 'required',
-          category: 'minor',
-          a: { context: a_context, value: a_prop.name.value, loc: a_prop.loc },
-        };
-      }
     }
   }
 
@@ -126,15 +117,6 @@ export function* properties(
         category: isRequired(b_prop) ? 'major' : 'minor',
         b: { context: b_context, value: b_prop.name.value, loc: b_prop.loc },
       };
-
-      if (isRequired(b_prop)) {
-        yield {
-          kind: 'added',
-          target: 'required',
-          category: 'major',
-          b: { context: b_context, value: b_prop.name.value, loc: b_prop.loc },
-        };
-      }
     }
   }
 }

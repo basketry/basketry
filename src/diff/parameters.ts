@@ -126,19 +126,6 @@ export function* parameters(
           loc: a_param.loc,
         },
       };
-
-      if (isRequired(a_param)) {
-        yield {
-          kind: 'removed',
-          target: 'required',
-          category: 'minor',
-          a: {
-            context: a_context,
-            value: a_param.name.value,
-            loc: a_param.loc,
-          },
-        };
-      }
     }
   }
 
@@ -158,19 +145,6 @@ export function* parameters(
           loc: b_param.loc,
         },
       };
-
-      if (isRequired(b_param)) {
-        yield {
-          kind: 'added',
-          target: 'required',
-          category: 'major',
-          b: {
-            context: b_context,
-            value: b_param.name.value,
-            loc: b_param.loc,
-          },
-        };
-      }
     }
   }
 }
