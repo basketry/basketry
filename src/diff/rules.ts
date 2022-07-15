@@ -242,11 +242,12 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
     const b_context = buildContext(mode, b);
 
     if (!a_rule) {
+      const { value, loc } = asValue(b_rule);
       yield {
         kind: 'added',
         target: b_rule.id,
         category: 'major',
-        b: { context: b_context, ...asValue(b_rule) },
+        b: { context: b_context, value, loc }, // TODO: handle fall-back loc
       };
     }
   }
