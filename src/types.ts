@@ -1,6 +1,8 @@
 export type Config = LocalConfig | GlobalConfig;
 
-export type LocalConfig = {
+export type LocalConfig<
+  TOptions extends NamespacedBasketryOptions = NamespacedBasketryOptions,
+> = {
   /** CommonJS module that contains the Parser function */
   parser: string;
   /** Array of CommonJS modules that contain Rule functions */
@@ -12,7 +14,18 @@ export type LocalConfig = {
   /** The folder in which to output all generated files. */
   output?: string;
   /** Common options passed only to all generators. These common options will be overridden by generator-specific options. */
-  options?: any;
+  options?: TOptions;
+};
+
+export interface NamespacedBasketryOptions {
+  basketry?: BasketryOptions;
+  [x: string | number | symbol]: unknown;
+}
+
+export type BasketryOptions = {
+  command?: string;
+  docs?: string;
+  subfolder?: string;
 };
 
 export type GlobalConfig = {
