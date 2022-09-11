@@ -124,12 +124,12 @@ export function decodeRange(range: string | null | undefined): Range {
   }
 }
 
-export function withGitattributes(files: File[]): File[] {
+export function withGitattributes(files: File[], output?: string): File[] {
   if (!files.length) return files;
   return [
     ...files,
     {
-      path: ['.gitattributes'],
+      path: [output, '.gitattributes'].filter((x): x is string => !!x),
       contents:
         warning() +
         files
