@@ -5,6 +5,7 @@ import { join, relative, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
 
 import { merge as webpackMerge } from 'webpack-merge';
+import { NamespacedBasketryOptions } from '.';
 import { withGitattributes } from './helpers';
 
 import {
@@ -124,6 +125,7 @@ export class Engine {
           this.input.generators,
           this.input.configPath,
           this.input.options,
+          this.input.output,
         );
         this.generators = fns;
         this.pushErrors(...errors);
@@ -176,7 +178,7 @@ export class Engine {
           fns: this.generators,
           service: this._service,
         });
-        this._files.push(...files);
+        this._files.push(...withGitattributes(files, this.input.output));
         this.pushErrors(...errors);
         this.pushViolations(...violations);
         this.generatorsRun = true;
@@ -443,7 +445,7 @@ async function getRemoved(created: File[]): Promise<string[]> {
           attribute === 'linguist-generated' ||
           attribute === 'linguist-generated=true',
       )
-      .map(([file]) => join(...outputPath, file))
+      .map(([file]) => file)
       .filter((file) => !createdPaths.has(file));
   } catch {
     return [];
@@ -635,7 +637,7 @@ function runGenerators(options: { fns: Generator[]; service: Service }): {
   performance.mark('generators-end');
   performance.measure('generators', 'generators-start', 'generators-end');
 
-  return { files: withGitattributes(files), errors, violations };
+  return { files, errors, violations };
 }
 
 async function getSource(
@@ -719,6 +721,7 @@ function getGenerators(
   moduleNames: (string | GeneratorOptions)[],
   configPath: string | undefined,
   commonOptions: any,
+  output?: string,
 ): {
   fns: Generator[];
   errors: BasketryError[];
@@ -735,8 +738,24 @@ function getGenerators(
         const { fn, errors } = loadModule<Generator>(moduleName, configPath);
 
         const gen: Generator | undefined = fn
-          ? (service, localOptions) =>
-              fn(service, merge(commonOptions, generatorOptions, localOptions))
+          ? (service, localOptions) => {
+              const options: NamespacedBasketryOptions = merge(
+                commonOptions,
+                generatorOptions,
+                localOptions,
+              );
+
+              const files = fn(service, options);
+
+              return files.map((file) => ({
+                ...file,
+                path: [
+                  output,
+                  options?.basketry?.subfolder,
+                  ...file.path,
+                ].filter((seg): seg is string => !!seg),
+              }));
+            }
           : undefined;
 
         if (gen) componentNames.set(gen, moduleName);
