@@ -445,7 +445,7 @@ async function getRemoved(created: File[]): Promise<string[]> {
           attribute === 'linguist-generated' ||
           attribute === 'linguist-generated=true',
       )
-      .map(([file]) => file)
+      .map(([file]) => join(...outputPath, file))
       .filter((file) => !createdPaths.has(file));
   } catch {
     return [];

@@ -1,5 +1,5 @@
 import { EOL } from 'os';
-import { join } from 'path';
+import { join, relative } from 'path';
 import {
   ApiKeyScheme,
   BasicScheme,
@@ -133,7 +133,14 @@ export function withGitattributes(files: File[], output?: string): File[] {
       contents:
         warning() +
         files
-          .map((file) => `${join(...file.path)} linguist-generated=true${EOL}`)
+          .map(
+            (file) =>
+              `${
+                output
+                  ? relative(output, join(...file.path))
+                  : join(...file.path)
+              } linguist-generated=true${EOL}`,
+          )
           .join(''),
     },
   ];
