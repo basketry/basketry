@@ -152,6 +152,32 @@ Remove previously generated files with the `basketry clean` command.
 
 This command takes the same `config` and `output` arguments as the `generate` command.
 
+## `ci` command
+
+Verify that:
+
+1. Re-running the generator does not produce any changes to generated files
+1. There are no rule violations
+1. There are no errors encountered when running any of the pipeline components
+
+This command is designed to run in a Continuous Integration pipeline to ensure that the generator has been run and that there haven't been any manual changes made to any generated files. If any of those three checks find something, the process will exit with a non-zero code.
+
+(Note that the changes that _only_ affect the version number in the generated file header will be ignored.)
+
+### Severity filter
+
+Use `--severity` to specify the minimum rule violation severity level that will fail the command:
+
+```
+basketry ci --severity error
+```
+
+The default severity level is `warning`. This means that both `error` and `warning` severity levels will cause the command to exit with a non-zero code. Valid values are `error`, `warning`, and `info`.
+
+### Other arguments
+
+This command takes the same `source`, `parser`, `rules`, `config`, `json`, and `perf` arguments as the `generate` command.
+
 ## Advanced Usage
 
 ### Multiple configs
