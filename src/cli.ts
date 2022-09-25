@@ -4,7 +4,8 @@ import { hideBin } from 'yargs/helpers';
 import yargs = require('yargs/yargs');
 import chalk from 'chalk';
 
-import { clean, diff, generate, validate } from './commands';
+import { ci, clean, diff, generate, validate } from './commands';
+import { Severity } from './types';
 
 const { argv } = yargs(hideBin(process.argv))
   .strictCommands()
@@ -260,6 +261,88 @@ const { argv } = yargs(hideBin(process.argv))
         minor,
         patch,
         reference: reference as any,
+      });
+    },
+  )
+  .command(
+    ['ci'],
+    'af',
+    (y) => {
+      return y
+        .option('severity', {
+          string: true,
+          description:
+            'The minimum violation severity level that will fail the command.',
+          default: 'warning',
+          requiresArg: true,
+          choices: ['error', 'warning', 'info'],
+        })
+        .option('config', {
+          alias: 'c',
+          string: true,
+          description:
+            'Path to the config file. Defaults to basketry.conifg.json.',
+          default: 'basketry.config.json',
+          requiresArg: true,
+        })
+        .option('parser', {
+          alias: 'p',
+          string: true,
+          description: 'The parser',
+          requiresArg: true,
+        })
+        .option('source', {
+          alias: 's',
+          string: true,
+          description:
+            'Path to an SDL file. Reads from stdin if omitted and config is not found.',
+          requiresArg: true,
+        })
+        .option('output', {
+          alias: 'o',
+          string: true,
+          description:
+            'Path of the output folder. Writes to the current working directory if omitted and config is not found.',
+          requiresArg: true,
+        })
+        .option('generators', {
+          alias: 'g',
+          string: true,
+          array: true,
+          description: `Generators`,
+          requiresArg: true,
+        })
+        .option('rules', {
+          alias: 'r',
+          string: true,
+          array: true,
+          description: `Rules`,
+          requiresArg: true,
+        });
+    },
+    (args) => {
+      const {
+        severity,
+        config,
+        parser,
+        source,
+        output,
+        generators,
+        rules,
+        json,
+      } = args;
+
+      const sev = severity as unknown as Severity;
+
+      ci({
+        severity: sev,
+        config,
+        parser,
+        source,
+        output,
+        generators,
+        rules,
+        json,
       });
     },
   );
