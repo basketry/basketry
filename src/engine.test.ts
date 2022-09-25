@@ -489,4 +489,20 @@ describe('engine', () => {
       files: [],
     });
   });
+
+  it('returns only unique rule violations', () => {
+    // ACT
+    const result = run({
+      sourcePath: 'some-file.ext',
+      sourceContent: 'some content',
+      configPath: 'some-config.ext',
+      parser: 'src/test-modules/parser',
+      generators: ['src/test-modules/generator'],
+      rules: ['src/test-modules/rule-that-returns-duplicate-violations'],
+      validate: false,
+    });
+
+    // ASSERT
+    expect(result.violations.length).toEqual(1);
+  });
 });

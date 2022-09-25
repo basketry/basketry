@@ -6,7 +6,7 @@ import { performance } from 'perf_hooks';
 
 import { merge as webpackMerge } from 'webpack-merge';
 import { NamespacedBasketryOptions } from '.';
-import { withGitattributes } from './helpers';
+import { encodeRange, withGitattributes } from './helpers';
 
 import {
   BasketryError,
@@ -47,6 +47,7 @@ export class Engine {
   private readonly _errors: BasketryError[] = [];
   private readonly _violations: Violation[] = [];
   private readonly _filesByFilepath: Map<string, File> = new Map();
+  private readonly _violationsByRange = new Map<string, Violation[]>();
 
   public get files() {
     return this._files;
@@ -267,16 +268,34 @@ export class Engine {
   }
 
   private pushViolations(...violations: Violation[]) {
-    this._violations.push(...violations);
-    if (this.events?.onViolation) {
-      for (const violation of violations) {
-        try {
-          const line = this.getLine(
-            violation.sourcePath,
-            violation.range.start.line,
-          );
-          this.events?.onViolation?.(violation, line);
-        } catch {}
+    for (const violation of violations) {
+      const range = encodeRange(violation.range);
+      if (!this._violationsByRange.has(range)) {
+        this._violationsByRange.set(range, []);
+      }
+      const sameLocation = this._violationsByRange.get(range)!;
+
+      const existing = sameLocation.find(
+        (v) =>
+          v.code === violation.code &&
+          v.message === violation.message &&
+          v.severity === violation.severity &&
+          v.sourcePath === violation.sourcePath,
+      );
+
+      if (!existing) {
+        sameLocation.push(violation);
+        this._violations.push(violation);
+
+        if (this.events?.onViolation) {
+          try {
+            const line = this.getLine(
+              violation.sourcePath,
+              violation.range.start.line,
+            );
+            this.events?.onViolation?.(violation, line);
+          } catch {}
+        }
       }
     }
   }
