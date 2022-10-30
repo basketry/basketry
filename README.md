@@ -146,11 +146,19 @@ Validate the source per the supplied rules with the `basketry validate` command 
 
 This command takes the same `source`, `parser`, `rules`, `config`, `json`, and `perf` arguments as the `generate` command.
 
+```
+basketry validate --json
+```
+
 ## `clean` command
 
 Remove previously generated files with the `basketry clean` command.
 
 This command takes the same `config` and `output` arguments as the `generate` command.
+
+```
+basketry clean
+```
 
 ## `ci` command
 
