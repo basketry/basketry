@@ -190,7 +190,7 @@ This command takes the same `source`, `parser`, `rules`, `config`, `json`, and `
 
 Compare two versions of a service definition with the `basketry diff` command.
 
-This command takes the same `source`, `parser`, and  `config` arguments as the `generate` command.
+This command takes the same `source`, `parser`, and `config` arguments as the `generate` command.
 
 The command compares the source file specified in the config with a reference source file path passed as an argument. The command assumes that the reference source file describes the service as it currently exists in a production environment and that the source file specified in the config describes the proposed new definition. Breaking changes are determined based on the proposed changes compared to the current production state.
 
