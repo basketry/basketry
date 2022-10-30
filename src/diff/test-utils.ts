@@ -1,6 +1,7 @@
 import { Scalar, ValidationRule } from '..';
 import {
   Enum,
+  EnumValue,
   Interface,
   Method,
   Parameter,
@@ -96,20 +97,24 @@ export function buildEnum(e?: Partial<Enum>): Enum {
   return {
     name: { value: 'my_enum' },
     values: [
-      buildEnumValue({ value: 'some_value' }),
-      buildEnumValue({ value: 'other_value' }),
+      buildEnumValue({ content: { value: 'some_value' } }),
+      buildEnumValue({ content: { value: 'other_value' } }),
     ],
     loc: '1;1;0',
     ...e,
   };
 }
 
-export function buildEnumValue(
-  value?: Partial<Scalar<string>>,
-): Scalar<string> {
+export function buildEnumValue(value?: Partial<EnumValue>): EnumValue {
   return {
-    value: 'my_enum_value',
+    content: { value: 'my_enum_value' },
     loc: '1;1;0',
     ...value,
   };
+}
+
+export function buildScalar<T extends string | number | boolean | null>(
+  value: T,
+): Scalar<T> {
+  return { value, loc: '1;1;0' };
 }

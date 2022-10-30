@@ -2003,73 +2003,73 @@
     {
       "name": { "value": "createGizmoSize" },
       "values": [
-        { "value": "small", "loc": "1;1;0" },
-        { "value": "medium", "loc": "1;1;0" },
-        { "value": "big", "loc": "1;1;0" },
-        { "value": "XL", "loc": "1;1;0" }
+        { "content": { "value": "small" }, "loc": "1;1;0" },
+        { "content": { "value": "medium" }, "loc": "1;1;0" },
+        { "content": { "value": "big" }, "loc": "1;1;0" },
+        { "content": { "value": "XL" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
       "name": { "value": "exhaustiveParamsQueryEnum" },
       "values": [
-        { "value": "one", "loc": "1;1;0" },
-        { "value": "two", "loc": "1;1;0" },
-        { "value": "three", "loc": "1;1;0" }
+        { "content": { "value": "one" }, "loc": "1;1;0" },
+        { "content": { "value": "two" }, "loc": "1;1;0" },
+        { "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
       "name": { "value": "exhaustiveParamsQueryEnumArray" },
       "values": [
-        { "value": "one", "loc": "1;1;0" },
-        { "value": "two", "loc": "1;1;0" },
-        { "value": "three", "loc": "1;1;0" }
+        { "content": { "value": "one" }, "loc": "1;1;0" },
+        { "content": { "value": "two" }, "loc": "1;1;0" },
+        { "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
       "name": { "value": "exhaustiveParamsPathEnum" },
       "values": [
-        { "value": "one", "loc": "1;1;0" },
-        { "value": "two", "loc": "1;1;0" },
-        { "value": "three", "loc": "1;1;0" }
+        { "content": { "value": "one" }, "loc": "1;1;0" },
+        { "content": { "value": "two" }, "loc": "1;1;0" },
+        { "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
       "name": { "value": "exhaustiveParamsPathEnumArray" },
       "values": [
-        { "value": "one", "loc": "1;1;0" },
-        { "value": "two", "loc": "1;1;0" },
-        { "value": "three", "loc": "1;1;0" }
+        { "content": { "value": "one" }, "loc": "1;1;0" },
+        { "content": { "value": "two" }, "loc": "1;1;0" },
+        { "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
       "name": { "value": "exhaustiveParamsHeaderEnum" },
       "values": [
-        { "value": "one", "loc": "1;1;0" },
-        { "value": "two", "loc": "1;1;0" },
-        { "value": "three", "loc": "1;1;0" }
+        { "content": { "value": "one" }, "loc": "1;1;0" },
+        { "content": { "value": "two" }, "loc": "1;1;0" },
+        { "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
       "name": { "value": "exhaustiveParamsHeaderEnumArray" },
       "values": [
-        { "value": "one", "loc": "1;1;0" },
-        { "value": "two", "loc": "1;1;0" },
-        { "value": "three", "loc": "1;1;0" }
+        { "content": { "value": "one" }, "loc": "1;1;0" },
+        { "content": { "value": "two" }, "loc": "1;1;0" },
+        { "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
       "name": { "value": "productSize", "loc": "1;1;0" },
       "values": [
-        { "value": "small", "loc": "1;1;0" },
-        { "value": "medium", "loc": "1;1;0" },
-        { "value": "large", "loc": "1;1;0" }
+        { "content": { "value": "small" }, "loc": "1;1;0" },
+        { "content": { "value": "medium" }, "loc": "1;1;0" },
+        { "content": { "value": "large" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     }

@@ -60,12 +60,16 @@ export type ChangeTarget =
   //
   | 'input-enum'
   | 'input-enum-name-casing'
+  | 'input-enum-description'
   | 'input-enum-value'
   | 'input-enum-value-casing'
+  | 'input-enum-value-description'
   | 'output-enum'
   | 'output-enum-name-casing'
+  | 'output-enum-description'
   | 'output-enum-value'
   | 'output-enum-value-casing'
+  | 'output-enum-value-description'
   | ValidationRule['id'];
 
 export type ChangeContext =
@@ -243,12 +247,16 @@ export type PropertyChangeInfo = ChangeInfoKind<
 export type EnumChangeInfo = ChangeInfoKind<
   | 'input-enum'
   | 'input-enum-name-casing'
+  | 'input-enum-description'
   | 'input-enum-value'
   | 'input-enum-value-casing'
+  | 'input-enum-value-description'
   | 'output-enum'
   | 'output-enum-name-casing'
+  | 'output-enum-description'
   | 'output-enum-value'
-  | 'output-enum-value-casing',
+  | 'output-enum-value-casing'
+  | 'output-enum-value-description',
   EnumContext
 >;
 

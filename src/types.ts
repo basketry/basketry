@@ -233,7 +233,15 @@ export type Type = {
 
 export type Enum = {
   name: Scalar<string>;
-  values: Scalar<string>[];
+  description?: Scalar<string> | Scalar<string>[];
+  values: EnumValue[];
+  loc: string;
+  meta?: Meta;
+};
+
+export type EnumValue = {
+  content: Scalar<string>;
+  description?: Scalar<string> | Scalar<string>[];
   loc: string;
   meta?: Meta;
 };

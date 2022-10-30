@@ -169,10 +169,32 @@
       "required": ["name", "values", "loc"],
       "properties": {
         "name": { "$ref": "#/definitions/string" },
+        "description": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "type": "array", "items": { "$ref": "#/definitions/string" } }
+          ]
+        },
         "values": {
           "type": "array",
-          "items": { "$ref": "#/definitions/string" },
+          "items": { "$ref": "#/definitions/enumValue" },
           "minItems": 1
+        },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+    "enumValue": {
+      "type": "object",
+      "required": ["content", "loc"],
+      "properties": {
+        "content": { "$ref": "#/definitions/string" },
+        "description": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "type": "array", "items": { "$ref": "#/definitions/string" } }
+          ]
         },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }

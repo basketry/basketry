@@ -36,17 +36,37 @@ export function* enums(
         };
       }
 
+      if (!eq(a_enum.description, b_enum.description)) {
+        yield {
+          kind: 'changed',
+          target: `${mode}-enum-description`,
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_enum.description) },
+          b: { context: b_context, ...asValue(b_enum.description) },
+        };
+      }
+
       for (const a_value of a_enum.values) {
-        const b_value = cache.getEnumValue(b_enum, a_value.value);
+        const b_value = cache.getEnumValue(b_enum, a_value.content.value);
 
         if (b_value) {
-          if (!eq(a_value, b_value)) {
+          if (!eq(a_value.content, b_value.content)) {
             yield {
               kind: 'changed',
               target: `${mode}-enum-value-casing`,
               category: 'major',
-              a: { context: a_context, ...asValue(a_value) },
-              b: { context: b_context, ...asValue(b_value) },
+              a: { context: a_context, ...asValue(a_value.content) },
+              b: { context: b_context, ...asValue(b_value.content) },
+            };
+          }
+
+          if (!eq(a_value.description, b_value.description)) {
+            yield {
+              kind: 'changed',
+              target: `${mode}-enum-value-description`,
+              category: 'major',
+              a: { context: a_context, ...asValue(a_value.description) },
+              b: { context: b_context, ...asValue(b_value.description) },
             };
           }
         } else {
@@ -54,20 +74,20 @@ export function* enums(
             kind: 'removed',
             target: `${mode}-enum-value`,
             category: mode === 'input' ? 'major' : 'minor',
-            a: { context: b_context, ...asValue(a_value) },
+            a: { context: b_context, ...asValue(a_value.content) },
           };
         }
       }
 
       for (const b_value of b_enum.values) {
-        const a_value = cache.getEnumValue(a_enum, b_value.value);
+        const a_value = cache.getEnumValue(a_enum, b_value.content.value);
 
         if (a_value === undefined) {
           yield {
             kind: 'added',
             target: `${mode}-enum-value`,
             category: mode === 'input' ? 'minor' : 'major',
-            b: { context: b_context, ...asValue(b_value) },
+            b: { context: b_context, ...asValue(b_value.content) },
           };
         }
       }

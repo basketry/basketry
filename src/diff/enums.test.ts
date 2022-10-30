@@ -8,6 +8,7 @@ import {
   buildMethod,
   buildParameter,
   buildReturnType,
+  buildScalar,
   buildService,
 } from './test-utils';
 
@@ -196,19 +197,64 @@ describe(enums, () => {
       ]);
     });
 
+    it('identifies a changed enum description', () => {
+      // ARRANGE
+      const originalDescription = 'some description';
+      const newDescription = 'another description';
+      const [a, b] = setup(
+        mode,
+        buildEnum({
+          name: { value: enumName },
+          description: { value: originalDescription },
+        }),
+        buildEnum({
+          name: { value: enumName },
+          description: { value: newDescription },
+        }),
+      );
+
+      // ACT
+      const result = enums(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
+        {
+          kind: 'changed',
+          target: `${mode}-enum-description`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-enum`,
+              service: title,
+              enum: enumName,
+            },
+            value: originalDescription,
+          },
+          b: {
+            context: {
+              scope: `${mode}-enum`,
+              service: title,
+              enum: enumName,
+            },
+            value: newDescription,
+          },
+        },
+      ]);
+    });
+
     it('identifies an added enum value', () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
         buildEnum({
           name: { value: enumName },
-          values: [buildEnumValue({ value: 'first' })],
+          values: [buildEnumValue({ content: buildScalar('first') })],
         }),
         buildEnum({
           name: { value: enumName },
           values: [
-            buildEnumValue({ value: 'first' }),
-            buildEnumValue({ value: 'second' }),
+            buildEnumValue({ content: buildScalar('first') }),
+            buildEnumValue({ content: buildScalar('second') }),
           ],
         }),
       );
@@ -242,13 +288,13 @@ describe(enums, () => {
         buildEnum({
           name: { value: enumName },
           values: [
-            buildEnumValue({ value: 'first' }),
-            buildEnumValue({ value: 'second' }),
+            buildEnumValue({ content: buildScalar('first') }),
+            buildEnumValue({ content: buildScalar('second') }),
           ],
         }),
         buildEnum({
           name: { value: enumName },
-          values: [buildEnumValue({ value: 'first' })],
+          values: [buildEnumValue({ content: buildScalar('first') })],
         }),
       );
 
@@ -282,11 +328,11 @@ describe(enums, () => {
         mode,
         buildEnum({
           name: { value: enumName },
-          values: [buildEnumValue({ value: originalValue })],
+          values: [buildEnumValue({ content: buildScalar(originalValue) })],
         }),
         buildEnum({
           name: { value: enumName },
-          values: [buildEnumValue({ value: newValue })],
+          values: [buildEnumValue({ content: buildScalar(newValue) })],
         }),
       );
 
@@ -315,6 +361,57 @@ describe(enums, () => {
               enum: enumName,
             },
             value: newValue,
+            loc: '1;1;0',
+          },
+        },
+      ]);
+    });
+
+    it('identifies a changed enum value description', () => {
+      // ARRANGE
+      const originalDescription = 'some description';
+      const newDescription = 'another description';
+      const [a, b] = setup(
+        mode,
+        buildEnum({
+          name: { value: enumName },
+          values: [
+            buildEnumValue({ description: buildScalar(originalDescription) }),
+          ],
+        }),
+        buildEnum({
+          name: { value: enumName },
+          values: [
+            buildEnumValue({ description: buildScalar(newDescription) }),
+          ],
+        }),
+      );
+
+      // ACT
+      const result = enums(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
+        {
+          kind: 'changed',
+          target: `${mode}-enum-value-description`,
+          category: 'major',
+          a: {
+            context: {
+              scope: `${mode}-enum`,
+              service: title,
+              enum: enumName,
+            },
+            value: originalDescription,
+            loc: '1;1;0',
+          },
+          b: {
+            context: {
+              scope: `${mode}-enum`,
+              service: title,
+              enum: enumName,
+            },
+            value: newDescription,
             loc: '1;1;0',
           },
         },
