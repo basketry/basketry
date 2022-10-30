@@ -96,7 +96,7 @@ describe(parameters, () => {
       undefined,
       buildParameter({
         name: { value: parameterName },
-        rules: [{ id: 'required' }],
+        rules: [{ kind: 'ValidationRule', id: 'required' }],
       }),
     );
 
@@ -164,7 +164,7 @@ describe(parameters, () => {
     const [a, b] = setup(
       buildParameter({
         name: { value: parameterName },
-        rules: [{ id: 'required' }],
+        rules: [{ kind: 'ValidationRule', id: 'required' }],
       }),
       undefined,
     );

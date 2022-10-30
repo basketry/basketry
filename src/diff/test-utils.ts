@@ -13,6 +13,7 @@ import {
 
 export function buildService(service?: Partial<Service>): Service {
   return {
+    kind: 'Service',
     basketry: '1.1-rc',
     sourcePath: 'path/file.ext',
     title: { value: 'my service' },
@@ -28,6 +29,7 @@ export function buildService(service?: Partial<Service>): Service {
 
 export function buildInterface(int?: Partial<Interface>): Interface {
   return {
+    kind: 'Interface',
     name: 'my_interface',
     methods: [],
     protocols: {
@@ -39,6 +41,7 @@ export function buildInterface(int?: Partial<Interface>): Interface {
 
 export function buildMethod(method?: Partial<Method>): Method {
   return {
+    kind: 'Method',
     name: { value: 'my_method' },
     parameters: [],
     security: [],
@@ -50,6 +53,7 @@ export function buildMethod(method?: Partial<Method>): Method {
 
 export function buildParameter(parameter?: Partial<Parameter>): Parameter {
   return {
+    kind: 'Parameter',
     name: { value: 'my_parameter' },
     isArray: false,
     isPrimitive: true,
@@ -62,6 +66,7 @@ export function buildParameter(parameter?: Partial<Parameter>): Parameter {
 
 export function buildReturnType(returnType?: Partial<ReturnType>): ReturnType {
   return {
+    kind: 'ReturnType',
     isArray: false,
     isPrimitive: true,
     typeName: { value: 'string' },
@@ -73,6 +78,7 @@ export function buildReturnType(returnType?: Partial<ReturnType>): ReturnType {
 
 export function buildType(type?: Partial<Type>): Type {
   return {
+    kind: 'Type',
     name: { value: 'my_method' },
     properties: [buildProperty()],
     rules: [],
@@ -83,6 +89,7 @@ export function buildType(type?: Partial<Type>): Type {
 
 export function buildProperty(property?: Partial<Property>): Property {
   return {
+    kind: 'Property',
     name: { value: 'my_method' },
     isArray: false,
     isPrimitive: true,
@@ -95,6 +102,7 @@ export function buildProperty(property?: Partial<Property>): Property {
 
 export function buildEnum(e?: Partial<Enum>): Enum {
   return {
+    kind: 'Enum',
     name: { value: 'my_enum' },
     values: [
       buildEnumValue({ content: { value: 'some_value' } }),
@@ -107,6 +115,7 @@ export function buildEnum(e?: Partial<Enum>): Enum {
 
 export function buildEnumValue(value?: Partial<EnumValue>): EnumValue {
   return {
+    kind: 'EnumValue',
     content: { value: 'my_enum_value' },
     loc: '1;1;0',
     ...value,

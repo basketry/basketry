@@ -4,6 +4,7 @@ import { properties, Mode } from './properties';
 import {
   buildInterface,
   buildMethod,
+  buildParameter,
   buildProperty,
   buildReturnType,
   buildService,
@@ -32,12 +33,12 @@ function setup(
     properties: b ? [b] : [],
   });
 
-  const a_parameter = buildProperty({
+  const a_parameter = buildParameter({
     name: { value: parameterName },
     isPrimitive: false,
     typeName: a ? { value: a.name.value } : undefined,
   });
-  const b_parameter = buildProperty({
+  const b_parameter = buildParameter({
     name: { value: parameterName },
     isPrimitive: false,
     typeName: b ? { value: b.name.value } : undefined,
@@ -149,7 +150,7 @@ describe(properties, () => {
         undefined,
         buildProperty({
           name: { value: propertyName },
-          rules: [{ id: 'required' }],
+          rules: [{ kind: 'ValidationRule', id: 'required' }],
         }),
       );
 
@@ -217,7 +218,7 @@ describe(properties, () => {
         mode,
         buildProperty({
           name: { value: propertyName },
-          rules: [{ id: 'required' }],
+          rules: [{ kind: 'ValidationRule', id: 'required' }],
         }),
         undefined,
       );

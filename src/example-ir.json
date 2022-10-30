@@ -1,21 +1,27 @@
 {
+  "$schema": "./schema.json",
+  "kind": "Service",
   "basketry": "1.1-rc",
   "title": { "value": "BasketryExample", "loc": "1;1;0" },
   "majorVersion": { "value": 1, "loc": "1;1;0" },
   "sourcePath": "source/path.ext",
   "interfaces": [
     {
+      "kind": "Interface",
       "name": "gizmo",
       "methods": [
         {
+          "kind": "Method",
           "name": { "value": "getGizmos", "loc": "1;1;0" },
           "security": [
             [
               {
+                "kind": "OAuth2Scheme",
                 "type": { "value": "oauth2", "loc": "1;1;0" },
                 "name": { "value": "oauth2Auth", "loc": "1;1;0" },
                 "flows": [
                   {
+                    "kind": "OAuth2ImplicitFlow",
                     "type": {
                       "value": "implicit",
                       "loc": "1;1;0"
@@ -26,6 +32,7 @@
                     },
                     "scopes": [
                       {
+                        "kind": "OAuth2Scope",
                         "name": {
                           "value": "read:gizmos",
                           "loc": "1;1;0"
@@ -46,6 +53,7 @@
           ],
           "parameters": [
             {
+              "kind": "Parameter",
               "name": { "value": "search", "loc": "1;1;0" },
               "typeName": { "value": "string", "loc": "1;1;0" },
               "isPrimitive": true,
@@ -59,6 +67,7 @@
             "loc": "1;1;0"
           },
           "returnType": {
+            "kind": "ReturnType",
             "typeName": { "value": "gizmosResponse" },
             "isPrimitive": false,
             "isArray": false,
@@ -68,14 +77,17 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Method",
           "name": { "value": "createGizmo", "loc": "1;1;0" },
           "security": [
             [
               {
+                "kind": "OAuth2Scheme",
                 "type": { "value": "oauth2", "loc": "1;1;0" },
                 "name": { "value": "oauth2Auth", "loc": "1;1;0" },
                 "flows": [
                   {
+                    "kind": "OAuth2ImplicitFlow",
                     "type": {
                       "value": "implicit",
                       "loc": "1;1;0"
@@ -86,6 +98,7 @@
                     },
                     "scopes": [
                       {
+                        "kind": "OAuth2Scope",
                         "name": {
                           "value": "write:gizmos",
                           "loc": "1;1;0"
@@ -106,6 +119,7 @@
           ],
           "parameters": [
             {
+              "kind": "Parameter",
               "name": { "value": "size", "loc": "1;1;0" },
               "description": {
                 "value": "Anonymous enum",
@@ -116,6 +130,7 @@
               "isArray": false,
               "rules": [
                 {
+                  "kind": "ValidationRule",
                   "id": "string-enum",
                   "values": [
                     { "value": "small", "loc": "1;1;0" },
@@ -140,6 +155,7 @@
             }
           ],
           "returnType": {
+            "kind": "ReturnType",
             "typeName": { "value": "gizmo", "loc": "1;1;0" },
             "isPrimitive": false,
             "isArray": false,
@@ -149,14 +165,17 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Method",
           "name": { "value": "updateGizmo", "loc": "1;1;0" },
           "security": [
             [
               {
+                "kind": "OAuth2Scheme",
                 "type": { "value": "oauth2", "loc": "1;1;0" },
                 "name": { "value": "oauth2Auth", "loc": "1;1;0" },
                 "flows": [
                   {
+                    "kind": "OAuth2ImplicitFlow",
                     "type": {
                       "value": "implicit",
                       "loc": "1;1;0"
@@ -167,6 +186,7 @@
                     },
                     "scopes": [
                       {
+                        "kind": "OAuth2Scope",
                         "name": {
                           "value": "write:gizmos",
                           "loc": "1;1;0"
@@ -178,6 +198,7 @@
                         "loc": "1;1;0"
                       },
                       {
+                        "kind": "OAuth2Scope",
                         "name": {
                           "value": "admin:gizmos",
                           "loc": "1;1;0"
@@ -198,6 +219,7 @@
           ],
           "parameters": [
             {
+              "kind": "Parameter",
               "name": { "value": "factors", "loc": "1;1;0" },
               "description": {
                 "value": "array of primitive",
@@ -208,16 +230,19 @@
               "isArray": true,
               "rules": [
                 {
+                  "kind": "ValidationRule",
                   "id": "array-max-items",
                   "max": { "value": 6, "loc": "1;1;0" },
                   "loc": "1;1;0"
                 },
                 {
+                  "kind": "ValidationRule",
                   "id": "array-min-items",
                   "min": { "value": 2, "loc": "1;1;0" },
                   "loc": "1;1;0"
                 },
                 {
+                  "kind": "ValidationRule",
                   "id": "string-pattern",
                   "pattern": {
                     "value": "[0-9a-fA-F]+",
@@ -230,6 +255,7 @@
             }
           ],
           "returnType": {
+            "kind": "ReturnType",
             "typeName": { "value": "gizmo", "loc": "1;1;0" },
             "isPrimitive": false,
             "isArray": false,
@@ -242,13 +268,16 @@
       "protocols": {
         "http": [
           {
+            "kind": "HttpPath",
             "path": { "value": "/gizmos", "loc": "1;1;0" },
             "methods": [
               {
+                "kind": "HttpMethod",
                 "name": { "value": "getGizmos", "loc": "1;1;0" },
                 "verb": { "value": "get", "loc": "1;1;0" },
                 "parameters": [
                   {
+                    "kind": "HttpParameter",
                     "name": { "value": "search", "loc": "1;1;0" },
                     "in": { "value": "query", "loc": "1;1;0" },
                     "loc": "1;1;0"
@@ -258,10 +287,12 @@
                 "loc": "1;1;0"
               },
               {
+                "kind": "HttpMethod",
                 "name": { "value": "createGizmo", "loc": "1;1;0" },
                 "verb": { "value": "post", "loc": "1;1;0" },
                 "parameters": [
                   {
+                    "kind": "HttpParameter",
                     "name": { "value": "size", "loc": "1;1;0" },
                     "in": { "value": "query", "loc": "1;1;0" },
                     "loc": "1;1;0"
@@ -271,6 +302,7 @@
                 "loc": "1;1;0"
               },
               {
+                "kind": "HttpMethod",
                 "name": {
                   "value": "updateGizmo",
                   "loc": "1;1;0"
@@ -278,6 +310,7 @@
                 "verb": { "value": "put", "loc": "1;1;0" },
                 "parameters": [
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "factors",
                       "loc": "1;1;0"
@@ -297,13 +330,16 @@
       }
     },
     {
+      "kind": "Interface",
       "name": "widget",
       "methods": [
         {
+          "kind": "Method",
           "name": { "value": "getWidgets", "loc": "1;1;0" },
           "security": [
             [
               {
+                "kind": "ApiKeyScheme",
                 "type": { "value": "apiKey", "loc": "1;1;0" },
                 "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
                 "parameter": { "value": "x-apikey", "loc": "1;1;0" },
@@ -314,6 +350,7 @@
           ],
           "parameters": [],
           "returnType": {
+            "kind": "ReturnType",
             "typeName": { "value": "widget", "loc": "1;1;0" },
             "isPrimitive": false,
             "isArray": false,
@@ -323,10 +360,12 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Method",
           "name": { "value": "createWidget", "loc": "1;1;0" },
           "security": [
             [
               {
+                "kind": "ApiKeyScheme",
                 "type": { "value": "apiKey", "loc": "1;1;0" },
                 "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
                 "parameter": { "value": "x-apikey", "loc": "1;1;0" },
@@ -337,6 +376,7 @@
           ],
           "parameters": [
             {
+              "kind": "Parameter",
               "name": { "value": "body", "loc": "1;1;0" },
               "description": {
                 "value": "The new widget",
@@ -352,10 +392,12 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Method",
           "name": { "value": "putWidget", "loc": "1;1;0" },
           "security": [
             [
               {
+                "kind": "ApiKeyScheme",
                 "type": { "value": "apiKey", "loc": "1;1;0" },
                 "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
                 "parameter": { "value": "x-apikey", "loc": "1;1;0" },
@@ -368,10 +410,12 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Method",
           "name": { "value": "getWidgetFoo", "loc": "1;1;0" },
           "security": [
             [
               {
+                "kind": "ApiKeyScheme",
                 "type": { "value": "apiKey", "loc": "1;1;0" },
                 "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
                 "parameter": { "value": "x-apikey", "loc": "1;1;0" },
@@ -382,6 +426,7 @@
           ],
           "parameters": [
             {
+              "kind": "Parameter",
               "name": { "value": "id", "loc": "1;1;0" },
               "description": {
                 "value": "The widget ID",
@@ -391,8 +436,9 @@
               "isPrimitive": true,
               "isArray": false,
               "rules": [
-                { "id": "required" },
+                { "kind": "ValidationRule", "id": "required" },
                 {
+                  "kind": "ValidationRule",
                   "id": "string-max-length",
                   "length": { "value": 30, "loc": "1;1;0" },
                   "loc": "1;1;0"
@@ -402,6 +448,7 @@
             }
           ],
           "returnType": {
+            "kind": "ReturnType",
             "typeName": { "value": "widget", "loc": "1;1;0" },
             "isPrimitive": false,
             "isArray": false,
@@ -411,10 +458,12 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Method",
           "name": { "value": "deleteWidgetFoo", "loc": "1;1;0" },
           "security": [
             [
               {
+                "kind": "ApiKeyScheme",
                 "type": { "value": "apiKey", "loc": "1;1;0" },
                 "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
                 "parameter": { "value": "x-apikey", "loc": "1;1;0" },
@@ -425,6 +474,7 @@
           ],
           "parameters": [
             {
+              "kind": "Parameter",
               "name": { "value": "id", "loc": "1;1;0" },
               "description": {
                 "value": "The widget ID",
@@ -434,8 +484,9 @@
               "isPrimitive": true,
               "isArray": false,
               "rules": [
-                { "id": "required" },
+                { "kind": "ValidationRule", "id": "required" },
                 {
+                  "kind": "ValidationRule",
                   "id": "string-max-length",
                   "length": { "value": 30, "loc": "1;1;0" },
                   "loc": "1;1;0"
@@ -450,9 +501,11 @@
       "protocols": {
         "http": [
           {
+            "kind": "HttpPath",
             "path": { "value": "/widgets", "loc": "1;1;0" },
             "methods": [
               {
+                "kind": "HttpMethod",
                 "name": { "value": "getWidgets", "loc": "1;1;0" },
                 "verb": { "value": "get", "loc": "1;1;0" },
                 "parameters": [],
@@ -460,6 +513,7 @@
                 "loc": "1;1;0"
               },
               {
+                "kind": "HttpMethod",
                 "name": {
                   "value": "createWidget",
                   "loc": "1;1;0"
@@ -467,6 +521,7 @@
                 "verb": { "value": "post", "loc": "1;1;0" },
                 "parameters": [
                   {
+                    "kind": "HttpParameter",
                     "name": { "value": "body", "loc": "1;1;0" },
                     "in": { "value": "body", "loc": "1;1;0" },
                     "loc": "1;1;0"
@@ -476,6 +531,7 @@
                 "loc": "1;1;0"
               },
               {
+                "kind": "HttpMethod",
                 "name": { "value": "putWidget", "loc": "1;1;0" },
                 "verb": { "value": "put", "loc": "1;1;0" },
                 "parameters": [],
@@ -486,12 +542,14 @@
             "loc": "1;1;0"
           },
           {
+            "kind": "HttpPath",
             "path": {
               "value": "/widgets/{id}/foo",
               "loc": "1;1;0"
             },
             "methods": [
               {
+                "kind": "HttpMethod",
                 "name": {
                   "value": "getWidgetFoo",
                   "loc": "1;1;0"
@@ -499,6 +557,7 @@
                 "verb": { "value": "get", "loc": "1;1;0" },
                 "parameters": [
                   {
+                    "kind": "HttpParameter",
                     "name": { "value": "id", "loc": "1;1;0" },
                     "in": { "value": "path", "loc": "1;1;0" },
                     "loc": "1;1;0"
@@ -508,6 +567,7 @@
                 "loc": "1;1;0"
               },
               {
+                "kind": "HttpMethod",
                 "name": {
                   "value": "deleteWidgetFoo",
                   "loc": "1;1;0"
@@ -515,6 +575,7 @@
                 "verb": { "value": "delete", "loc": "1;1;0" },
                 "parameters": [
                   {
+                    "kind": "HttpParameter",
                     "name": { "value": "id", "loc": "1;1;0" },
                     "in": { "value": "path", "loc": "1;1;0" },
                     "loc": "1;1;0"
@@ -530,9 +591,11 @@
       }
     },
     {
+      "kind": "Interface",
       "name": "exhaustive",
       "methods": [
         {
+          "kind": "Method",
           "name": {
             "value": "exhaustiveFormats",
             "loc": "1;1;0"
@@ -540,6 +603,7 @@
           "security": [],
           "parameters": [
             {
+              "kind": "Parameter",
               "name": {
                 "value": "string-no-format",
                 "loc": "1;1;0"
@@ -551,12 +615,14 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "string-date", "loc": "1;1;0" },
               "typeName": { "value": "date", "loc": "1;1;0" },
               "isPrimitive": true,
               "isArray": false,
               "rules": [
                 {
+                  "kind": "ValidationRule",
                   "id": "string-format",
                   "format": { "value": "date", "loc": "1;1;0" },
                   "loc": "1;1;0"
@@ -565,6 +631,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "string-date-time",
                 "loc": "1;1;0"
@@ -577,6 +644,7 @@
               "isArray": false,
               "rules": [
                 {
+                  "kind": "ValidationRule",
                   "id": "string-format",
                   "format": {
                     "value": "date-time",
@@ -588,6 +656,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "integer-no-format",
                 "loc": "1;1;0"
@@ -599,6 +668,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "integer-int32",
                 "loc": "1;1;0"
@@ -613,6 +683,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "integer-int64",
                 "loc": "1;1;0"
@@ -624,6 +695,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "number-no-format",
                 "loc": "1;1;0"
@@ -635,6 +707,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "number-float", "loc": "1;1;0" },
               "typeName": {
                 "value": "float",
@@ -646,6 +719,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "number-double",
                 "loc": "1;1;0"
@@ -663,10 +737,12 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Method",
           "name": { "value": "exhaustiveParams", "loc": "1;1;0" },
           "security": [],
           "parameters": [
             {
+              "kind": "Parameter",
               "name": { "value": "query-string", "loc": "1;1;0" },
               "typeName": { "value": "string", "loc": "1;1;0" },
               "isPrimitive": true,
@@ -675,12 +751,14 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "query-enum", "loc": "1;1;0" },
               "typeName": { "value": "exhaustiveParamsQueryEnum" },
               "isPrimitive": false,
               "isArray": false,
               "rules": [
                 {
+                  "kind": "ValidationRule",
                   "id": "string-enum",
                   "values": [
                     { "value": "one", "loc": "1;1;0" },
@@ -693,6 +771,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "query-number", "loc": "1;1;0" },
               "typeName": { "value": "number", "loc": "1;1;0" },
               "isPrimitive": true,
@@ -701,6 +780,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "query-integer",
                 "loc": "1;1;0"
@@ -712,6 +792,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "query-boolean",
                 "loc": "1;1;0"
@@ -723,6 +804,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "query-string-array",
                 "loc": "1;1;0"
@@ -734,6 +816,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "query-enum-array",
                 "loc": "1;1;0"
@@ -743,6 +826,7 @@
               "isArray": true,
               "rules": [
                 {
+                  "kind": "ValidationRule",
                   "id": "string-enum",
                   "values": [
                     { "value": "one", "loc": "1;1;0" },
@@ -755,6 +839,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "query-number-array",
                 "loc": "1;1;0"
@@ -766,6 +851,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "query-integer-array",
                 "loc": "1;1;0"
@@ -777,6 +863,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "query-boolean-array",
                 "loc": "1;1;0"
@@ -788,21 +875,24 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "path-string", "loc": "1;1;0" },
               "typeName": { "value": "string", "loc": "1;1;0" },
               "isPrimitive": true,
               "isArray": false,
-              "rules": [{ "id": "required" }],
+              "rules": [{ "kind": "ValidationRule", "id": "required" }],
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "path-enum", "loc": "1;1;0" },
               "typeName": { "value": "exhaustiveParamsPathEnum" },
               "isPrimitive": false,
               "isArray": false,
               "rules": [
-                { "id": "required" },
+                { "kind": "ValidationRule", "id": "required" },
                 {
+                  "kind": "ValidationRule",
                   "id": "string-enum",
                   "values": [
                     { "value": "one", "loc": "1;1;0" },
@@ -815,30 +905,34 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "path-number", "loc": "1;1;0" },
               "typeName": { "value": "number", "loc": "1;1;0" },
               "isPrimitive": true,
               "isArray": false,
-              "rules": [{ "id": "required" }],
+              "rules": [{ "kind": "ValidationRule", "id": "required" }],
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "path-integer", "loc": "1;1;0" },
               "typeName": { "value": "integer", "loc": "1;1;0" },
               "isPrimitive": true,
               "isArray": false,
-              "rules": [{ "id": "required" }],
+              "rules": [{ "kind": "ValidationRule", "id": "required" }],
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "path-boolean", "loc": "1;1;0" },
               "typeName": { "value": "boolean", "loc": "1;1;0" },
               "isPrimitive": true,
               "isArray": false,
-              "rules": [{ "id": "required" }],
+              "rules": [{ "kind": "ValidationRule", "id": "required" }],
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "path-string-array",
                 "loc": "1;1;0"
@@ -846,10 +940,11 @@
               "typeName": { "value": "string", "loc": "1;1;0" },
               "isPrimitive": true,
               "isArray": true,
-              "rules": [{ "id": "required" }],
+              "rules": [{ "kind": "ValidationRule", "id": "required" }],
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "path-enum-array",
                 "loc": "1;1;0"
@@ -858,8 +953,9 @@
               "isPrimitive": false,
               "isArray": true,
               "rules": [
-                { "id": "required" },
+                { "kind": "ValidationRule", "id": "required" },
                 {
+                  "kind": "ValidationRule",
                   "id": "string-enum",
                   "values": [
                     { "value": "one", "loc": "1;1;0" },
@@ -872,6 +968,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "path-number-array",
                 "loc": "1;1;0"
@@ -879,10 +976,11 @@
               "typeName": { "value": "number", "loc": "1;1;0" },
               "isPrimitive": true,
               "isArray": true,
-              "rules": [{ "id": "required" }],
+              "rules": [{ "kind": "ValidationRule", "id": "required" }],
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "path-integer-array",
                 "loc": "1;1;0"
@@ -890,10 +988,11 @@
               "typeName": { "value": "integer", "loc": "1;1;0" },
               "isPrimitive": true,
               "isArray": true,
-              "rules": [{ "id": "required" }],
+              "rules": [{ "kind": "ValidationRule", "id": "required" }],
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "path-boolean-array",
                 "loc": "1;1;0"
@@ -904,10 +1003,11 @@
               },
               "isPrimitive": true,
               "isArray": true,
-              "rules": [{ "id": "required" }],
+              "rules": [{ "kind": "ValidationRule", "id": "required" }],
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-string",
                 "loc": "1;1;0"
@@ -919,6 +1019,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-enum",
                 "loc": "1;1;0"
@@ -928,6 +1029,7 @@
               "isArray": false,
               "rules": [
                 {
+                  "kind": "ValidationRule",
                   "id": "string-enum",
                   "values": [
                     { "value": "one", "loc": "1;1;0" },
@@ -940,6 +1042,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-number",
                 "loc": "1;1;0"
@@ -951,6 +1054,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-integer",
                 "loc": "1;1;0"
@@ -965,6 +1069,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-boolean",
                 "loc": "1;1;0"
@@ -979,6 +1084,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-string-array",
                 "loc": "1;1;0"
@@ -990,6 +1096,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-enum-array",
                 "loc": "1;1;0"
@@ -999,6 +1106,7 @@
               "isArray": true,
               "rules": [
                 {
+                  "kind": "ValidationRule",
                   "id": "string-enum",
                   "values": [
                     { "value": "one", "loc": "1;1;0" },
@@ -1011,6 +1119,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-number-array",
                 "loc": "1;1;0"
@@ -1022,6 +1131,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-integer-array",
                 "loc": "1;1;0"
@@ -1036,6 +1146,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": {
                 "value": "header-boolean-array",
                 "loc": "1;1;0"
@@ -1050,6 +1161,7 @@
               "loc": "1;1;0"
             },
             {
+              "kind": "Parameter",
               "name": { "value": "body", "loc": "1;1;0" },
               "typeName": { "value": "exhaustiveParamsBody" },
               "isPrimitive": false,
@@ -1064,9 +1176,11 @@
       "protocols": {
         "http": [
           {
+            "kind": "HttpPath",
             "path": { "value": "/exhaustive", "loc": "1;1;0" },
             "methods": [
               {
+                "kind": "HttpMethod",
                 "name": {
                   "value": "exhaustiveFormats",
                   "loc": "1;1;0"
@@ -1074,6 +1188,7 @@
                 "verb": { "value": "get", "loc": "1;1;0" },
                 "parameters": [
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "string-no-format",
                       "loc": "1;1;0"
@@ -1082,6 +1197,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "string-date",
                       "loc": "1;1;0"
@@ -1090,6 +1206,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "string-date-time",
                       "loc": "1;1;0"
@@ -1098,6 +1215,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "integer-no-format",
                       "loc": "1;1;0"
@@ -1106,6 +1224,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "integer-int32",
                       "loc": "1;1;0"
@@ -1114,6 +1233,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "integer-int64",
                       "loc": "1;1;0"
@@ -1122,6 +1242,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "number-no-format",
                       "loc": "1;1;0"
@@ -1130,6 +1251,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "number-float",
                       "loc": "1;1;0"
@@ -1138,6 +1260,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "number-double",
                       "loc": "1;1;0"
@@ -1153,12 +1276,14 @@
             "loc": "1;1;0"
           },
           {
+            "kind": "HttpPath",
             "path": {
               "value": "/exhaustive/{path-string}/{path-enum}/{path-number}/{path-integer}/{path-boolean}/{path-string-array}/{path-enum-array}/{path-number-array}/{path-integer-array}/{path-boolean-array}",
               "loc": "1;1;0"
             },
             "methods": [
               {
+                "kind": "HttpMethod",
                 "name": {
                   "value": "exhaustiveParams",
                   "loc": "1;1;0"
@@ -1166,6 +1291,7 @@
                 "verb": { "value": "get", "loc": "1;1;0" },
                 "parameters": [
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-string",
                       "loc": "1;1;0"
@@ -1174,6 +1300,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-enum",
                       "loc": "1;1;0"
@@ -1182,6 +1309,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-number",
                       "loc": "1;1;0"
@@ -1190,6 +1318,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-integer",
                       "loc": "1;1;0"
@@ -1198,6 +1327,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-boolean",
                       "loc": "1;1;0"
@@ -1206,6 +1336,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-string-array",
                       "loc": "1;1;0"
@@ -1215,6 +1346,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-enum-array",
                       "loc": "1;1;0"
@@ -1224,6 +1356,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-number-array",
                       "loc": "1;1;0"
@@ -1233,6 +1366,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-integer-array",
                       "loc": "1;1;0"
@@ -1242,6 +1376,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "query-boolean-array",
                       "loc": "1;1;0"
@@ -1251,6 +1386,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-string",
                       "loc": "1;1;0"
@@ -1259,6 +1395,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-enum",
                       "loc": "1;1;0"
@@ -1267,6 +1404,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-number",
                       "loc": "1;1;0"
@@ -1275,6 +1413,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-integer",
                       "loc": "1;1;0"
@@ -1283,6 +1422,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-boolean",
                       "loc": "1;1;0"
@@ -1291,6 +1431,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-string-array",
                       "loc": "1;1;0"
@@ -1300,6 +1441,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-enum-array",
                       "loc": "1;1;0"
@@ -1309,6 +1451,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-number-array",
                       "loc": "1;1;0"
@@ -1318,6 +1461,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-integer-array",
                       "loc": "1;1;0"
@@ -1327,6 +1471,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "path-boolean-array",
                       "loc": "1;1;0"
@@ -1336,6 +1481,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-string",
                       "loc": "1;1;0"
@@ -1344,6 +1490,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-enum",
                       "loc": "1;1;0"
@@ -1352,6 +1499,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-number",
                       "loc": "1;1;0"
@@ -1360,6 +1508,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-integer",
                       "loc": "1;1;0"
@@ -1368,6 +1517,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-boolean",
                       "loc": "1;1;0"
@@ -1376,6 +1526,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-string-array",
                       "loc": "1;1;0"
@@ -1385,6 +1536,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-enum-array",
                       "loc": "1;1;0"
@@ -1394,6 +1546,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-number-array",
                       "loc": "1;1;0"
@@ -1406,6 +1559,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-integer-array",
                       "loc": "1;1;0"
@@ -1415,6 +1569,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": {
                       "value": "header-boolean-array",
                       "loc": "1;1;0"
@@ -1424,6 +1579,7 @@
                     "loc": "1;1;0"
                   },
                   {
+                    "kind": "HttpParameter",
                     "name": { "value": "body", "loc": "1;1;0" },
                     "in": { "value": "body", "loc": "1;1;0" },
                     "loc": "1;1;0"
@@ -1439,9 +1595,11 @@
       }
     },
     {
+      "kind": "Interface",
       "name": "authPermutation",
       "methods": [
         {
+          "kind": "Method",
           "name": {
             "value": "all-auth-schemes",
             "loc": "1;1;0"
@@ -1449,6 +1607,7 @@
           "security": [
             [
               {
+                "kind": "BasicScheme",
                 "type": { "value": "basic", "loc": "1;1;0" },
                 "name": { "value": "basicAuth", "loc": "1;1;0" },
                 "loc": "1;1;0"
@@ -1456,6 +1615,7 @@
             ],
             [
               {
+                "kind": "BasicScheme",
                 "type": { "value": "basic", "loc": "1;1;0" },
                 "name": {
                   "value": "alternate-basic-auth",
@@ -1466,6 +1626,7 @@
             ],
             [
               {
+                "kind": "ApiKeyScheme",
                 "type": { "value": "apiKey", "loc": "1;1;0" },
                 "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
                 "parameter": { "value": "x-apikey", "loc": "1;1;0" },
@@ -1475,10 +1636,12 @@
             ],
             [
               {
+                "kind": "OAuth2Scheme",
                 "type": { "value": "oauth2", "loc": "1;1;0" },
                 "name": { "value": "oauth2Auth", "loc": "1;1;0" },
                 "flows": [
                   {
+                    "kind": "OAuth2ImplicitFlow",
                     "type": {
                       "value": "implicit",
                       "loc": "1;1;0"
@@ -1489,6 +1652,7 @@
                     },
                     "scopes": [
                       {
+                        "kind": "OAuth2Scope",
                         "name": {
                           "value": "admin:gizmos",
                           "loc": "1;1;0"
@@ -1511,6 +1675,7 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Method",
           "name": {
             "value": "combo-auth-schemes",
             "loc": "1;1;0"
@@ -1518,11 +1683,13 @@
           "security": [
             [
               {
+                "kind": "BasicScheme",
                 "type": { "value": "basic", "loc": "1;1;0" },
                 "name": { "value": "basicAuth", "loc": "1;1;0" },
                 "loc": "1;1;0"
               },
               {
+                "kind": "ApiKeyScheme",
                 "type": { "value": "apiKey", "loc": "1;1;0" },
                 "name": { "value": "apiKeyAuth", "loc": "1;1;0" },
                 "parameter": { "value": "x-apikey", "loc": "1;1;0" },
@@ -1532,11 +1699,13 @@
             ],
             [
               {
+                "kind": "BasicScheme",
                 "type": { "value": "basic", "loc": "1;1;0" },
                 "name": { "value": "basicAuth", "loc": "1;1;0" },
                 "loc": "1;1;0"
               },
               {
+                "kind": "ApiKeyScheme",
                 "type": { "value": "apiKey", "loc": "1;1;0" },
                 "name": {
                   "value": "alternateApiKeyAuth",
@@ -1549,6 +1718,7 @@
             ],
             [
               {
+                "kind": "BasicScheme",
                 "type": { "value": "basic", "loc": "1;1;0" },
                 "name": {
                   "value": "alternate-basic-auth",
@@ -1557,10 +1727,12 @@
                 "loc": "1;1;0"
               },
               {
+                "kind": "OAuth2Scheme",
                 "type": { "value": "oauth2", "loc": "1;1;0" },
                 "name": { "value": "oauth2Auth", "loc": "1;1;0" },
                 "flows": [
                   {
+                    "kind": "OAuth2ImplicitFlow",
                     "type": {
                       "value": "implicit",
                       "loc": "1;1;0"
@@ -1571,6 +1743,7 @@
                     },
                     "scopes": [
                       {
+                        "kind": "OAuth2Scope",
                         "name": {
                           "value": "admin:gizmos",
                           "loc": "1;1;0"
@@ -1596,12 +1769,14 @@
       "protocols": {
         "http": [
           {
+            "kind": "HttpPath",
             "path": {
               "value": "/authPermutations",
               "loc": "1;1;0"
             },
             "methods": [
               {
+                "kind": "HttpMethod",
                 "name": {
                   "value": "all-auth-schemes",
                   "loc": "1;1;0"
@@ -1612,6 +1787,7 @@
                 "loc": "1;1;0"
               },
               {
+                "kind": "HttpMethod",
                 "name": {
                   "value": "combo-auth-schemes",
                   "loc": "1;1;0"
@@ -1630,15 +1806,18 @@
   ],
   "types": [
     {
+      "kind": "Type",
       "name": { "value": "gizmo", "loc": "1;1;0" },
       "properties": [
         {
+          "kind": "Property",
           "name": { "value": "id", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "string-max-length",
               "length": { "value": 30, "loc": "1;1;0" },
               "loc": "1;1;0"
@@ -1647,6 +1826,7 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "name", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
           "isPrimitive": true,
@@ -1655,12 +1835,14 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "size", "loc": "1;1;0" },
           "typeName": { "value": "productSize", "loc": "1;1;0" },
           "isPrimitive": false,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "string-enum",
               "values": [
                 { "value": "small", "loc": "1;1;0" },
@@ -1677,16 +1859,19 @@
       "loc": "1;1;0"
     },
     {
+      "kind": "Type",
       "name": { "value": "widget", "loc": "1;1;0" },
       "properties": [
         {
+          "kind": "Property",
           "name": { "value": "id", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
-            { "id": "required" },
+            { "kind": "ValidationRule", "id": "required" },
             {
+              "kind": "ValidationRule",
               "id": "string-max-length",
               "length": { "value": 30, "loc": "1;1;0" },
               "loc": "1;1;0"
@@ -1695,17 +1880,20 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "name", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "string-max-length",
               "length": { "value": 30, "loc": "1;1;0" },
               "loc": "1;1;0"
             },
             {
+              "kind": "ValidationRule",
               "id": "string-pattern",
               "pattern": {
                 "value": "[0-9a-fA-F]+",
@@ -1717,13 +1905,15 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "fiz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
-            { "id": "required" },
+            { "kind": "ValidationRule", "id": "required" },
             {
+              "kind": "ValidationRule",
               "id": "number-multiple-of",
               "value": { "value": 3, "loc": "1;1;0" },
               "loc": "1;1;0"
@@ -1732,12 +1922,14 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "buzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "number-multiple-of",
               "value": { "value": 5, "loc": "1;1;0" },
               "loc": "1;1;0"
@@ -1746,12 +1938,14 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "fizbuzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "number-multiple-of",
               "value": { "value": 15, "loc": "1;1;0" },
               "loc": "1;1;0"
@@ -1760,6 +1954,7 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "foo", "loc": "1;1;0" },
           "typeName": { "value": "widgetFoo" },
           "isPrimitive": false,
@@ -1768,12 +1963,14 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "size", "loc": "1;1;0" },
           "typeName": { "value": "productSize", "loc": "1;1;0" },
           "isPrimitive": false,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "string-enum",
               "values": [
                 { "value": "small", "loc": "1;1;0" },
@@ -1788,6 +1985,7 @@
       ],
       "rules": [
         {
+          "kind": "ObjectValidationRule",
           "id": "object-additional-properties",
           "forbidden": true,
           "loc": "1;1;0"
@@ -1796,20 +1994,24 @@
       "loc": "1;1;0"
     },
     {
+      "kind": "Type",
       "name": { "value": "newWidget", "loc": "1;1;0" },
       "properties": [
         {
+          "kind": "Property",
           "name": { "value": "name", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "string-max-length",
               "length": { "value": 30, "loc": "1;1;0" },
               "loc": "1;1;0"
             },
             {
+              "kind": "ValidationRule",
               "id": "string-pattern",
               "pattern": {
                 "value": "[0-9a-fA-F]+",
@@ -1821,13 +2023,15 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "fiz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
-            { "id": "required" },
+            { "kind": "ValidationRule", "id": "required" },
             {
+              "kind": "ValidationRule",
               "id": "number-multiple-of",
               "value": { "value": 3, "loc": "1;1;0" },
               "loc": "1;1;0"
@@ -1836,12 +2040,14 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "buzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "number-multiple-of",
               "value": { "value": 5, "loc": "1;1;0" },
               "loc": "1;1;0"
@@ -1850,12 +2056,14 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "fizbuzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "number-multiple-of",
               "value": { "value": 15, "loc": "1;1;0" },
               "loc": "1;1;0"
@@ -1864,6 +2072,7 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "foo", "loc": "1;1;0" },
           "typeName": { "value": "newWidgetFoo" },
           "isPrimitive": false,
@@ -1872,12 +2081,14 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "size", "loc": "1;1;0" },
           "typeName": { "value": "productSize", "loc": "1;1;0" },
           "isPrimitive": false,
           "isArray": false,
           "rules": [
             {
+              "kind": "ValidationRule",
               "id": "string-enum",
               "values": [
                 { "value": "small", "loc": "1;1;0" },
@@ -1894,14 +2105,16 @@
       "loc": "1;1;0"
     },
     {
+      "kind": "Type",
       "name": { "value": "gizmosResponse" },
       "properties": [
         {
+          "kind": "Property",
           "name": { "value": "data", "loc": "1;1;0" },
           "typeName": { "value": "gizmo", "loc": "1;1;0" },
           "isPrimitive": false,
           "isArray": true,
-          "rules": [{ "id": "required" }],
+          "rules": [{ "kind": "ValidationRule", "id": "required" }],
           "loc": "1;1;0"
         }
       ],
@@ -1909,19 +2122,22 @@
       "loc": "1;1;0"
     },
     {
+      "kind": "Type",
       "name": { "value": "createWidgetBody" },
       "properties": [
         {
+          "kind": "Property",
           "name": { "value": "name", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
-          "rules": [{ "id": "required" }],
+          "rules": [{ "kind": "ValidationRule", "id": "required" }],
           "loc": "1;1;0"
         }
       ],
       "rules": [
         {
+          "kind": "ObjectValidationRule",
           "id": "object-additional-properties",
           "forbidden": true,
           "loc": "1;1;0"
@@ -1930,9 +2146,11 @@
       "loc": "1;1;0"
     },
     {
+      "kind": "Type",
       "name": { "value": "exhaustiveParamsBody" },
       "properties": [
         {
+          "kind": "Property",
           "name": { "value": "foo", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
           "isPrimitive": true,
@@ -1941,6 +2159,7 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "bar", "loc": "1;1;0" },
           "typeName": { "value": "string", "loc": "1;1;0" },
           "isPrimitive": true,
@@ -1953,9 +2172,11 @@
       "loc": "1;1;0"
     },
     {
+      "kind": "Type",
       "name": { "value": "widgetFoo" },
       "properties": [
         {
+          "kind": "Property",
           "name": { "value": "fiz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
@@ -1964,11 +2185,12 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "buzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
-          "rules": [{ "id": "required" }],
+          "rules": [{ "kind": "ValidationRule", "id": "required" }],
           "loc": "1;1;0"
         }
       ],
@@ -1976,9 +2198,11 @@
       "loc": "1;1;0"
     },
     {
+      "kind": "Type",
       "name": { "value": "newWidgetFoo" },
       "properties": [
         {
+          "kind": "Property",
           "name": { "value": "fiz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
@@ -1987,11 +2211,12 @@
           "loc": "1;1;0"
         },
         {
+          "kind": "Property",
           "name": { "value": "buzz", "loc": "1;1;0" },
           "typeName": { "value": "number", "loc": "1;1;0" },
           "isPrimitive": true,
           "isArray": false,
-          "rules": [{ "id": "required" }],
+          "rules": [{ "kind": "ValidationRule", "id": "required" }],
           "loc": "1;1;0"
         }
       ],
@@ -2001,81 +2226,106 @@
   ],
   "enums": [
     {
+      "kind": "Enum",
       "name": { "value": "createGizmoSize" },
       "values": [
-        { "content": { "value": "small" }, "loc": "1;1;0" },
-        { "content": { "value": "medium" }, "loc": "1;1;0" },
-        { "content": { "value": "big" }, "loc": "1;1;0" },
-        { "content": { "value": "XL" }, "loc": "1;1;0" }
+        {
+          "kind": "EnumValue",
+          "content": { "value": "small" },
+          "loc": "1;1;0"
+        },
+        {
+          "kind": "EnumValue",
+          "content": { "value": "medium" },
+          "loc": "1;1;0"
+        },
+        { "kind": "EnumValue", "content": { "value": "big" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "XL" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
+      "kind": "Enum",
       "name": { "value": "exhaustiveParamsQueryEnum" },
       "values": [
-        { "content": { "value": "one" }, "loc": "1;1;0" },
-        { "content": { "value": "two" }, "loc": "1;1;0" },
-        { "content": { "value": "three" }, "loc": "1;1;0" }
+        { "kind": "EnumValue", "content": { "value": "one" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "two" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
+      "kind": "Enum",
       "name": { "value": "exhaustiveParamsQueryEnumArray" },
       "values": [
-        { "content": { "value": "one" }, "loc": "1;1;0" },
-        { "content": { "value": "two" }, "loc": "1;1;0" },
-        { "content": { "value": "three" }, "loc": "1;1;0" }
+        { "kind": "EnumValue", "content": { "value": "one" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "two" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
+      "kind": "Enum",
       "name": { "value": "exhaustiveParamsPathEnum" },
       "values": [
-        { "content": { "value": "one" }, "loc": "1;1;0" },
-        { "content": { "value": "two" }, "loc": "1;1;0" },
-        { "content": { "value": "three" }, "loc": "1;1;0" }
+        { "kind": "EnumValue", "content": { "value": "one" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "two" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
+      "kind": "Enum",
       "name": { "value": "exhaustiveParamsPathEnumArray" },
       "values": [
-        { "content": { "value": "one" }, "loc": "1;1;0" },
-        { "content": { "value": "two" }, "loc": "1;1;0" },
-        { "content": { "value": "three" }, "loc": "1;1;0" }
+        { "kind": "EnumValue", "content": { "value": "one" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "two" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
+      "kind": "Enum",
       "name": { "value": "exhaustiveParamsHeaderEnum" },
       "values": [
-        { "content": { "value": "one" }, "loc": "1;1;0" },
-        { "content": { "value": "two" }, "loc": "1;1;0" },
-        { "content": { "value": "three" }, "loc": "1;1;0" }
+        { "kind": "EnumValue", "content": { "value": "one" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "two" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
+      "kind": "Enum",
       "name": { "value": "exhaustiveParamsHeaderEnumArray" },
       "values": [
-        { "content": { "value": "one" }, "loc": "1;1;0" },
-        { "content": { "value": "two" }, "loc": "1;1;0" },
-        { "content": { "value": "three" }, "loc": "1;1;0" }
+        { "kind": "EnumValue", "content": { "value": "one" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "two" }, "loc": "1;1;0" },
+        { "kind": "EnumValue", "content": { "value": "three" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     },
     {
+      "kind": "Enum",
       "name": { "value": "productSize", "loc": "1;1;0" },
       "values": [
-        { "content": { "value": "small" }, "loc": "1;1;0" },
-        { "content": { "value": "medium" }, "loc": "1;1;0" },
-        { "content": { "value": "large" }, "loc": "1;1;0" }
+        {
+          "kind": "EnumValue",
+          "content": { "value": "small" },
+          "loc": "1;1;0"
+        },
+        {
+          "kind": "EnumValue",
+          "content": { "value": "medium" },
+          "loc": "1;1;0"
+        },
+        { "kind": "EnumValue", "content": { "value": "large" }, "loc": "1;1;0" }
       ],
       "loc": "1;1;0"
     }
   ],
   "unions": [
     {
+      "kind": "Union",
       "name": { "value": "example-union", "loc": "1;1;0" },
       "members": [
         {

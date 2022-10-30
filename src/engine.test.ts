@@ -10,6 +10,7 @@ describe('engine', () => {
   beforeEach(() => {
     setParser(() => ({
       service: {
+        kind: 'Service',
         basketry: '1.1-rc',
         title: { value: 'test' },
         majorVersion: { value: 1 },
@@ -435,6 +436,10 @@ describe('engine', () => {
       errors: [
         {
           code: 'PARSER_ERROR',
+          message: "Invalid IR: `#` must have required property 'kind'",
+        },
+        {
+          code: 'PARSER_ERROR',
           message: "Invalid IR: `#` must have required property 'title'",
         },
         {
@@ -464,6 +469,11 @@ describe('engine', () => {
         {
           code: 'PARSER_ERROR',
           message: 'Invalid IR: `#/basketry` must be equal to constant',
+        },
+        {
+          code: 'PARSER_ERROR',
+          message:
+            "Invalid IR: `#/interfaces/0` must have required property 'kind'",
         },
         {
           code: 'PARSER_ERROR',

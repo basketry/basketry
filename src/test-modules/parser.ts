@@ -3,6 +3,7 @@ import { Parser } from '../types';
 let parser: Parser = () => {
   return {
     service: {
+      kind: 'Service',
       basketry: '1.1-rc',
       title: { value: 'test' },
       majorVersion: { value: 1 },

@@ -209,6 +209,7 @@ export type Primitive =
  * Intermediate Representation (IR) of a service
  */
 export type Service = {
+  kind: 'Service';
   basketry: '1.1-rc';
   title: Scalar<string>;
   majorVersion: Scalar<number>;
@@ -223,6 +224,7 @@ export type Service = {
 };
 
 export type Type = {
+  kind: 'Type';
   name: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
   properties: Property[];
@@ -232,6 +234,7 @@ export type Type = {
 };
 
 export type Enum = {
+  kind: 'Enum';
   name: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
   values: EnumValue[];
@@ -240,6 +243,7 @@ export type Enum = {
 };
 
 export type EnumValue = {
+  kind: 'EnumValue';
   content: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
   loc: string;
@@ -247,6 +251,7 @@ export type EnumValue = {
 };
 
 export type Union = {
+  kind: 'Union';
   name: Scalar<string>;
   members: TypedValue[];
   loc: string;
@@ -270,6 +275,7 @@ export type CustomValue = {
 export type TypedValue = PrimitiveValue | CustomValue;
 
 export type Property = {
+  kind: 'Property';
   name: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
   loc: string;
@@ -277,6 +283,7 @@ export type Property = {
 } & TypedValue;
 
 export type Interface = {
+  kind: 'Interface';
   name: string;
   description?: string;
   methods: Method[];
@@ -287,6 +294,7 @@ export type Interface = {
 };
 
 export type HttpPath = {
+  kind: 'HttpPath';
   path: Scalar<string>;
   methods: HttpMethod[];
   loc: string;
@@ -294,6 +302,7 @@ export type HttpPath = {
 };
 
 export type HttpMethod = {
+  kind: 'HttpMethod';
   name: Scalar<string>;
   verb: Scalar<
     'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options' | 'trace'
@@ -304,6 +313,7 @@ export type HttpMethod = {
 };
 
 export type HttpParameter = {
+  kind: 'HttpParameter';
   name: Scalar<string>;
   in: Scalar<'header' | 'query' | 'path' | 'formData' | 'body'>;
   array?: Scalar<'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi'>;
@@ -311,6 +321,7 @@ export type HttpParameter = {
 };
 
 export type Method = {
+  kind: 'Method';
   name: Scalar<string>;
   security: SecurityOption[];
   description?: Scalar<string> | Scalar<string>[];
@@ -325,6 +336,7 @@ export type SecurityOption = SecurityScheme[];
 export type SecurityScheme = BasicScheme | ApiKeyScheme | OAuth2Scheme;
 
 export type BasicScheme = {
+  kind: 'BasicScheme';
   type: Scalar<'basic'>;
   name: Scalar<string>;
   description?: Scalar<string>;
@@ -333,6 +345,7 @@ export type BasicScheme = {
 };
 
 export type ApiKeyScheme = {
+  kind: 'ApiKeyScheme';
   type: Scalar<'apiKey'>;
   name: Scalar<string>;
   description?: Scalar<string>;
@@ -343,6 +356,7 @@ export type ApiKeyScheme = {
 };
 
 export type OAuth2Scheme = {
+  kind: 'OAuth2Scheme';
   type: Scalar<'oauth2'>;
   name: Scalar<string>;
   description?: Scalar<string>;
@@ -358,6 +372,7 @@ export type OAuth2Flow =
   | OAuth2AuthorizationCodeFlow;
 
 export type OAuth2ImplicitFlow = {
+  kind: 'OAuth2ImplicitFlow';
   type: Scalar<'implicit'>;
   authorizationUrl: Scalar<string>;
   refreshUrl?: Scalar<string>;
@@ -367,6 +382,7 @@ export type OAuth2ImplicitFlow = {
 };
 
 export type OAuth2PasswordFlow = {
+  kind: 'OAuth2PasswordFlow';
   type: Scalar<'password'>;
   tokenUrl: Scalar<string>;
   refreshUrl?: Scalar<string>;
@@ -376,6 +392,7 @@ export type OAuth2PasswordFlow = {
 };
 
 export type OAuth2ClientCredentialsFlow = {
+  kind: 'OAuth2ClientCredentialsFlow';
   type: Scalar<'clientCredentials'>;
   tokenUrl: Scalar<string>;
   refreshUrl?: Scalar<string>;
@@ -385,6 +402,7 @@ export type OAuth2ClientCredentialsFlow = {
 };
 
 export type OAuth2AuthorizationCodeFlow = {
+  kind: 'OAuth2AuthorizationCodeFlow';
   type: Scalar<'authorizationCode'>;
   authorizationUrl: Scalar<string>;
   tokenUrl: Scalar<string>;
@@ -395,6 +413,7 @@ export type OAuth2AuthorizationCodeFlow = {
 };
 
 export type OAuth2Scope = {
+  kind: 'OAuth2Scope';
   name: Scalar<string>;
   description: Scalar<string>;
   loc: string;
@@ -402,6 +421,7 @@ export type OAuth2Scope = {
 };
 
 export type Parameter = {
+  kind: 'Parameter';
   name: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
   loc: string;
@@ -409,6 +429,7 @@ export type Parameter = {
 } & TypedValue;
 
 export type ReturnType = {
+  kind: 'ReturnType';
   loc: string;
   meta?: Meta;
 } & TypedValue;
@@ -421,100 +442,117 @@ export type MetaValue = {
 };
 
 export type RequiredRule = {
+  kind: 'ValidationRule';
   id: 'required';
 };
 
 export type StringMaxLengthRule = {
+  kind: 'ValidationRule';
   id: 'string-max-length';
   length: Scalar<number>;
   loc: string;
 };
 
 export type StringMinLengthRule = {
+  kind: 'ValidationRule';
   id: 'string-min-length';
   length: Scalar<number>;
   loc: string;
 };
 
 export type StringPatternRule = {
+  kind: 'ValidationRule';
   id: 'string-pattern';
   pattern: Scalar<string>;
   loc: string;
 };
 
 export type StringFormatRule = {
+  kind: 'ValidationRule';
   id: 'string-format';
   format: Scalar<string>;
   loc: string;
 };
 
 export type StringEnumRule = {
+  kind: 'ValidationRule';
   id: 'string-enum';
   values: Scalar<string>[];
   loc: string;
 };
 
 export type NumberMultipleOfRule = {
+  kind: 'ValidationRule';
   id: 'number-multiple-of';
   value: Scalar<number>;
   loc: string;
 };
 
 export type NumberGtRule = {
+  kind: 'ValidationRule';
   id: 'number-gt';
   value: Scalar<number>;
   loc: string;
 };
 
 export type NumberGteRule = {
+  kind: 'ValidationRule';
   id: 'number-gte';
   value: Scalar<number>;
   loc: string;
 };
 
 export type NumberLtRule = {
+  kind: 'ValidationRule';
   id: 'number-lt';
   value: Scalar<number>;
   loc: string;
 };
 
 export type NumberLteRule = {
+  kind: 'ValidationRule';
   id: 'number-lte';
   value: Scalar<number>;
   loc: string;
 };
 
 export type ArrayMaxItemsRule = {
+  kind: 'ValidationRule';
   id: 'array-max-items';
   max: Scalar<number>;
   loc: string;
 };
 
 export type ArrayMinItemsRule = {
+  kind: 'ValidationRule';
   id: 'array-min-items';
   min: Scalar<number>;
   loc: string;
 };
 
 export type ArrayUniqueItemsRule = {
+  kind: 'ValidationRule';
   id: 'array-unique-items';
   required: boolean;
   loc: string;
 };
 
 export type ObjectMinPropertiesRule = {
+  kind: 'ObjectValidationRule';
   id: 'object-min-properties';
   min: Scalar<number>;
   loc: string;
 };
 
 export type ObjectMaxPropertiesRule = {
+  kind: 'ObjectValidationRule';
   id: 'object-max-properties';
   max: Scalar<number>;
   loc: string;
 };
 
 export type ObjectAdditionalPropertiesRule = {
+  kind: 'ObjectValidationRule';
   id: 'object-additional-properties';
   forbidden: true;
   loc: string;
