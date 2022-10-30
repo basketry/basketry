@@ -1,5 +1,5 @@
 import { snake } from 'case';
-import { Enum, Literal, Property } from '..';
+import { Enum, Scalar, Property } from '..';
 import { Interface, Method, Parameter, Service, Type } from '../types';
 
 const interfaceCache = new WeakMap<Service, Map<string, Interface | null>>();
@@ -124,11 +124,11 @@ export function getEnum(service: Service, name: string): Enum | undefined {
   return undefined;
 }
 
-const enumValueCache = new WeakMap<Enum, Map<string, Literal<string> | null>>();
+const enumValueCache = new WeakMap<Enum, Map<string, Scalar<string> | null>>();
 export function getEnumValue(
   e: Enum,
   value: string,
-): Literal<string> | undefined {
+): Scalar<string> | undefined {
   const key = snake(value);
   if (!enumValueCache.has(e)) enumValueCache.set(e, new Map());
   const hit = enumValueCache.get(e)!.get(key);

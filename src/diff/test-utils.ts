@@ -1,4 +1,4 @@
-import { Literal, ValidationRule } from '..';
+import { Scalar, ValidationRule } from '..';
 import {
   Enum,
   Interface,
@@ -105,8 +105,8 @@ export function buildEnum(e?: Partial<Enum>): Enum {
 }
 
 export function buildEnumValue(
-  value?: Partial<Literal<string>>,
-): Literal<string> {
+  value?: Partial<Scalar<string>>,
+): Scalar<string> {
   return {
     value: 'my_enum_value',
     loc: '1;1;0',

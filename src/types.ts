@@ -181,7 +181,13 @@ export type Range = {
   end: Position;
 };
 
+/** @deprecated Use {@link Scalar}. This type will be removed in a future version. */
 export type Literal<T extends string | number | boolean | null> = {
+  value: T;
+  loc?: string;
+};
+
+export type Scalar<T extends string | number | boolean | null> = {
   value: T;
   loc?: string;
 };
@@ -204,8 +210,8 @@ export type Primitive =
  */
 export type Service = {
   basketry: '1';
-  title: Literal<string>;
-  majorVersion: Literal<number>;
+  title: Scalar<string>;
+  majorVersion: Scalar<number>;
   /** The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document. */
   sourcePath: string;
   interfaces: Interface[];
@@ -217,8 +223,8 @@ export type Service = {
 };
 
 export type Type = {
-  name: Literal<string>;
-  description?: Literal<string> | Literal<string>[];
+  name: Scalar<string>;
+  description?: Scalar<string> | Scalar<string>[];
   properties: Property[];
   rules: ObjectValidationRule[];
   loc: string;
@@ -226,28 +232,28 @@ export type Type = {
 };
 
 export type Enum = {
-  name: Literal<string>;
-  values: Literal<string>[];
+  name: Scalar<string>;
+  values: Scalar<string>[];
   loc: string;
   meta?: Meta;
 };
 
 export type Union = {
-  name: Literal<string>;
+  name: Scalar<string>;
   members: TypedValue[];
   loc: string;
   meta?: Meta;
 };
 
 export type PrimitiveValue = {
-  typeName: Literal<Primitive>;
+  typeName: Scalar<Primitive>;
   isArray: boolean;
   isPrimitive: true;
   rules: ValidationRule[];
 };
 
 export type CustomValue = {
-  typeName: Literal<string>;
+  typeName: Scalar<string>;
   isArray: boolean;
   isPrimitive: false;
   rules: ValidationRule[];
@@ -256,8 +262,8 @@ export type CustomValue = {
 export type TypedValue = PrimitiveValue | CustomValue;
 
 export type Property = {
-  name: Literal<string>;
-  description?: Literal<string> | Literal<string>[];
+  name: Scalar<string>;
+  description?: Scalar<string> | Scalar<string>[];
   loc: string;
   meta?: Meta;
 } & TypedValue;
@@ -273,33 +279,33 @@ export type Interface = {
 };
 
 export type HttpPath = {
-  path: Literal<string>;
+  path: Scalar<string>;
   methods: HttpMethod[];
   loc: string;
   meta?: Meta;
 };
 
 export type HttpMethod = {
-  name: Literal<string>;
-  verb: Literal<
+  name: Scalar<string>;
+  verb: Scalar<
     'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options' | 'trace'
   >;
   parameters: HttpParameter[];
-  successCode: Literal<number>;
+  successCode: Scalar<number>;
   loc: string;
 };
 
 export type HttpParameter = {
-  name: Literal<string>;
-  in: Literal<'header' | 'query' | 'path' | 'formData' | 'body'>;
-  array?: Literal<'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi'>;
+  name: Scalar<string>;
+  in: Scalar<'header' | 'query' | 'path' | 'formData' | 'body'>;
+  array?: Scalar<'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi'>;
   loc: string;
 };
 
 export type Method = {
-  name: Literal<string>;
+  name: Scalar<string>;
   security: SecurityOption[];
-  description?: Literal<string> | Literal<string>[];
+  description?: Scalar<string> | Scalar<string>[];
   parameters: Parameter[];
   returnType: ReturnType | undefined;
   loc: string;
@@ -311,27 +317,27 @@ export type SecurityOption = SecurityScheme[];
 export type SecurityScheme = BasicScheme | ApiKeyScheme | OAuth2Scheme;
 
 export type BasicScheme = {
-  type: Literal<'basic'>;
-  name: Literal<string>;
-  description?: Literal<string>;
+  type: Scalar<'basic'>;
+  name: Scalar<string>;
+  description?: Scalar<string>;
   loc: string;
   meta?: Meta;
 };
 
 export type ApiKeyScheme = {
-  type: Literal<'apiKey'>;
-  name: Literal<string>;
-  description?: Literal<string>;
-  parameter: Literal<string>;
-  in: Literal<'header' | 'query' | 'cookie'>;
+  type: Scalar<'apiKey'>;
+  name: Scalar<string>;
+  description?: Scalar<string>;
+  parameter: Scalar<string>;
+  in: Scalar<'header' | 'query' | 'cookie'>;
   loc: string;
   meta?: Meta;
 };
 
 export type OAuth2Scheme = {
-  type: Literal<'oauth2'>;
-  name: Literal<string>;
-  description?: Literal<string>;
+  type: Scalar<'oauth2'>;
+  name: Scalar<string>;
+  description?: Scalar<string>;
   flows: OAuth2Flow[];
   loc: string;
   meta?: Meta;
@@ -344,52 +350,52 @@ export type OAuth2Flow =
   | OAuth2AuthorizationCodeFlow;
 
 export type OAuth2ImplicitFlow = {
-  type: Literal<'implicit'>;
-  authorizationUrl: Literal<string>;
-  refreshUrl?: Literal<string>;
+  type: Scalar<'implicit'>;
+  authorizationUrl: Scalar<string>;
+  refreshUrl?: Scalar<string>;
   scopes: OAuth2Scope[];
   loc: string;
   meta?: Meta;
 };
 
 export type OAuth2PasswordFlow = {
-  type: Literal<'password'>;
-  tokenUrl: Literal<string>;
-  refreshUrl?: Literal<string>;
+  type: Scalar<'password'>;
+  tokenUrl: Scalar<string>;
+  refreshUrl?: Scalar<string>;
   scopes: OAuth2Scope[];
   loc: string;
   meta?: Meta;
 };
 
 export type OAuth2ClientCredentialsFlow = {
-  type: Literal<'clientCredentials'>;
-  tokenUrl: Literal<string>;
-  refreshUrl?: Literal<string>;
+  type: Scalar<'clientCredentials'>;
+  tokenUrl: Scalar<string>;
+  refreshUrl?: Scalar<string>;
   scopes: OAuth2Scope[];
   loc: string;
   meta?: Meta;
 };
 
 export type OAuth2AuthorizationCodeFlow = {
-  type: Literal<'authorizationCode'>;
-  authorizationUrl: Literal<string>;
-  tokenUrl: Literal<string>;
-  refreshUrl?: Literal<string>;
+  type: Scalar<'authorizationCode'>;
+  authorizationUrl: Scalar<string>;
+  tokenUrl: Scalar<string>;
+  refreshUrl?: Scalar<string>;
   scopes: OAuth2Scope[];
   loc: string;
   meta?: Meta;
 };
 
 export type OAuth2Scope = {
-  name: Literal<string>;
-  description: Literal<string>;
+  name: Scalar<string>;
+  description: Scalar<string>;
   loc: string;
   meta?: Meta;
 };
 
 export type Parameter = {
-  name: Literal<string>;
-  description?: Literal<string> | Literal<string>[];
+  name: Scalar<string>;
+  description?: Scalar<string> | Scalar<string>[];
   loc: string;
   meta?: Meta;
 } & TypedValue;
@@ -402,7 +408,7 @@ export type ReturnType = {
 export type Meta = MetaValue[];
 
 export type MetaValue = {
-  key: Literal<string>;
+  key: Scalar<string>;
   value: { value: any; loc?: string };
 };
 
@@ -412,73 +418,73 @@ export type RequiredRule = {
 
 export type StringMaxLengthRule = {
   id: 'string-max-length';
-  length: Literal<number>;
+  length: Scalar<number>;
   loc: string;
 };
 
 export type StringMinLengthRule = {
   id: 'string-min-length';
-  length: Literal<number>;
+  length: Scalar<number>;
   loc: string;
 };
 
 export type StringPatternRule = {
   id: 'string-pattern';
-  pattern: Literal<string>;
+  pattern: Scalar<string>;
   loc: string;
 };
 
 export type StringFormatRule = {
   id: 'string-format';
-  format: Literal<string>;
+  format: Scalar<string>;
   loc: string;
 };
 
 export type StringEnumRule = {
   id: 'string-enum';
-  values: Literal<string>[];
+  values: Scalar<string>[];
   loc: string;
 };
 
 export type NumberMultipleOfRule = {
   id: 'number-multiple-of';
-  value: Literal<number>;
+  value: Scalar<number>;
   loc: string;
 };
 
 export type NumberGtRule = {
   id: 'number-gt';
-  value: Literal<number>;
+  value: Scalar<number>;
   loc: string;
 };
 
 export type NumberGteRule = {
   id: 'number-gte';
-  value: Literal<number>;
+  value: Scalar<number>;
   loc: string;
 };
 
 export type NumberLtRule = {
   id: 'number-lt';
-  value: Literal<number>;
+  value: Scalar<number>;
   loc: string;
 };
 
 export type NumberLteRule = {
   id: 'number-lte';
-  value: Literal<number>;
+  value: Scalar<number>;
   loc: string;
 };
 
 export type ArrayMaxItemsRule = {
   id: 'array-max-items';
-  max: Literal<number>;
+  max: Scalar<number>;
   loc: string;
 };
 
 export type ArrayMinItemsRule = {
   id: 'array-min-items';
-  min: Literal<number>;
+  min: Scalar<number>;
   loc: string;
 };
 
@@ -490,13 +496,13 @@ export type ArrayUniqueItemsRule = {
 
 export type ObjectMinPropertiesRule = {
   id: 'object-min-properties';
-  min: Literal<number>;
+  min: Scalar<number>;
   loc: string;
 };
 
 export type ObjectMaxPropertiesRule = {
   id: 'object-max-properties';
-  max: Literal<number>;
+  max: Scalar<number>;
   loc: string;
 };
 
