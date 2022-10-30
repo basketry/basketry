@@ -12,7 +12,7 @@ import {
 
 export function buildService(service?: Partial<Service>): Service {
   return {
-    basketry: '1',
+    basketry: '1.1-rc',
     sourcePath: 'path/file.ext',
     title: { value: 'my service' },
     majorVersion: { value: 1 },

@@ -15,7 +15,7 @@
   ],
   "properties": {
     "$schema": { "type": "string" },
-    "basketry": { "type": "string", "const": "1" },
+    "basketry": { "type": "string", "const": "1.1-rc" },
     "title": { "$ref": "#/definitions/string" },
     "majorVersion": { "$ref": "#/definitions/integer" },
     "sourcePath": {

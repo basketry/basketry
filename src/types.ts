@@ -209,7 +209,7 @@ export type Primitive =
  * Intermediate Representation (IR) of a service
  */
 export type Service = {
-  basketry: '1';
+  basketry: '1.1-rc';
   title: Scalar<string>;
   majorVersion: Scalar<number>;
   /** The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document. */
