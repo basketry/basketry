@@ -72,6 +72,15 @@
       },
       "additionalProperties": false
     },
+    "boolean": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "value": { "type": "boolean" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
     "nonNegativeInteger": {
       "type": "object",
       "required": ["value"],
@@ -252,6 +261,13 @@
         },
         "isArray": { "type": "boolean" },
         "isPrimitive": { "type": "boolean", "const": true },
+        "constant": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "$ref": "#/definitions/number" },
+            { "$ref": "#/definitions/boolean" }
+          ]
+        },
         "rules": {
           "type": "array",
           "items": { "$ref": "#/definitions/validationRule" }
@@ -691,6 +707,7 @@
     "validationRule": {
       "oneOf": [
         { "$ref": "#/definitions/requiredRule" },
+        { "$ref": "#/definitions/constantRule" },
         { "$ref": "#/definitions/stringMaxLengthRule" },
         { "$ref": "#/definitions/stringMinLengthRule" },
         { "$ref": "#/definitions/stringPatternRule" },
@@ -721,6 +738,25 @@
         "id": {
           "type": "string",
           "const": "required"
+        }
+      },
+      "additionalProperties": false
+    },
+    "constantRule": {
+      "type": "object",
+      "required": ["kind", "id", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
+        "id": {
+          "type": "string",
+          "const": "constant"
+        },
+        "value": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "$ref": "#/definitions/number" },
+            { "$ref": "#/definitions/boolean" }
+          ]
         }
       },
       "additionalProperties": false

@@ -273,6 +273,7 @@ export type RuleChangeInfo = ChangeInfoKind<
   | 'array-min-items'
   | 'array-unique-items'
   | 'required'
+  | 'constant'
   | 'string-max-length'
   | 'string-min-length',
   RuleContext

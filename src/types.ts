@@ -262,6 +262,7 @@ export type PrimitiveValue = {
   typeName: Scalar<Primitive>;
   isArray: boolean;
   isPrimitive: true;
+  constant?: Scalar<string | number | boolean>;
   rules: ValidationRule[];
 };
 
@@ -446,6 +447,12 @@ export type RequiredRule = {
   id: 'required';
 };
 
+export type ConstantRule = {
+  kind: 'ValidationRule';
+  id: 'constant';
+  value: Scalar<string | number | boolean>;
+};
+
 export type StringMaxLengthRule = {
   kind: 'ValidationRule';
   id: 'string-max-length';
@@ -560,6 +567,7 @@ export type ObjectAdditionalPropertiesRule = {
 
 export type ValidationRule =
   | RequiredRule
+  | ConstantRule
   | StringMaxLengthRule
   | StringMinLengthRule
   | StringPatternRule
