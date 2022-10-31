@@ -81,6 +81,15 @@
       },
       "additionalProperties": false
     },
+    "null": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "value": { "type": "null" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
     "nonNegativeInteger": {
       "type": "object",
       "required": ["value"],
@@ -266,6 +275,14 @@
             { "$ref": "#/definitions/string" },
             { "$ref": "#/definitions/number" },
             { "$ref": "#/definitions/boolean" }
+          ]
+        },
+        "default": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "$ref": "#/definitions/number" },
+            { "$ref": "#/definitions/boolean" },
+            { "$ref": "#/definitions/null" }
           ]
         },
         "rules": {

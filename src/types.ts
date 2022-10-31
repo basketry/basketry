@@ -263,6 +263,7 @@ export type PrimitiveValue = {
   isArray: boolean;
   isPrimitive: true;
   constant?: Scalar<string | number | boolean>;
+  default?: Scalar<string | number | boolean | null>;
   rules: ValidationRule[];
 };
 
