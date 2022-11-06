@@ -11,14 +11,14 @@ export function* interfaces(
     const a_context: InterfaceContext = {
       scope: 'interface',
       service: a.service.title.value,
-      interface: a_int.name,
+      interface: a_int.name.value,
     };
-    const b_int = cache.getInterface(b.service, a_int.name);
+    const b_int = cache.getInterface(b.service, a_int.name.value);
     if (b_int) {
       const b_context: InterfaceContext = {
         scope: 'interface',
         service: b.service.title.value,
-        interface: b_int.name,
+        interface: b_int.name.value,
       };
 
       if (!eq(a_int.name, b_int.name)) {
@@ -60,7 +60,7 @@ export function* interfaces(
         kind: 'removed',
         target: 'interface',
         category: 'major',
-        a: { context: a_context, value: a_int.name },
+        a: { context: a_context, value: a_int.name.value },
       };
     }
   }
@@ -69,15 +69,15 @@ export function* interfaces(
     const b_context: InterfaceContext = {
       scope: 'interface',
       service: b.service.title.value,
-      interface: b_int.name,
+      interface: b_int.name.value,
     };
-    const a_int = cache.getInterface(a.service, b_int.name);
+    const a_int = cache.getInterface(a.service, b_int.name.value);
     if (!a_int) {
       yield {
         kind: 'added',
         target: 'interface',
         category: 'minor',
-        b: { context: b_context, value: b_int.name },
+        b: { context: b_context, value: b_int.name.value },
       };
     }
   }

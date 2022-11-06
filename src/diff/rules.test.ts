@@ -16,6 +16,7 @@ import {
   buildParameter,
   buildProperty,
   buildReturnType,
+  buildScalar,
   buildService,
   buildType,
 } from './test-utils';
@@ -53,8 +54,14 @@ function setupParameter(
     name: { value: methodName },
     parameters: [b_param],
   });
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
   const a_service = buildService({
     title: { value: title },
     interfaces: [a_int],
@@ -92,8 +99,14 @@ function setupReturnType(
     name: { value: methodName },
     returnType: buildReturnType({ rules: b ? [b] : [] }),
   });
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
   const a_service = buildService({
     title: { value: title },
     interfaces: [a_int],
@@ -180,8 +193,14 @@ function setupProperty(
           }),
   });
 
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
 
   const a_service = buildService({
     title: { value: title },

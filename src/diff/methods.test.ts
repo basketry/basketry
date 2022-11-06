@@ -5,6 +5,7 @@ import {
   buildInterface,
   buildMethod,
   buildReturnType,
+  buildScalar,
   buildService,
 } from './test-utils';
 
@@ -18,8 +19,14 @@ function setup(
   const a_methods = a ? [a] : [];
   const b_methods = b ? [b] : [];
 
-  const a_int = buildInterface({ name: interfaceName, methods: a_methods });
-  const b_int = buildInterface({ name: interfaceName, methods: b_methods });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: a_methods,
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: b_methods,
+  });
   const a_service = buildService({
     title: { value: title },
     interfaces: [a_int],

@@ -8,7 +8,7 @@
   "interfaces": [
     {
       "kind": "Interface",
-      "name": "gizmo",
+      "name": { "value": "gizmo", "loc": "1;1;0" },
       "methods": [
         {
           "kind": "Method",
@@ -331,7 +331,7 @@
     },
     {
       "kind": "Interface",
-      "name": "widget",
+      "name": { "value": "widget", "loc": "1;1;0" },
       "methods": [
         {
           "kind": "Method",
@@ -592,7 +592,7 @@
     },
     {
       "kind": "Interface",
-      "name": "exhaustive",
+      "name": { "value": "exhaustive", "loc": "1;1;0" },
       "methods": [
         {
           "kind": "Method",
@@ -1596,7 +1596,7 @@
     },
     {
       "kind": "Interface",
-      "name": "authPermutation",
+      "name": { "value": "authPermutation", "loc": "1;1;0" },
       "methods": [
         {
           "kind": "Method",

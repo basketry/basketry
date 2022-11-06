@@ -135,7 +135,7 @@
       "required": ["kind", "name", "methods", "protocols"],
       "properties": {
         "kind": { "type": "string", "const": "Interface" },
-        "name": { "type": "string" },
+        "name": { "$ref": "#/definitions/string" },
         "description": {
           "oneOf": [
             { "type": "string" },

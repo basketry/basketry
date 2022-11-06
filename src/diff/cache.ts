@@ -22,7 +22,7 @@ export function getInterface(
   if (hit === null) return undefined;
 
   for (const int of service.interfaces) {
-    if (n === snake(int.name)) {
+    if (n === snake(int.name.value)) {
       interfaceCache.get(service)!.set(n, int);
       return int;
     }

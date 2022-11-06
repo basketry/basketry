@@ -30,7 +30,7 @@ export function buildService(service?: Partial<Service>): Service {
 export function buildInterface(int?: Partial<Interface>): Interface {
   return {
     kind: 'Interface',
-    name: 'my_interface',
+    name: { value: 'my_interface' },
     methods: [],
     protocols: {
       http: [],

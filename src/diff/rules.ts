@@ -18,7 +18,7 @@ function buildContext(
     return {
       scope: 'parameter',
       service: scope.service.title.value,
-      interface: scope.interface.name,
+      interface: scope.interface.name.value,
       method: scope.method.name.value,
       parameter: scope.parameter.name.value,
       required: isRequired(scope.parameter),
@@ -27,7 +27,7 @@ function buildContext(
     return {
       scope: 'return-type',
       service: scope.service.title.value,
-      interface: scope.interface.name,
+      interface: scope.interface.name.value,
       method: scope.method.name.value,
       returnType: scope.returnType.typeName.value,
     };

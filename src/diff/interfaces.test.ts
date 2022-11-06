@@ -24,7 +24,10 @@ function setup(
 describe(interfaces, () => {
   it('identifies two identical interfaces', () => {
     // ARRANGE
-    const [a, b] = setup(buildInterface({ name }), buildInterface({ name }));
+    const [a, b] = setup(
+      buildInterface({ name: { value: name } }),
+      buildInterface({ name: { value: name } }),
+    );
 
     // ACT
     const result = interfaces(a, b);
@@ -35,7 +38,7 @@ describe(interfaces, () => {
 
   it('identifies an added interface', () => {
     // ARRANGE
-    const [a, b] = setup(undefined, buildInterface({ name }));
+    const [a, b] = setup(undefined, buildInterface({ name: { value: name } }));
 
     // ACT
     const result = interfaces(a, b);
@@ -60,7 +63,7 @@ describe(interfaces, () => {
 
   it('identifies a removed interface', () => {
     // ARRANGE
-    const [a, b] = setup(buildInterface({ name }), undefined);
+    const [a, b] = setup(buildInterface({ name: { value: name } }), undefined);
 
     // ACT
     const result = interfaces(a, b);
@@ -89,8 +92,8 @@ describe(interfaces, () => {
     const newName = 'someName';
 
     const [a, b] = setup(
-      buildInterface({ name: originalName }),
-      buildInterface({ name: newName }),
+      buildInterface({ name: { value: originalName } }),
+      buildInterface({ name: { value: newName } }),
     );
 
     // ACT
@@ -126,8 +129,8 @@ describe(interfaces, () => {
     // ARRANGE
     const description = 'some description';
     const [a, b] = setup(
-      buildInterface({ name }),
-      buildInterface({ name, description }),
+      buildInterface({ name: { value: name } }),
+      buildInterface({ name: { value: name }, description }),
     );
 
     // ACT
@@ -155,8 +158,8 @@ describe(interfaces, () => {
     // ARRANGE
     const description = 'some description';
     const [a, b] = setup(
-      buildInterface({ name, description }),
-      buildInterface({ name }),
+      buildInterface({ name: { value: name }, description }),
+      buildInterface({ name: { value: name } }),
     );
 
     // ACT
@@ -185,8 +188,11 @@ describe(interfaces, () => {
     const originalDescription = 'some description';
     const newDescription = 'different description';
     const [a, b] = setup(
-      buildInterface({ name, description: originalDescription }),
-      buildInterface({ name, description: newDescription }),
+      buildInterface({
+        name: { value: name },
+        description: originalDescription,
+      }),
+      buildInterface({ name: { value: name }, description: newDescription }),
     );
 
     // ACT
