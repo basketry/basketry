@@ -9,6 +9,7 @@
     {
       "kind": "Interface",
       "name": { "value": "gizmo" },
+      "description": { "value": "Single paragraph description" },
       "deprecated": { "value": true },
       "methods": [
         {
@@ -283,6 +284,10 @@
     {
       "kind": "Interface",
       "name": { "value": "widget" },
+      "description": [
+        { "value": "First paragraph of a multi-paragraph description" },
+        { "value": "Second paragraph of a multi-paragraph description" }
+      ],
       "methods": [
         {
           "kind": "Method",

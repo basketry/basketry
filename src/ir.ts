@@ -108,7 +108,7 @@ export type Property = {
 export type Interface = {
   kind: 'Interface';
   name: Scalar<string>;
-  description?: string;
+  description?: Scalar<string> | Scalar<string>[];
   deprecated?: Scalar<true>;
   methods: Method[];
   protocols: {

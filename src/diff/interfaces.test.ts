@@ -10,11 +10,11 @@ function setup(
   b: Interface | undefined,
 ): [ServiceScope, ServiceScope] {
   const a_service = buildService({
-    title: { value: title },
+    title: buildScalar(title),
     interfaces: a ? [a] : [],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: buildScalar(title),
     interfaces: b ? [b] : [],
   });
 
@@ -25,8 +25,8 @@ describe(interfaces, () => {
   it('identifies two identical interfaces', () => {
     // ARRANGE
     const [a, b] = setup(
-      buildInterface({ name: { value: name } }),
-      buildInterface({ name: { value: name } }),
+      buildInterface({ name: buildScalar(name) }),
+      buildInterface({ name: buildScalar(name) }),
     );
 
     // ACT
@@ -38,7 +38,10 @@ describe(interfaces, () => {
 
   it('identifies an added interface', () => {
     // ARRANGE
-    const [a, b] = setup(undefined, buildInterface({ name: { value: name } }));
+    const [a, b] = setup(
+      undefined,
+      buildInterface({ name: buildScalar(name) }),
+    );
 
     // ACT
     const result = interfaces(a, b);
@@ -63,7 +66,10 @@ describe(interfaces, () => {
 
   it('identifies a removed interface', () => {
     // ARRANGE
-    const [a, b] = setup(buildInterface({ name: { value: name } }), undefined);
+    const [a, b] = setup(
+      buildInterface({ name: buildScalar(name) }),
+      undefined,
+    );
 
     // ACT
     const result = interfaces(a, b);
@@ -92,8 +98,8 @@ describe(interfaces, () => {
     const newName = 'someName';
 
     const [a, b] = setup(
-      buildInterface({ name: { value: originalName } }),
-      buildInterface({ name: { value: newName } }),
+      buildInterface({ name: buildScalar(originalName) }),
+      buildInterface({ name: buildScalar(newName) }),
     );
 
     // ACT
@@ -129,8 +135,11 @@ describe(interfaces, () => {
     // ARRANGE
     const description = 'some description';
     const [a, b] = setup(
-      buildInterface({ name: { value: name } }),
-      buildInterface({ name: { value: name }, description }),
+      buildInterface({ name: buildScalar(name) }),
+      buildInterface({
+        name: buildScalar(name),
+        description: buildScalar(description),
+      }),
     );
 
     // ACT
@@ -158,8 +167,11 @@ describe(interfaces, () => {
     // ARRANGE
     const description = 'some description';
     const [a, b] = setup(
-      buildInterface({ name: { value: name }, description }),
-      buildInterface({ name: { value: name } }),
+      buildInterface({
+        name: buildScalar(name),
+        description: buildScalar(description),
+      }),
+      buildInterface({ name: buildScalar(name) }),
     );
 
     // ACT
@@ -189,10 +201,13 @@ describe(interfaces, () => {
     const newDescription = 'different description';
     const [a, b] = setup(
       buildInterface({
-        name: { value: name },
-        description: originalDescription,
+        name: buildScalar(name),
+        description: buildScalar(originalDescription),
       }),
-      buildInterface({ name: { value: name }, description: newDescription }),
+      buildInterface({
+        name: buildScalar(name),
+        description: buildScalar(newDescription),
+      }),
     );
 
     // ACT

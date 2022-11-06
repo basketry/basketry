@@ -146,8 +146,8 @@
         "name": { "$ref": "#/definitions/string" },
         "description": {
           "oneOf": [
-            { "type": "string" },
-            { "type": "array", "items": { "type": "string" } }
+            { "$ref": "#/definitions/string" },
+            { "type": "array", "items": { "$ref": "#/definitions/string" } }
           ]
         },
         "deprecated": { "$ref": "#/definitions/deprecated" },
