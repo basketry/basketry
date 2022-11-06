@@ -8,7 +8,7 @@ import {
   RuleChangeInfo,
   RuleContext,
 } from '.';
-import { ValidationRule } from '../types';
+import { ValidationRule } from '../ir';
 import { Mode, rules } from './rules';
 import {
   buildInterface,

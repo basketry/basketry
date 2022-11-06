@@ -7,13 +7,11 @@ import {
   HttpParameter,
   HttpPath,
   Property,
-  Rule,
   Service,
-  Severity,
   Type,
-  Violation,
   Union,
-} from './types';
+} from './ir';
+import { Rule, Severity, Violation } from './types';
 
 export type ContextIterator<Context> = (
   service: Service,

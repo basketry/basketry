@@ -1,4 +1,3 @@
-import { Scalar, ValidationRule } from '..';
 import {
   Enum,
   EnumValue,
@@ -7,9 +6,10 @@ import {
   Parameter,
   Property,
   ReturnType,
+  Scalar,
   Service,
   Type,
-} from '../types';
+} from '../ir';
 
 export function buildService(service?: Partial<Service>): Service {
   return {

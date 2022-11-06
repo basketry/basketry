@@ -3,13 +3,12 @@ import { join, relative } from 'path';
 import {
   ApiKeyScheme,
   BasicScheme,
-  File,
   Method,
   OAuth2Scheme,
-  Range,
   SecurityScheme,
   ValidationRule,
-} from './types';
+} from './ir';
+import { File, Range } from './types';
 
 export function hasParameters(method: Method): boolean {
   return !!method.parameters.length;

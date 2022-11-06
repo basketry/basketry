@@ -1,5 +1,5 @@
 import { PropertyChangeInfo, RuleChangeInfo, TypeScope } from '.';
-import { Property } from '../types';
+import { Property } from '../ir';
 import { properties, Mode } from './properties';
 import {
   buildInterface,

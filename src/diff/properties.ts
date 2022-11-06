@@ -1,6 +1,6 @@
 import { ChangeInfo, PropertyContext, TypeScope } from '.';
 import { isRequired } from '..';
-import { Property } from '../types';
+import { Property } from '../ir';
 import * as cache from './cache';
 import { rules } from './rules';
 import { asValue, eq } from './utils';

@@ -1,5 +1,5 @@
 import { Enum, getEnumByName, getTypeByName, Service, Type } from '..';
-import { Scalar } from '../types';
+import { Scalar } from '../ir';
 
 export function getInputs(service: Service): {
   types: Iterable<Type>;

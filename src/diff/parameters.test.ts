@@ -1,5 +1,5 @@
 import { MethodScope, ParameterChangeInfo, RuleChangeInfo } from '.';
-import { Parameter } from '../types';
+import { Parameter } from '../ir';
 import { parameters } from './parameters';
 import {
   buildInterface,

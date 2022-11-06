@@ -8,7 +8,7 @@ import {
 } from '.';
 import { isRequired } from '..';
 
-import { ValidationRule } from '../types';
+import { ValidationRule } from '../ir';
 
 function buildContext(
   mode: Mode,

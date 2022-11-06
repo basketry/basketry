@@ -7,7 +7,7 @@ import { performance } from 'perf_hooks';
 import { merge as webpackMerge } from 'webpack-merge';
 import { NamespacedBasketryOptions } from '.';
 import { encodeRange, withGitattributes } from './helpers';
-
+import { Service } from './ir';
 import {
   BasketryError,
   Config,
@@ -21,7 +21,6 @@ import {
   Parser,
   Rule,
   RuleOptions,
-  Service,
   Violation,
 } from './types';
 import { getConfigs, isLocalConfig } from './utils';

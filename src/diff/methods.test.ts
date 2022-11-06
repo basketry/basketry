@@ -1,5 +1,5 @@
 import { InterfaceScope, MethodChangeInfo, ReturnTypeChangeInfo } from '.';
-import { Method } from '..';
+import { Method } from '../ir';
 import { methods } from './methods';
 import {
   buildInterface,

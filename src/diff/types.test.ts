@@ -1,5 +1,5 @@
 import { ServiceScope, TypeChangeInfo } from '.';
-import { Type } from '../types';
+import { Type } from '../ir';
 import { types, Mode } from './types';
 import {
   buildInterface,

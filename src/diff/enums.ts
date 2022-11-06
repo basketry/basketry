@@ -1,5 +1,5 @@
 import { ChangeInfo, EnumContext, ServiceScope } from '.';
-import { Enum } from '../types';
+import { Enum } from '../ir';
 import * as cache from './cache';
 import { asValue, eq, getInputs, getOutputs } from './utils';
 

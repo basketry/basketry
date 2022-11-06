@@ -1,13 +1,14 @@
 import { snake } from 'case';
-import { Enum, Scalar, Property } from '..';
 import {
+  Enum,
   EnumValue,
   Interface,
   Method,
   Parameter,
+  Property,
   Service,
   Type,
-} from '../types';
+} from '../ir';
 
 const interfaceCache = new WeakMap<Service, Map<string, Interface | null>>();
 export function getInterface(

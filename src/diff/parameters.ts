@@ -1,6 +1,6 @@
 import { MethodScope, ParameterContext, ChangeInfo } from '.';
 import * as cache from './cache';
-import { Parameter } from '../types';
+import { Parameter } from '../ir';
 import { isRequired } from '..';
 import { eq, asValue } from './utils';
 import { rules } from './rules';
@@ -12,7 +12,7 @@ function buildContext(
   return {
     scope: 'parameter',
     service: scope.service.title.value,
-    interface: scope.interface.name,
+    interface: scope.interface.name.value,
     method: scope.method.name.value,
     parameter: parameter.name.value,
     required: isRequired(parameter),

@@ -1,5 +1,5 @@
 import { ChangeInfo, ServiceScope, TypeContext } from '.';
-import { Type } from '../types';
+import { Type } from '../ir';
 import * as cache from './cache';
 import { properties } from './properties';
 import { eq, getInputs, getOutputs } from './utils';

@@ -1,5 +1,5 @@
 import { EnumChangeInfo, ServiceScope } from '.';
-import { Enum } from '../types';
+import { Enum } from '../ir';
 import { enums, Mode } from './enums';
 import {
   buildEnum,
