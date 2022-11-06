@@ -160,7 +160,6 @@ export class Engine {
         const { errors, violations } = runRules({
           fns: this.rules,
           service: this._service,
-          sourcePath: this.input.sourcePath,
         });
         this.pushErrors(...errors);
         this.pushViolations(...violations);
@@ -586,15 +585,11 @@ function runParser(options: {
   return { value, errors, violations };
 }
 
-function runRules(options: {
-  fns: Rule[];
-  service: Service;
-  sourcePath: string;
-}): {
+function runRules(options: { fns: Rule[]; service: Service }): {
   errors: BasketryError[];
   violations: Violation[];
 } {
-  const { fns, service, sourcePath } = options;
+  const { fns, service } = options;
   const errors: BasketryError[] = [];
   const violations: Violation[] = [];
 
@@ -602,7 +597,7 @@ function runRules(options: {
   for (const fn of fns) {
     try {
       performance.mark('rule-start');
-      push(violations, fn(service, sourcePath));
+      push(violations, fn(service));
     } catch (ex) {
       errors.push({
         code: 'RULE_ERROR',
@@ -707,8 +702,8 @@ function getRules(
         const { fn, errors } = loadModule<Rule>(moduleName, configPath);
 
         const rule: Rule | undefined = fn
-          ? (service, sourcePath, localOptions) =>
-              fn(service, sourcePath, merge(ruleOptions, localOptions))
+          ? (service, localOptions) =>
+              fn(service, merge(ruleOptions, localOptions))
           : undefined;
 
         if (rule) componentNames.set(rule, moduleName);

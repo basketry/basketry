@@ -80,11 +80,6 @@ export type RuleOptions = {
 export type Rule = (
   /** The Intermediate Representation (IR) of the service */
   service: Service,
-  /**
-   * The path to the source SDL on the file system. This path is used for
-   * generating Violations that point to a specific range within the original SDL file.
-   */
-  sourcePath: string,
   options?: any,
 ) => Violation[];
 

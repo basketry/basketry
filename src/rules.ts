@@ -15,21 +15,19 @@ import { Rule, Severity, Violation } from './types';
 
 export type ContextIterator<Context> = (
   service: Service,
-  sourcePath: string,
   options: any,
 ) => Context[];
 
 export interface ServiceRuleContext {
   service: Service;
-  sourcePath: string;
   options: any;
 }
 export function serviceRule(
   rule: (context: ServiceRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
+  return (service, options) =>
     [service]
-      .map((s) => rule({ service: s, sourcePath, options }))
+      .map((s) => rule({ service: s, options }))
       .filter((v): v is Violation => !!v);
 }
 
@@ -39,20 +37,18 @@ export interface InterfaceRuleContext extends ServiceRuleContext {
 export function interfaceRule(
   rule: (context: InterfaceRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allInterfaces(service, sourcePath, options)
+  return (service, options) =>
+    allInterfaces(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
 export const allInterfaces: ContextIterator<InterfaceRuleContext> = (
   service,
-  sourcePath,
   options,
 ) =>
   service.interfaces.map((i) => ({
     interface: i,
     service,
-    sourcePath,
     options,
   }));
 
@@ -63,14 +59,13 @@ export interface MethodRuleContext extends InterfaceRuleContext {
 export function methodRule(
   rule: (context: MethodRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allMethods(service, sourcePath, options)
+  return (service, options) =>
+    allMethods(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
 export const allMethods: ContextIterator<MethodRuleContext> = (
   service,
-  sourcePath,
   options,
 ) =>
   service.interfaces
@@ -80,7 +75,6 @@ export const allMethods: ContextIterator<MethodRuleContext> = (
       httpMethod: getHttpMethodByName(service, m.name.value),
       interface: i,
       service,
-      sourcePath,
       options,
     }));
 
@@ -90,14 +84,13 @@ export interface HttpPathRuleContext extends InterfaceRuleContext {
 export function httpPathRule(
   rule: (context: HttpPathRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allHttpPaths(service, sourcePath, options)
+  return (service, options) =>
+    allHttpPaths(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
 export const allHttpPaths: ContextIterator<HttpPathRuleContext> = (
   service,
-  sourcePath,
   options,
 ) =>
   service.interfaces
@@ -106,7 +99,6 @@ export const allHttpPaths: ContextIterator<HttpPathRuleContext> = (
       httpPath: p,
       interface: i,
       service,
-      sourcePath,
       options,
     }));
 
@@ -117,14 +109,13 @@ export interface ParameterRuleContext extends MethodRuleContext {
 export function parameterRule(
   rule: (context: ParameterRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allParameters(service, sourcePath, options)
+  return (service, options) =>
+    allParameters(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
 export const allParameters: ContextIterator<ParameterRuleContext> = (
   service,
-  sourcePath,
   options,
 ) =>
   service.interfaces
@@ -142,7 +133,6 @@ export const allParameters: ContextIterator<ParameterRuleContext> = (
       httpMethod: getHttpMethodByName(service, m.name.value),
       interface: i,
       service,
-      sourcePath,
       options,
     }));
 
@@ -152,16 +142,13 @@ export interface TypeRuleContext extends ServiceRuleContext {
 export function typeRule(
   rule: (context: TypeRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allTypes(service, sourcePath, options)
+  return (service, options) =>
+    allTypes(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
-export const allTypes: ContextIterator<TypeRuleContext> = (
-  service,
-  sourcePath,
-  options,
-) => service.types.map((type) => ({ type, service, sourcePath, options }));
+export const allTypes: ContextIterator<TypeRuleContext> = (service, options) =>
+  service.types.map((type) => ({ type, service, options }));
 
 export interface PropertyRuleContext extends TypeRuleContext {
   property: Property;
@@ -169,19 +156,18 @@ export interface PropertyRuleContext extends TypeRuleContext {
 export function propertyRule(
   rule: (context: PropertyRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allProperties(service, sourcePath, options)
+  return (service, options) =>
+    allProperties(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
 export const allProperties: ContextIterator<PropertyRuleContext> = (
   service,
-  sourcePath,
   options,
 ) =>
   service.types
     .flatMap((t) => t.properties.map<[Property, Type]>((p) => [p, t]))
-    .map(([p, t]) => ({ property: p, type: t, service, sourcePath, options }));
+    .map(([p, t]) => ({ property: p, type: t, service, options }));
 
 export interface EnumRuleContext extends ServiceRuleContext {
   enum: Enum;
@@ -189,16 +175,13 @@ export interface EnumRuleContext extends ServiceRuleContext {
 export function enumRule(
   rule: (context: EnumRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allEnums(service, sourcePath, options)
+  return (service, options) =>
+    allEnums(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
-export const allEnums: ContextIterator<EnumRuleContext> = (
-  service,
-  sourcePath,
-  options,
-) => service.enums.map((e) => ({ enum: e, service, sourcePath, options }));
+export const allEnums: ContextIterator<EnumRuleContext> = (service, options) =>
+  service.enums.map((e) => ({ enum: e, service, options }));
 
 export interface EnumValueRuleContext extends EnumRuleContext {
   value: Enum['values'][number];
@@ -206,19 +189,18 @@ export interface EnumValueRuleContext extends EnumRuleContext {
 export function enumValueRule(
   rule: (context: EnumValueRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allEnumValues(service, sourcePath, options)
+  return (service, options) =>
+    allEnumValues(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
 export const allEnumValues: ContextIterator<EnumValueRuleContext> = (
   service,
-  sourcePath,
   options,
 ) =>
   service.enums
     .flatMap((e) => e.values.map<[Enum['values'][number], Enum]>((v) => [v, e]))
-    .map(([v, e]) => ({ value: v, enum: e, service, sourcePath, options }));
+    .map(([v, e]) => ({ value: v, enum: e, service, options }));
 
 export interface UnionRuleContext extends ServiceRuleContext {
   union: Union;
@@ -226,20 +208,18 @@ export interface UnionRuleContext extends ServiceRuleContext {
 export function unionRule(
   rule: (context: UnionRuleContext) => Violation | undefined,
 ): Rule {
-  return (service, sourcePath, options) =>
-    allUnions(service, sourcePath, options)
+  return (service, options) =>
+    allUnions(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
 export const allUnions: ContextIterator<UnionRuleContext> = (
   service,
-  sourcePath,
   options,
-) => service.unions.map((union) => ({ union, service, sourcePath, options }));
+) => service.unions.map((union) => ({ union, service, options }));
 
 export function combineRules(...rules: Rule[]): Rule {
-  return (service, sourcePath, options) =>
-    rules.flatMap((rule) => rule(service, sourcePath, options));
+  return (service, options) => rules.flatMap((rule) => rule(service, options));
 }
 
 export function parseSeverity(
