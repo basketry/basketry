@@ -11,8 +11,7 @@
     "interfaces",
     "types",
     "enums",
-    "unions",
-    "loc"
+    "unions"
   ],
   "properties": {
     "$schema": { "type": "string" },
@@ -163,7 +162,7 @@
     },
     "type": {
       "type": "object",
-      "required": ["kind", "name", "properties", "rules", "loc"],
+      "required": ["kind", "name", "properties", "rules"],
       "properties": {
         "kind": { "type": "string", "const": "Type" },
         "name": { "$ref": "#/definitions/string" },
@@ -188,7 +187,7 @@
     },
     "enum": {
       "type": "object",
-      "required": ["kind", "name", "values", "loc"],
+      "required": ["kind", "name", "values"],
       "properties": {
         "kind": { "type": "string", "const": "Enum" },
         "name": { "$ref": "#/definitions/string" },
@@ -210,7 +209,7 @@
     },
     "enumValue": {
       "type": "object",
-      "required": ["kind", "content", "loc"],
+      "required": ["kind", "content"],
       "properties": {
         "kind": { "type": "string", "const": "EnumValue" },
         "content": { "$ref": "#/definitions/string" },
@@ -315,7 +314,7 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["kind", "name", "loc"],
+          "required": ["kind", "name"],
           "properties": {
             "kind": { "type": "string", "const": "Property" },
             "name": { "$ref": "#/definitions/string" },
@@ -334,7 +333,7 @@
     },
     "method": {
       "type": "object",
-      "required": ["kind", "name", "security", "parameters", "loc"],
+      "required": ["kind", "name", "security", "parameters"],
       "properties": {
         "kind": { "type": "string", "const": "Method" },
         "name": { "$ref": "#/definitions/string" },
@@ -363,7 +362,7 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["kind", "name", "loc"],
+          "required": ["kind", "name"],
           "properties": {
             "kind": { "type": "string", "const": "Parameter" },
             "name": { "$ref": "#/definitions/string" },
@@ -385,7 +384,7 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["kind", "loc"],
+          "required": ["kind"],
           "properties": {
             "kind": { "type": "string", "const": "ReturnType" },
             "loc": { "$ref": "#/definitions/range" },
@@ -397,7 +396,7 @@
     },
     "httpPath": {
       "type": "object",
-      "required": ["kind", "path", "methods", "loc"],
+      "required": ["kind", "path", "methods"],
       "properties": {
         "kind": { "type": "string", "const": "HttpPath" },
         "path": { "$ref": "#/definitions/string" },
@@ -411,7 +410,7 @@
     },
     "httpMethod": {
       "type": "object",
-      "required": ["kind", "name", "verb", "parameters", "successCode", "loc"],
+      "required": ["kind", "name", "verb", "parameters", "successCode"],
       "properties": {
         "kind": { "type": "string", "const": "HttpMethod" },
         "name": { "$ref": "#/definitions/string" },
@@ -458,7 +457,7 @@
     },
     "httpParameter": {
       "type": "object",
-      "required": ["kind", "name", "in", "loc"],
+      "required": ["kind", "name", "in"],
       "properties": {
         "kind": { "type": "string", "const": "HttpParameter" },
         "name": { "$ref": "#/definitions/string" },
@@ -503,7 +502,7 @@
     },
     "basicScheme": {
       "type": "object",
-      "required": ["kind", "type", "name", "loc"],
+      "required": ["kind", "type", "name"],
       "properties": {
         "kind": { "type": "string", "const": "BasicScheme" },
         "type": {
@@ -527,7 +526,7 @@
     },
     "apiKeyScheme": {
       "type": "object",
-      "required": ["kind", "type", "name", "parameter", "in", "loc"],
+      "required": ["kind", "type", "name", "parameter", "in"],
       "properties": {
         "kind": { "type": "string", "const": "ApiKeyScheme" },
         "type": {
@@ -564,7 +563,7 @@
     },
     "oauth2Scheme": {
       "type": "object",
-      "required": ["kind", "type", "name", "flows", "loc"],
+      "required": ["kind", "type", "name", "flows"],
       "properties": {
         "kind": { "type": "string", "const": "OAuth2Scheme" },
         "type": {
@@ -597,7 +596,7 @@
     },
     "oauth2ImplicitFlow": {
       "type": "object",
-      "required": ["kind", "type", "authorizationUrl", "scopes", "loc"],
+      "required": ["kind", "type", "authorizationUrl", "scopes"],
       "properties": {
         "kind": { "type": "string", "const": "OAuth2ImplicitFlow" },
         "type": {
@@ -622,7 +621,7 @@
     },
     "oauth2PasswordFlow": {
       "type": "object",
-      "required": ["kind", "type", "tokenUrl", "scopes", "loc"],
+      "required": ["kind", "type", "tokenUrl", "scopes"],
       "properties": {
         "kind": { "type": "string", "const": "OAuth2PasswordFlow" },
         "type": {
@@ -647,7 +646,7 @@
     },
     "oauth2ClientCredentialsFlow": {
       "type": "object",
-      "required": ["kind", "type", "tokenUrl", "scopes", "loc"],
+      "required": ["kind", "type", "tokenUrl", "scopes"],
       "properties": {
         "kind": { "type": "string", "const": "OAuth2ClientCredentialsFlow" },
         "type": {
@@ -672,14 +671,7 @@
     },
     "oauth2AuthorizationCodeFlow": {
       "type": "object",
-      "required": [
-        "kind",
-        "type",
-        "authorizationUrl",
-        "tokenUrl",
-        "scopes",
-        "loc"
-      ],
+      "required": ["kind", "type", "authorizationUrl", "tokenUrl", "scopes"],
       "properties": {
         "kind": { "type": "string", "const": "OAuth2AuthorizationCodeFlow" },
         "type": {
@@ -705,7 +697,7 @@
     },
     "oauth2Scope": {
       "type": "object",
-      "required": ["kind", "name", "description", "loc"],
+      "required": ["kind", "name", "description"],
       "properties": {
         "kind": { "type": "string", "const": "OAuth2Scope" },
         "name": { "$ref": "#/definitions/string" },
@@ -781,7 +773,7 @@
 
     "stringMaxLengthRule": {
       "type": "object",
-      "required": ["kind", "id", "length", "loc"],
+      "required": ["kind", "id", "length"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -795,7 +787,7 @@
     },
     "stringMinLengthRule": {
       "type": "object",
-      "required": ["kind", "id", "length", "loc"],
+      "required": ["kind", "id", "length"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -809,7 +801,7 @@
     },
     "stringPatternRule": {
       "type": "object",
-      "required": ["kind", "id", "pattern", "loc"],
+      "required": ["kind", "id", "pattern"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -831,7 +823,7 @@
     },
     "stringFormatRule": {
       "type": "object",
-      "required": ["kind", "id", "format", "loc"],
+      "required": ["kind", "id", "format"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -853,7 +845,7 @@
     },
     "stringEnumRule": {
       "type": "object",
-      "required": ["kind", "id", "values", "loc"],
+      "required": ["kind", "id", "values"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -871,7 +863,7 @@
     },
     "numberMultipleOfRule": {
       "type": "object",
-      "required": ["kind", "id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -885,7 +877,7 @@
     },
     "numberGtRule": {
       "type": "object",
-      "required": ["kind", "id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -899,7 +891,7 @@
     },
     "numberGteRule": {
       "type": "object",
-      "required": ["kind", "id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -913,7 +905,7 @@
     },
     "numberLtRule": {
       "type": "object",
-      "required": ["kind", "id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -927,7 +919,7 @@
     },
     "numberLteRule": {
       "type": "object",
-      "required": ["kind", "id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -941,7 +933,7 @@
     },
     "arrayMaxItemsRule": {
       "type": "object",
-      "required": ["kind", "id", "max", "loc"],
+      "required": ["kind", "id", "max"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -955,7 +947,7 @@
     },
     "arrayMinItemsRule": {
       "type": "object",
-      "required": ["kind", "id", "min", "loc"],
+      "required": ["kind", "id", "min"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -969,7 +961,7 @@
     },
     "arrayUniqueItemsRule": {
       "type": "object",
-      "required": ["kind", "id", "required", "loc"],
+      "required": ["kind", "id", "required"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
@@ -985,7 +977,7 @@
     },
     "objectMinPropertiesRule": {
       "type": "object",
-      "required": ["kind", "id", "min", "loc"],
+      "required": ["kind", "id", "min"],
       "properties": {
         "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {
@@ -999,7 +991,7 @@
     },
     "objectMaxPropertiesRule": {
       "type": "object",
-      "required": ["kind", "id", "max", "loc"],
+      "required": ["kind", "id", "max"],
       "properties": {
         "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {
@@ -1013,7 +1005,7 @@
     },
     "objectAdditionalPropertiesRule": {
       "type": "object",
-      "required": ["kind", "id", "forbidden", "loc"],
+      "required": ["kind", "id", "forbidden"],
       "properties": {
         "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {

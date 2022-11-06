@@ -80,7 +80,6 @@ describe(methods, () => {
             scope: 'method',
             service: 'service title',
           },
-          loc: '1;1;0',
           value: 'method name',
         },
       },
@@ -110,7 +109,6 @@ describe(methods, () => {
             scope: 'method',
             service: 'service title',
           },
-          loc: '1;1;0',
           value: 'method name',
         },
       },
@@ -317,7 +315,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: 'string',
-          loc: '1;1;0',
         },
       },
     ]);
@@ -351,7 +348,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: 'string',
-          loc: '1;1;0',
         },
       },
     ]);
@@ -440,7 +436,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: true,
-          loc: '1;1;0',
         },
         b: {
           context: {
@@ -451,7 +446,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: false,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -494,7 +488,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: true,
-          loc: '1;1;0',
         },
         b: {
           context: {
@@ -505,7 +498,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: false,
-          loc: '1;1;0',
         },
       },
     ]);

@@ -460,10 +460,6 @@ describe('engine', () => {
         },
         {
           code: 'PARSER_ERROR',
-          message: "Invalid IR: `#` must have required property 'loc'",
-        },
-        {
-          code: 'PARSER_ERROR',
           message: 'Invalid IR: `#` must NOT have additional properties',
         },
         {

@@ -91,7 +91,6 @@ describe(parameters, () => {
             required: false,
           },
           value: parameterName,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -128,7 +127,6 @@ describe(parameters, () => {
             required: true,
           },
           value: parameterName,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -160,7 +158,6 @@ describe(parameters, () => {
             required: false,
           },
           value: parameterName,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -197,7 +194,6 @@ describe(parameters, () => {
             required: true,
           },
           value: parameterName,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -448,7 +444,6 @@ describe(parameters, () => {
             required: false,
           },
           value: true,
-          loc: '1;1;0',
         },
         b: {
           context: {
@@ -460,7 +455,6 @@ describe(parameters, () => {
             required: false,
           },
           value: false,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -498,7 +492,6 @@ describe(parameters, () => {
             required: false,
           },
           value: true,
-          loc: '1;1;0',
         },
         b: {
           context: {
@@ -510,7 +503,6 @@ describe(parameters, () => {
             required: false,
           },
           value: false,
-          loc: '1;1;0',
         },
       },
     ]);

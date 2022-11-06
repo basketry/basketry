@@ -22,7 +22,6 @@ export function buildService(service?: Partial<Service>): Service {
     types: [],
     enums: [],
     unions: [],
-    loc: '1;1;0',
     ...service,
   };
 }
@@ -46,7 +45,6 @@ export function buildMethod(method?: Partial<Method>): Method {
     parameters: [],
     security: [],
     returnType: undefined,
-    loc: '1;1;0',
     ...method,
   };
 }
@@ -59,7 +57,6 @@ export function buildParameter(parameter?: Partial<Parameter>): Parameter {
     isPrimitive: true,
     typeName: { value: 'string' },
     rules: [],
-    loc: '1;1;0',
     ...(parameter as any),
   };
 }
@@ -71,7 +68,6 @@ export function buildReturnType(returnType?: Partial<ReturnType>): ReturnType {
     isPrimitive: true,
     typeName: { value: 'string' },
     rules: [],
-    loc: '1;1;0',
     ...(returnType as any),
   };
 }
@@ -82,7 +78,6 @@ export function buildType(type?: Partial<Type>): Type {
     name: { value: 'my_method' },
     properties: [buildProperty()],
     rules: [],
-    loc: '1;1;0',
     ...type,
   };
 }
@@ -95,7 +90,6 @@ export function buildProperty(property?: Partial<Property>): Property {
     isPrimitive: true,
     typeName: { value: 'string' },
     rules: [],
-    loc: '1;1;0',
     ...(property as any),
   };
 }
@@ -108,7 +102,6 @@ export function buildEnum(e?: Partial<Enum>): Enum {
       buildEnumValue({ content: { value: 'some_value' } }),
       buildEnumValue({ content: { value: 'other_value' } }),
     ],
-    loc: '1;1;0',
     ...e,
   };
 }
@@ -117,7 +110,6 @@ export function buildEnumValue(value?: Partial<EnumValue>): EnumValue {
   return {
     kind: 'EnumValue',
     content: { value: 'my_enum_value' },
-    loc: '1;1;0',
     ...value,
   };
 }
@@ -125,5 +117,5 @@ export function buildEnumValue(value?: Partial<EnumValue>): EnumValue {
 export function buildScalar<T extends string | number | boolean | null>(
   value: T,
 ): Scalar<T> {
-  return { value, loc: '1;1;0' };
+  return { value };
 }

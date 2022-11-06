@@ -143,7 +143,6 @@ describe(properties, () => {
               property: propertyName,
               required: false,
             },
-            loc: '1;1;0',
             value: propertyName,
           },
         },
@@ -180,7 +179,6 @@ describe(properties, () => {
               property: propertyName,
               required: true,
             },
-            loc: '1;1;0',
             value: propertyName,
           },
         },
@@ -212,7 +210,6 @@ describe(properties, () => {
               property: propertyName,
               required: false,
             },
-            loc: '1;1;0',
             value: propertyName,
           },
         },
@@ -249,7 +246,6 @@ describe(properties, () => {
               property: propertyName,
               required: true,
             },
-            loc: '1;1;0',
             value: propertyName,
           },
         },
@@ -283,7 +279,6 @@ describe(properties, () => {
               property: originalName,
               required: false,
             },
-            loc: '1;1;0',
             value: originalName,
           },
           b: {
@@ -294,7 +289,6 @@ describe(properties, () => {
               property: newName,
               required: false,
             },
-            loc: '1;1;0',
             value: newName,
           },
         },
@@ -380,7 +374,6 @@ describe(properties, () => {
               required: false,
             },
             value: true,
-            loc: '1;1;0',
           },
           b: {
             context: {
@@ -391,7 +384,6 @@ describe(properties, () => {
               required: false,
             },
             value: false,
-            loc: '1;1;0',
           },
         },
       ]);
@@ -429,7 +421,6 @@ describe(properties, () => {
               required: false,
             },
             value: true,
-            loc: '1;1;0',
           },
           b: {
             context: {
@@ -440,7 +431,6 @@ describe(properties, () => {
               required: false,
             },
             value: false,
-            loc: '1;1;0',
           },
         },
       ]);

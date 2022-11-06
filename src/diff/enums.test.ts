@@ -128,7 +128,6 @@ describe(enums, () => {
               enum: enumName,
             },
             value: enumName,
-            loc: '1;1;0',
           },
         },
       ]);
@@ -158,7 +157,6 @@ describe(enums, () => {
               enum: enumName,
             },
             value: enumName,
-            loc: '1;1;0',
           },
         },
       ]);
@@ -281,7 +279,6 @@ describe(enums, () => {
               enum: enumName,
             },
             value: 'second',
-            loc: '1;1;0',
           },
         },
       ]);
@@ -320,7 +317,6 @@ describe(enums, () => {
               enum: enumName,
             },
             value: 'second',
-            loc: '1;1;0',
           },
         },
       ]);
@@ -358,7 +354,6 @@ describe(enums, () => {
               enum: enumName,
             },
             value: originalValue,
-            loc: '1;1;0',
           },
           b: {
             context: {
@@ -367,7 +362,6 @@ describe(enums, () => {
               enum: enumName,
             },
             value: newValue,
-            loc: '1;1;0',
           },
         },
       ]);
@@ -409,7 +403,6 @@ describe(enums, () => {
               enum: enumName,
             },
             value: originalDescription,
-            loc: '1;1;0',
           },
           b: {
             context: {
@@ -418,7 +411,6 @@ describe(enums, () => {
               enum: enumName,
             },
             value: newDescription,
-            loc: '1;1;0',
           },
         },
       ]);
