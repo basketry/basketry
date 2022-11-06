@@ -252,7 +252,7 @@ describe(properties, () => {
       ]);
     });
 
-    it('identifies a changed input property casing', () => {
+    it('identifies a changed property casing', () => {
       // ARRANGE
       const originalName = 'SOME_NAME';
       const newName = 'someName';
@@ -290,6 +290,193 @@ describe(properties, () => {
               required: false,
             },
             value: newName,
+          },
+        },
+      ]);
+    });
+
+    it('identifies an added property description', () => {
+      // ARRANGE
+      const description = 'some description';
+      const [a, b] = setup(
+        mode,
+        buildProperty({ name: buildScalar(propertyName) }),
+        buildProperty({
+          name: buildScalar(propertyName),
+          description: buildScalar(description),
+        }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'added',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          b: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: description,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a removed property description', () => {
+      // ARRANGE
+      const description = 'some description';
+      const [a, b] = setup(
+        mode,
+        buildProperty({
+          name: buildScalar(propertyName),
+          description: buildScalar(description),
+        }),
+        buildProperty({ name: buildScalar(propertyName) }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'removed',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: description,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a changed property description', () => {
+      // ARRANGE
+      const originalDescription = 'some description';
+      const newDescription = 'different description';
+      const [a, b] = setup(
+        mode,
+        buildProperty({
+          name: buildScalar(propertyName),
+          description: buildScalar(originalDescription),
+        }),
+        buildProperty({
+          name: buildScalar(propertyName),
+          description: buildScalar(newDescription),
+        }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'changed',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: originalDescription,
+          },
+          b: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: newDescription,
+          },
+        },
+      ]);
+    });
+
+    it('identifies an added property deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildProperty({ name: buildScalar(propertyName) }),
+        buildProperty({
+          name: buildScalar(propertyName),
+          deprecated: buildScalar(true),
+        }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'added',
+          target: `${mode}-property-deprecated`,
+          category: 'minor',
+          b: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: true,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a removed property deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildProperty({
+          name: buildScalar(propertyName),
+          deprecated: buildScalar(true),
+        }),
+        buildProperty({ name: buildScalar(propertyName) }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'removed',
+          target: `${mode}-property-deprecated`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: true,
           },
         },
       ]);

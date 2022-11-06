@@ -246,6 +246,74 @@ describe(enums, () => {
       ]);
     });
 
+    it('identifies an added enum deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildEnum({
+          name: { value: enumName },
+        }),
+        buildEnum({
+          name: { value: enumName },
+          deprecated: { value: true },
+        }),
+      );
+
+      // ACT
+      const result = enums(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
+        {
+          kind: 'added',
+          target: `${mode}-enum-deprecated`,
+          category: 'minor',
+          b: {
+            context: {
+              scope: `${mode}-enum`,
+              service: title,
+              enum: enumName,
+            },
+            value: true,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a removed enum deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildEnum({
+          name: { value: enumName },
+          deprecated: { value: true },
+        }),
+        buildEnum({
+          name: { value: enumName },
+        }),
+      );
+
+      // ACT
+      const result = enums(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
+        {
+          kind: 'removed',
+          target: `${mode}-enum-deprecated`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-enum`,
+              service: title,
+              enum: enumName,
+            },
+            value: true,
+          },
+        },
+      ]);
+    });
+
     it('identifies an added enum value', () => {
       // ARRANGE
       const [a, b] = setup(
@@ -395,7 +463,7 @@ describe(enums, () => {
         {
           kind: 'changed',
           target: `${mode}-enum-value-description`,
-          category: 'major',
+          category: 'patch',
           a: {
             context: {
               scope: `${mode}-enum`,
@@ -411,6 +479,76 @@ describe(enums, () => {
               enum: enumName,
             },
             value: newDescription,
+          },
+        },
+      ]);
+    });
+
+    it('identifies an added enum value deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildEnum({
+          name: { value: enumName },
+          values: [buildEnumValue()],
+        }),
+        buildEnum({
+          name: { value: enumName },
+          values: [buildEnumValue({ deprecated: buildScalar(true) })],
+        }),
+      );
+
+      // ACT
+      const result = enums(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
+        {
+          kind: 'added',
+          target: `${mode}-enum-value-deprecated`,
+          category: 'minor',
+          b: {
+            context: {
+              scope: `${mode}-enum`,
+              service: title,
+              enum: enumName,
+            },
+            value: true,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a removed enum value deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildEnum({
+          name: { value: enumName },
+          values: [buildEnumValue({ deprecated: buildScalar(true) })],
+        }),
+        buildEnum({
+          name: { value: enumName },
+          values: [buildEnumValue()],
+        }),
+      );
+
+      // ACT
+      const result = enums(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
+        {
+          kind: 'removed',
+          target: `${mode}-enum-value-deprecated`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-enum`,
+              service: title,
+              enum: enumName,
+            },
+            value: true,
           },
         },
       ]);

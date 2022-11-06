@@ -9,10 +9,12 @@
     {
       "kind": "Interface",
       "name": { "value": "gizmo" },
+      "deprecated": { "value": true },
       "methods": [
         {
           "kind": "Method",
           "name": { "value": "getGizmos" },
+          "deprecated": { "value": true },
           "security": [
             [
               {
@@ -48,6 +50,7 @@
             {
               "kind": "Parameter",
               "name": { "value": "search" },
+              "deprecated": { "value": true },
               "typeName": { "value": "string" },
               "isPrimitive": true,
               "isArray": false,
@@ -1510,6 +1513,7 @@
     {
       "kind": "Type",
       "name": { "value": "gizmo" },
+      "deprecated": { "value": true },
       "properties": [
         {
           "kind": "Property",
@@ -1536,6 +1540,7 @@
         {
           "kind": "Property",
           "name": { "value": "size" },
+          "deprecated": { "value": true },
           "typeName": { "value": "productSize" },
           "isPrimitive": false,
           "isArray": false,
@@ -1879,10 +1884,12 @@
     {
       "kind": "Enum",
       "name": { "value": "createGizmoSize" },
+      "deprecated": { "value": true },
       "values": [
         {
           "kind": "EnumValue",
-          "content": { "value": "small" }
+          "content": { "value": "small" },
+          "deprecated": { "value": true }
         },
         {
           "kind": "EnumValue",

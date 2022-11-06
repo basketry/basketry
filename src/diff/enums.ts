@@ -46,6 +46,22 @@ export function* enums(
         };
       }
 
+      if (!a_enum.deprecated?.value && b_enum.deprecated?.value) {
+        yield {
+          kind: 'added',
+          target: `${mode}-enum-deprecated`,
+          category: 'minor',
+          b: { context: b_context, ...asValue(b_enum.deprecated) },
+        };
+      } else if (a_enum.deprecated?.value && !b_enum.deprecated?.value) {
+        yield {
+          kind: 'removed',
+          target: `${mode}-enum-deprecated`,
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_enum.deprecated) },
+        };
+      }
+
       for (const a_value of a_enum.values) {
         const b_value = cache.getEnumValue(b_enum, a_value.content.value);
 
@@ -64,9 +80,25 @@ export function* enums(
             yield {
               kind: 'changed',
               target: `${mode}-enum-value-description`,
-              category: 'major',
+              category: 'patch',
               a: { context: a_context, ...asValue(a_value.description) },
               b: { context: b_context, ...asValue(b_value.description) },
+            };
+          }
+
+          if (!a_value.deprecated?.value && b_value.deprecated?.value) {
+            yield {
+              kind: 'added',
+              target: `${mode}-enum-value-deprecated`,
+              category: 'minor',
+              b: { context: b_context, ...asValue(b_value.deprecated) },
+            };
+          } else if (a_value.deprecated?.value && !b_value.deprecated?.value) {
+            yield {
+              kind: 'removed',
+              target: `${mode}-enum-value-deprecated`,
+              category: 'patch',
+              a: { context: a_context, ...asValue(a_value.deprecated) },
             };
           }
         } else {

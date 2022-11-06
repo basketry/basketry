@@ -364,6 +364,76 @@ describe(parameters, () => {
     ]);
   });
 
+  it('identifies an added parameter deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildParameter({ name: buildScalar(parameterName) }),
+      buildParameter({
+        name: buildScalar(parameterName),
+        deprecated: buildScalar(true),
+      }),
+    );
+
+    // ACT
+    const result = parameters(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
+      {
+        kind: 'added',
+        target: 'parameter-deprecated',
+        category: 'minor',
+        b: {
+          context: {
+            scope: 'parameter',
+            service: title,
+            interface: interfaceName,
+            method: methodName,
+            parameter: parameterName,
+            required: false,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
+  it('identifies a removed parameter deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildParameter({
+        name: buildScalar(parameterName),
+        deprecated: buildScalar(true),
+      }),
+      buildParameter({
+        name: buildScalar(parameterName),
+      }),
+    );
+
+    // ACT
+    const result = parameters(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
+      {
+        kind: 'removed',
+        target: 'parameter-deprecated',
+        category: 'patch',
+        a: {
+          context: {
+            scope: 'parameter',
+            service: title,
+            interface: interfaceName,
+            method: methodName,
+            parameter: parameterName,
+            required: false,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
   it('identifies a changed parameter type', () => {
     // ARRANGE
     const [a, b] = setup(

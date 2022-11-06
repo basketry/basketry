@@ -199,5 +199,69 @@ describe(types, () => {
         },
       ]);
     });
+
+    it('identifies an added type deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildType({ name: buildScalar(typeName) }),
+        buildType({
+          name: buildScalar(typeName),
+          deprecated: buildScalar(true),
+        }),
+      );
+
+      // ACT
+      const result = types(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<TypeChangeInfo[]>([
+        {
+          kind: 'added',
+          target: `${mode}-type-deprecated`,
+          category: 'minor',
+          b: {
+            context: {
+              scope: `${mode}-type`,
+              service: title,
+              type: typeName,
+            },
+            value: true,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a removed type deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildType({
+          name: buildScalar(typeName),
+          deprecated: buildScalar(true),
+        }),
+        buildType({ name: buildScalar(typeName) }),
+      );
+
+      // ACT
+      const result = types(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<TypeChangeInfo[]>([
+        {
+          kind: 'removed',
+          target: `${mode}-type-deprecated`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-type`,
+              service: title,
+              type: typeName,
+            },
+            value: true,
+          },
+        },
+      ]);
+    });
   });
 });

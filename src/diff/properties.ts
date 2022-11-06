@@ -42,6 +42,48 @@ export function* properties(
         };
       }
 
+      // Description
+      if (a_prop.description && !b_prop.description) {
+        yield {
+          kind: 'removed',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_prop.description) },
+        };
+      } else if (!a_prop.description && b_prop.description) {
+        yield {
+          kind: 'added',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          b: { context: b_context, ...asValue(b_prop.description) },
+        };
+      } else if (a_prop.description !== b_prop.description) {
+        yield {
+          kind: 'changed',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_prop.description) },
+          b: { context: b_context, ...asValue(b_prop.description) },
+        };
+      }
+
+      // Deprecated
+      if (!a_prop.deprecated && b_prop.deprecated) {
+        yield {
+          kind: 'added',
+          target: `${mode}-property-deprecated`,
+          category: 'minor',
+          b: { context: b_context, ...asValue(b_prop.deprecated) },
+        };
+      } else if (a_prop.deprecated && !b_prop.deprecated) {
+        yield {
+          kind: 'removed',
+          target: `${mode}-property-deprecated`,
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_prop.deprecated) },
+        };
+      }
+
       // Type
       if (!eq(a_prop.typeName, b_prop.typeName)) {
         yield {

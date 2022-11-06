@@ -21,56 +21,86 @@ export type ChangeKind =
   | 'removed';
 
 export type ChangeTarget =
+  | InterfaceChangeTarget
+  | MethodChangeTarget
+  | ParameterChangeTarget
+  | ReturnTypeChangeTarget
+  | TypeChangeTarget
+  | PropertyChangeTarget
+  | EnumChangeTarget
+  | RuleChangeTarget;
+
+type InterfaceChangeTarget =
   | 'interface'
   | 'interface-name-casing'
   | 'interface-description'
-  //
+  | 'interface-deprecated';
+
+type MethodChangeTarget =
   | 'method'
   | 'method-name-casing'
   | 'method-description'
+  | 'method-deprecated';
+
+type ParameterChangeTarget =
   | 'parameter'
   | 'parameter-name-casing'
   | 'parameter-description'
+  | 'parameter-deprecated'
   | 'parameter-type'
   | 'parameter-type-array'
-  | 'parameter-type-primitive'
-  //
+  | 'parameter-type-primitive';
+
+type ReturnTypeChangeTarget =
   | 'return-type'
   | 'return-type-array'
-  | 'return-type-primitive'
-  //
+  | 'return-type-primitive';
+
+type TypeChangeTarget =
   | 'input-type'
   | 'input-type-name-casing'
   | 'input-type-description'
-  | 'input-property'
-  | 'input-property-name-casing'
-  | 'input-property-description'
-  | 'input-property-type'
-  | 'input-property-type-array'
-  | 'input-property-type-primitive'
+  | 'input-type-deprecated'
   | 'output-type'
   | 'output-type-name-casing'
   | 'output-type-description'
+  | 'output-type-deprecated';
+
+type PropertyChangeTarget =
+  | 'input-property'
+  | 'input-property-name-casing'
+  | 'input-property-description'
+  | 'input-property-deprecated'
+  | 'input-property-type'
+  | 'input-property-type-array'
+  | 'input-property-type-primitive'
   | 'output-property'
   | 'output-property-name-casing'
   | 'output-property-description'
+  | 'output-property-deprecated'
   | 'output-property-type'
   | 'output-property-type-array'
-  | 'output-property-type-primitive'
-  //
+  | 'output-property-type-primitive';
+
+type EnumChangeTarget =
   | 'input-enum'
   | 'input-enum-name-casing'
   | 'input-enum-description'
+  | 'input-enum-deprecated'
   | 'input-enum-value'
   | 'input-enum-value-casing'
   | 'input-enum-value-description'
+  | 'input-enum-value-deprecated'
   | 'output-enum'
   | 'output-enum-name-casing'
   | 'output-enum-description'
+  | 'output-enum-deprecated'
   | 'output-enum-value'
   | 'output-enum-value-casing'
   | 'output-enum-value-description'
-  | ValidationRule['id'];
+  | 'output-enum-value-deprecated';
+
+type RuleChangeTarget = ValidationRule['id'];
 
 export type ChangeContext =
   | ServiceContext
@@ -194,90 +224,35 @@ export type ChangeInfo =
   | RuleChangeInfo;
 
 export type InterfaceChangeInfo = ChangeInfoKind<
-  'interface' | 'interface-description' | 'interface-name-casing',
+  InterfaceChangeTarget,
   InterfaceContext
 >;
 
 export type MethodChangeInfo = ChangeInfoKind<
-  'method' | 'method-description' | 'method-name-casing',
+  MethodChangeTarget,
   MethodContext
 >;
 
 export type ParameterChangeInfo = ChangeInfoKind<
-  | 'parameter'
-  | 'parameter-description'
-  | 'parameter-name-casing'
-  | 'parameter-type'
-  | 'parameter-type-array'
-  | 'parameter-type-primitive',
+  ParameterChangeTarget,
   ParameterContext
 >;
 
 export type ReturnTypeChangeInfo = ChangeInfoKind<
-  'return-type' | 'return-type-array' | 'return-type-primitive',
+  ReturnTypeChangeTarget,
   ReturnTypeContext
 >;
 
-export type TypeChangeInfo = ChangeInfoKind<
-  | 'input-type'
-  | 'input-type-description'
-  | 'input-type-name-casing'
-  | 'output-type'
-  | 'output-type-description'
-  | 'output-type-name-casing',
-  TypeContext
->;
+export type TypeChangeInfo = ChangeInfoKind<TypeChangeTarget, TypeContext>;
 
 export type PropertyChangeInfo = ChangeInfoKind<
-  | 'input-property'
-  | 'input-property-name-casing'
-  | 'input-property-description'
-  | 'input-property-type'
-  | 'input-property-type-array'
-  | 'input-property-type-primitive'
-  | 'output-property'
-  | 'output-property-name-casing'
-  | 'output-property-description'
-  | 'output-property-type'
-  | 'output-property-type-array'
-  | 'output-property-type-primitive',
+  PropertyChangeTarget,
   PropertyContext
 >;
 
-export type EnumChangeInfo = ChangeInfoKind<
-  | 'input-enum'
-  | 'input-enum-name-casing'
-  | 'input-enum-description'
-  | 'input-enum-value'
-  | 'input-enum-value-casing'
-  | 'input-enum-value-description'
-  | 'output-enum'
-  | 'output-enum-name-casing'
-  | 'output-enum-description'
-  | 'output-enum-value'
-  | 'output-enum-value-casing'
-  | 'output-enum-value-description',
-  EnumContext
->;
+export type EnumChangeInfo = ChangeInfoKind<EnumChangeTarget, EnumContext>;
 
-export type RuleChangeInfo = ChangeInfoKind<
-  | 'string-pattern'
-  | 'string-format'
-  | 'string-enum'
-  | 'number-multiple-of'
-  | 'number-gt'
-  | 'number-gte'
-  | 'number-lt'
-  | 'number-lte'
-  | 'array-max-items'
-  | 'array-min-items'
-  | 'array-unique-items'
-  | 'required'
-  | 'constant'
-  | 'string-max-length'
-  | 'string-min-length',
-  RuleContext
->;
+export type RuleChangeInfo = ChangeInfoKind<RuleChangeTarget, RuleContext>;
 
 export function diff(a: Service, b: Service): ChangeInfo[] {
   const changes: ChangeInfo[] = [];

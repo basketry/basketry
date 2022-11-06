@@ -2,7 +2,7 @@ import { ChangeInfo, ServiceScope, TypeContext } from '.';
 import { Type } from '../ir';
 import * as cache from './cache';
 import { properties } from './properties';
-import { eq, getInputs, getOutputs } from './utils';
+import { asValue, eq, getInputs, getOutputs } from './utils';
 
 export type Mode = 'input' | 'output';
 
@@ -30,14 +30,32 @@ export function* types(
     const b_type = cache.getType(b.service, a_type.name.value);
 
     if (b_type) {
+      const b_context = buildContext(mode, b, b_type);
+
       if (!eq(a_type.name, b_type.name)) {
-        const b_context = buildContext(mode, b, b_type);
         yield {
           kind: 'changed',
           target: `${mode}-type-name-casing`,
           category: 'patch',
-          a: { context: a_context, value: a_type.name.value, loc: a_type.loc },
-          b: { context: b_context, value: b_type.name.value, loc: b_type.loc },
+          a: { context: a_context, ...asValue(a_type.name) },
+          b: { context: b_context, ...asValue(b_type.name) },
+        };
+      }
+
+      // Deprecated
+      if (!a_type.deprecated && b_type.deprecated) {
+        yield {
+          kind: 'added',
+          target: `${mode}-type-deprecated`,
+          category: 'minor',
+          b: { context: b_context, ...asValue(b_type.deprecated) },
+        };
+      } else if (a_type.deprecated && !b_type.deprecated) {
+        yield {
+          kind: 'removed',
+          target: `${mode}-type-deprecated`,
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_type.deprecated) },
         };
       }
 
@@ -47,7 +65,7 @@ export function* types(
         kind: 'removed',
         target: `${mode}-type`,
         category: 'major',
-        a: { context: a_context, value: a_type.name.value, loc: a_type.loc },
+        a: { context: a_context, ...asValue(a_type.name) },
       };
     }
   }
@@ -63,7 +81,7 @@ export function* types(
         kind: 'added',
         target: `${mode}-type`,
         category: 'minor',
-        b: { context: b_context, value: b_type.name.value, loc: b_type.loc },
+        b: { context: b_context, ...asValue(b_type.name) },
       };
     }
   }

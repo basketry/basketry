@@ -84,6 +84,22 @@ export function* methods(
         };
       }
 
+      if (!a_method.deprecated?.value && b_method.deprecated?.value) {
+        yield {
+          kind: 'added',
+          target: 'method-deprecated',
+          category: 'minor',
+          b: { context: b_context, ...asValue(b_method.deprecated) },
+        };
+      } else if (a_method.deprecated?.value && !b_method.deprecated?.value) {
+        yield {
+          kind: 'removed',
+          target: 'method-deprecated',
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_method.deprecated) },
+        };
+      }
+
       if (a_method.returnType && b_method.returnType) {
         yield* returnTypes(
           { ...a, method: a_method, returnType: a_method.returnType },

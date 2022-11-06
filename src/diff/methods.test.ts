@@ -267,6 +267,74 @@ describe(methods, () => {
     ]);
   });
 
+  it('identifies an added method deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildMethod({
+        name: buildScalar(methodName),
+      }),
+      buildMethod({
+        name: buildScalar(methodName),
+        deprecated: buildScalar(true),
+      }),
+    );
+
+    // ACT
+    const result = methods(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
+      {
+        kind: 'added',
+        target: 'method-deprecated',
+        category: 'minor',
+        b: {
+          context: {
+            scope: 'method',
+            service: title,
+            interface: interfaceName,
+            method: methodName,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
+  it('identifies a removed method deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildMethod({
+        name: buildScalar(methodName),
+        deprecated: buildScalar(true),
+      }),
+      buildMethod({
+        name: buildScalar(methodName),
+      }),
+    );
+
+    // ACT
+    const result = methods(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
+      {
+        kind: 'removed',
+        target: 'method-deprecated',
+        category: 'patch',
+        a: {
+          context: {
+            scope: 'method',
+            service: title,
+            interface: interfaceName,
+            method: methodName,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
   it('identifies two identical method return types', () => {
     // ARRANGE
     const [a, b] = setup(

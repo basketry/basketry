@@ -54,6 +54,22 @@ export function* interfaces(
         };
       }
 
+      if (!a_int.deprecated?.value && b_int.deprecated?.value) {
+        yield {
+          kind: 'added',
+          target: 'interface-deprecated',
+          category: 'minor',
+          b: { context: b_context, ...asValue(b_int.deprecated) },
+        };
+      } else if (a_int.deprecated?.value && !b_int.deprecated?.value) {
+        yield {
+          kind: 'removed',
+          target: 'interface-deprecated',
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_int.deprecated) },
+        };
+      }
+
       yield* methods({ ...a, interface: a_int }, { ...b, interface: b_int });
     } else {
       yield {

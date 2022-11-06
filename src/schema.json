@@ -107,6 +107,15 @@
       },
       "additionalProperties": false
     },
+    "deprecated": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "value": { "type": "boolean", "const": true },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
     "range": { "type": "string" },
     "meta": {
       "type": "array",
@@ -141,6 +150,7 @@
             { "type": "array", "items": { "type": "string" } }
           ]
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "methods": {
           "type": "array",
           "items": { "$ref": "#/definitions/method" }
@@ -172,6 +182,7 @@
             { "type": "array", "items": { "$ref": "#/definitions/string" } }
           ]
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "properties": {
           "type": "array",
           "items": { "$ref": "#/definitions/property" }
@@ -197,6 +208,7 @@
             { "type": "array", "items": { "$ref": "#/definitions/string" } }
           ]
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "values": {
           "type": "array",
           "items": { "$ref": "#/definitions/enumValue" },
@@ -219,6 +231,7 @@
             { "type": "array", "items": { "$ref": "#/definitions/string" } }
           ]
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
@@ -324,6 +337,7 @@
                 { "type": "array", "items": { "$ref": "#/definitions/string" } }
               ]
             },
+            "deprecated": { "$ref": "#/definitions/deprecated" },
             "loc": { "$ref": "#/definitions/range" },
             "meta": { "$ref": "#/definitions/meta" }
           }
@@ -347,6 +361,7 @@
             { "type": "array", "items": { "$ref": "#/definitions/string" } }
           ]
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "parameters": {
           "type": "array",
           "items": { "$ref": "#/definitions/parameter" }
@@ -372,6 +387,7 @@
                 { "type": "array", "items": { "$ref": "#/definitions/string" } }
               ]
             },
+            "deprecated": { "$ref": "#/definitions/deprecated" },
             "loc": { "$ref": "#/definitions/range" },
             "meta": { "$ref": "#/definitions/meta" }
           }
@@ -517,6 +533,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "name": { "$ref": "#/definitions/string" },
         "description": { "$ref": "#/definitions/string" },
         "loc": { "$ref": "#/definitions/range" },
@@ -541,6 +558,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "name": { "$ref": "#/definitions/string" },
         "description": { "$ref": "#/definitions/string" },
         "parameter": { "$ref": "#/definitions/string" },
@@ -575,6 +593,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "name": { "$ref": "#/definitions/string" },
         "description": { "type": "string" },
         "flows": {
@@ -608,6 +627,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "authorizationUrl": { "$ref": "#/definitions/string" },
         "refreshUrl": { "$ref": "#/definitions/string" },
         "scopes": {
@@ -633,6 +653,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "tokenUrl": { "type": "string" },
         "refreshUrl": { "type": "string" },
         "scopes": {
@@ -658,6 +679,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "tokenUrl": { "$ref": "#/definitions/string" },
         "refreshUrl": { "$ref": "#/definitions/string" },
         "scopes": {
@@ -683,6 +705,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "authorizationUrl": { "$ref": "#/definitions/string" },
         "tokenUrl": { "$ref": "#/definitions/string" },
         "refreshUrl": { "$ref": "#/definitions/string" },
@@ -702,6 +725,7 @@
         "kind": { "type": "string", "const": "OAuth2Scope" },
         "name": { "$ref": "#/definitions/string" },
         "description": { "$ref": "#/definitions/string" },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },

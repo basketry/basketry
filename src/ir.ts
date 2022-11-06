@@ -44,6 +44,7 @@ export type Type = {
   kind: 'Type';
   name: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
+  deprecated?: Scalar<true>;
   properties: Property[];
   rules: ObjectValidationRule[];
   loc?: string;
@@ -54,6 +55,7 @@ export type Enum = {
   kind: 'Enum';
   name: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
+  deprecated?: Scalar<true>;
   values: EnumValue[];
   loc?: string;
   meta?: Meta;
@@ -63,6 +65,7 @@ export type EnumValue = {
   kind: 'EnumValue';
   content: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
+  deprecated?: Scalar<true>;
   loc?: string;
   meta?: Meta;
 };
@@ -81,7 +84,6 @@ export type PrimitiveValue = {
   isPrimitive: true;
   constant?: Scalar<string | number | boolean>;
   default?: Scalar<string | number | boolean | null>;
-  // deprecated?: Scalar<true>;
   rules: ValidationRule[];
 };
 
@@ -98,6 +100,7 @@ export type Property = {
   kind: 'Property';
   name: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
+  deprecated?: Scalar<true>;
   loc?: string;
   meta?: Meta;
 } & TypedValue;
@@ -106,6 +109,7 @@ export type Interface = {
   kind: 'Interface';
   name: Scalar<string>;
   description?: string;
+  deprecated?: Scalar<true>;
   methods: Method[];
   protocols: {
     http: HttpPath[];
@@ -145,6 +149,7 @@ export type Method = {
   name: Scalar<string>;
   security: SecurityOption[];
   description?: Scalar<string> | Scalar<string>[];
+  deprecated?: Scalar<true>;
   parameters: Parameter[];
   returnType: ReturnType | undefined;
   loc?: string;
@@ -160,6 +165,7 @@ export type BasicScheme = {
   type: Scalar<'basic'>;
   name: Scalar<string>;
   description?: Scalar<string>;
+  deprecated?: Scalar<true>;
   loc?: string;
   meta?: Meta;
 };
@@ -169,6 +175,7 @@ export type ApiKeyScheme = {
   type: Scalar<'apiKey'>;
   name: Scalar<string>;
   description?: Scalar<string>;
+  deprecated?: Scalar<true>;
   parameter: Scalar<string>;
   in: Scalar<'header' | 'query' | 'cookie'>;
   loc?: string;
@@ -180,6 +187,7 @@ export type OAuth2Scheme = {
   type: Scalar<'oauth2'>;
   name: Scalar<string>;
   description?: Scalar<string>;
+  deprecated?: Scalar<true>;
   flows: OAuth2Flow[];
   loc?: string;
   meta?: Meta;
@@ -194,6 +202,7 @@ export type OAuth2Flow =
 export type OAuth2ImplicitFlow = {
   kind: 'OAuth2ImplicitFlow';
   type: Scalar<'implicit'>;
+  deprecated?: Scalar<true>;
   authorizationUrl: Scalar<string>;
   refreshUrl?: Scalar<string>;
   scopes: OAuth2Scope[];
@@ -204,6 +213,7 @@ export type OAuth2ImplicitFlow = {
 export type OAuth2PasswordFlow = {
   kind: 'OAuth2PasswordFlow';
   type: Scalar<'password'>;
+  deprecated?: Scalar<true>;
   tokenUrl: Scalar<string>;
   refreshUrl?: Scalar<string>;
   scopes: OAuth2Scope[];
@@ -214,6 +224,7 @@ export type OAuth2PasswordFlow = {
 export type OAuth2ClientCredentialsFlow = {
   kind: 'OAuth2ClientCredentialsFlow';
   type: Scalar<'clientCredentials'>;
+  deprecated?: Scalar<true>;
   tokenUrl: Scalar<string>;
   refreshUrl?: Scalar<string>;
   scopes: OAuth2Scope[];
@@ -224,6 +235,7 @@ export type OAuth2ClientCredentialsFlow = {
 export type OAuth2AuthorizationCodeFlow = {
   kind: 'OAuth2AuthorizationCodeFlow';
   type: Scalar<'authorizationCode'>;
+  deprecated?: Scalar<true>;
   authorizationUrl: Scalar<string>;
   tokenUrl: Scalar<string>;
   refreshUrl?: Scalar<string>;
@@ -236,6 +248,7 @@ export type OAuth2Scope = {
   kind: 'OAuth2Scope';
   name: Scalar<string>;
   description: Scalar<string>;
+  deprecated?: Scalar<true>;
   loc?: string;
   meta?: Meta;
 };
@@ -244,6 +257,7 @@ export type Parameter = {
   kind: 'Parameter';
   name: Scalar<string>;
   description?: Scalar<string> | Scalar<string>[];
+  deprecated?: Scalar<true>;
   loc?: string;
   meta?: Meta;
 } & TypedValue;

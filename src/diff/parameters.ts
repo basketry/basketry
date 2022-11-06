@@ -65,6 +65,23 @@ export function* parameters(
         };
       }
 
+      // Deprecated
+      if (!a_param.deprecated?.value && b_param.deprecated?.value) {
+        yield {
+          kind: 'added',
+          target: 'parameter-deprecated',
+          category: 'minor',
+          b: { context: b_context, ...asValue(b_param.deprecated) },
+        };
+      } else if (a_param.deprecated?.value && !b_param.deprecated?.value) {
+        yield {
+          kind: 'removed',
+          target: 'parameter-deprecated',
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_param.deprecated) },
+        };
+      }
+
       // Type
       if (!eq(a_param.typeName, b_param.typeName)) {
         yield {
