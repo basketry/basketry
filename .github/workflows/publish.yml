@@ -14,6 +14,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
       - run: npm t
-      - run: npm publish
+      - run: if [[ "$GITHUB_REF" =~ refs/tags/v[0-9]+\.[0-9]+\.[0-9]+\-([^\.]+) ]]; then npm publish --tag ${BASH_REMATCH[1]} --access public; else npm publish --access public; fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
