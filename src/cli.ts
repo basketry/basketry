@@ -214,22 +214,11 @@ const { argv } = yargs(hideBin(process.argv))
             'Path to an SDL file. Reads from stdin if omitted and config is not found.',
           requiresArg: true,
         })
-        .option('major', {
-          boolean: true,
-          default: true,
+        .option('filter', {
+          string: true,
+          default: 'all',
+          choices: ['major', 'minor', 'patch', 'all'],
           description: 'Output breaking changes (semver major version).',
-        })
-        .option('minor', {
-          boolean: true,
-          default: false,
-          description:
-            'Output breaking and non-breaking changes (semver minor version).',
-        })
-        .option('patch', {
-          boolean: true,
-          default: false,
-          description:
-            'Output breaking, non-breaking, and non-functional changes (semver patch version).',
         })
         .option('silent', {
           boolean: true,
@@ -240,26 +229,14 @@ const { argv } = yargs(hideBin(process.argv))
         });
     },
     (args) => {
-      const {
-        config,
-        parser,
-        source,
-        json,
-        silent,
-        major,
-        minor,
-        patch,
-        reference,
-      } = args;
+      const { config, parser, source, json, silent, filter, reference } = args;
       diff({
         config,
         parser,
         source,
         json,
         silent,
-        major,
-        minor,
-        patch,
+        filter: filter as 'all' | 'major' | 'minor' | 'patch',
         reference: reference as any,
       });
     },
