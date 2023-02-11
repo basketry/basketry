@@ -1,3 +1,5 @@
+import { exec } from 'child_process';
+
 import { BasketryError, decodeRange, Engine, getInput, Range } from '..';
 import { CommmonArgs } from './types';
 
@@ -5,6 +7,8 @@ import { ChangeInfo, diff as compare } from '../diff';
 import { sentence } from 'case';
 import chalk from 'chalk';
 import { EOL } from 'os';
+import { relative } from 'path';
+import { prettyPrint } from '../diff/pretty-print';
 
 export type DiffArgs = {
   config: string;
@@ -12,40 +16,56 @@ export type DiffArgs = {
   parser?: string;
   json?: boolean;
   silent?: boolean;
-  major?: boolean;
-  minor?: boolean;
-  patch?: boolean;
-  reference?: string;
+  filter: 'major' | 'minor' | 'patch' | 'all';
+  previous?: string;
+  ref?: string;
 } & CommmonArgs;
+
+export function readFromGit(
+  sourcePath: string,
+  ref: string | undefined,
+): Promise<string | undefined> {
+  return new Promise((res, rej) => {
+    if (ref) {
+      relative(process.cwd(), sourcePath);
+
+      exec(
+        `git show ${ref}:${relative(process.cwd(), sourcePath)}`,
+        (err, stdout, stderr) => {
+          if (err) rej(err);
+          if (stderr) rej(stderr);
+          res(stdout);
+        },
+      );
+    } else {
+      res(undefined);
+    }
+  });
+}
 
 export async function diff(args: DiffArgs) {
   const errors: BasketryError[] = [];
-  const {
-    config,
-    parser,
-    source,
-    json,
-    silent,
-    major,
-    minor,
-    patch,
-    reference,
-  } = args;
+  const { config, parser, source, json, silent, filter, previous, ref } = args;
 
   const stdin = !process.stdin.isTTY;
   const sourceContent = stdin
     ? await readStreamToString(process.stdin)
     : undefined;
 
-  const [a_inputs, b_inputs] = await Promise.all([
+  const b_inputs = await getInput(config, {
+    parser,
+    sourcePath: source,
+  });
+
+  const a_sourceContent = previous
+    ? undefined
+    : sourceContent || (await readFromGit(b_inputs.values[0].sourcePath, ref));
+
+  const [a_inputs] = await Promise.all([
     getInput(config, {
       parser,
-      sourcePath: reference,
-    }),
-    getInput(config, {
-      parser,
-      sourceContent,
-      sourcePath: source,
+      sourceContent: a_sourceContent,
+      sourcePath: previous || (sourceContent ? source : undefined),
     }),
   ]);
 
@@ -80,30 +100,22 @@ export async function diff(args: DiffArgs) {
 
     if (!silent) {
       if (json) {
-        if (patch) {
+        if (filter === 'all' || filter === 'patch') {
           console.log(
             JSON.stringify([...majorChanges, ...minorChanges, ...patchChanges]),
           );
-        } else if (minor) {
+        } else if (filter === 'minor') {
           console.log(JSON.stringify([...majorChanges, ...minorChanges]));
         } else {
           console.log(JSON.stringify(majorChanges));
         }
       } else {
-        if (patch) {
-          console.log(
-            JSON.stringify(
-              [...majorChanges, ...minorChanges, ...patchChanges],
-              null,
-              2,
-            ),
-          );
-        } else if (minor) {
-          console.log(
-            JSON.stringify([...majorChanges, ...minorChanges], null, 2),
-          );
+        if (filter === 'all' || filter === 'patch') {
+          prettyPrint([...majorChanges, ...minorChanges, ...patchChanges]);
+        } else if (filter === 'minor') {
+          prettyPrint([...majorChanges, ...minorChanges]);
         } else {
-          console.log(JSON.stringify(majorChanges, null, 2));
+          prettyPrint(majorChanges);
         }
       }
     }

@@ -11,14 +11,16 @@
     "clean": "run-s -s clean:*",
     "lint": "run-s -s lint:*",
     "fix": "run-s -s fix:*",
+    "codegen": "run-s -s codegen:*",
     "clean:output": "rimraf lib",
     "start": "node ./lib/index.js",
-    "prebuild": "run-s -s clean lint",
+    "prebuild": "run-s -s clean codegen lint",
     "build": "tsc",
     "lint:eslint": "eslint src/**/*.*",
     "fix:eslint": "eslint --fix src/**/*.*",
     "lint:prettier": "prettier -c .",
     "fix:prettier": "prettier -w .",
+    "codegen:docs": "ts-node ./src/tools/doc-gen.ts && prettier -w README.md",
     "clean:coverage": "rimraf coverage",
     "pretest": "run-s -s clean",
     "chmod": "chmod +x ./lib/cli.js",
@@ -50,7 +52,7 @@
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.3",
-    "typescript": "^4.5.5"
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "ajv": "^8.11.0",
