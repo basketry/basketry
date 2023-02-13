@@ -91,7 +91,7 @@ export function* enums(
       yield {
         kind: 'added',
         target: `${mode}-enum`,
-        category: 'major',
+        category: mode === 'input' ? 'minor' : 'major',
         b: { context: b_context, value: b_enum.name.value, loc: b_enum.loc },
       };
     }
