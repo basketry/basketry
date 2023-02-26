@@ -327,6 +327,32 @@ Path to the source SDL file. Basketry reads from `stdin` if this option is omitt
 
 <!-- END GENERATED COMMAND ARGS: diff -->
 
+## `ir` command
+
+Writes the Intermediate Representation (IR) of the parsed service as JSON to `stdout`.
+
+<!-- BEGIN GENERATED COMMAND ARGS: ir -->
+
+### Options
+
+#### `--config`, `-c` (string)
+
+Path to the config file. The default value is `basketry.config.json`.
+
+#### `--parser`, `-p` (string)
+
+The parser thet corresponds to the source SDL file. This must be a string value that refers to a parser module. Any "requirable" value can be used such as globally or locally installed NPM package or the path to a file on your local file system.
+
+#### `--perf` (boolean)
+
+Report performance
+
+#### `--source`, `-s` (string)
+
+Path to the source SDL file. Basketry reads from `stdin` if this option is omitted and `source` is not defined in the config file. Note that if a source parameter is provided _and_ content is piped in via `stdin`, the content from `stdin` will be parsed, but any violations will include the file name supplied by `source`. This can be useful to a validate dirty version of a file prior to the file being saved and only then accessible by reading from the file system.
+
+<!-- END GENERATED COMMAND ARGS: ir -->
+
 ## Advanced Usage
 
 ### Multiple configs

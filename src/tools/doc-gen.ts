@@ -7,6 +7,7 @@ import {
   diffArgs,
   generateArgs,
   initArgs,
+  irArgs,
   validateArgs,
 } from '../args';
 
@@ -16,6 +17,7 @@ writeCommand('validate', validateArgs);
 writeCommand('clean', cleanArgs);
 writeCommand('ci', ciArgs);
 writeCommand('diff', diffArgs);
+writeCommand('ir', irArgs);
 
 function writeCommand(name: string, options: Record<string, Options>): void {
   const readme = readFileSync('./README.md').toString();

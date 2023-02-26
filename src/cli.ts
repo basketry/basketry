@@ -4,7 +4,7 @@ import { hideBin } from 'yargs/helpers';
 import yargs = require('yargs/yargs');
 import chalk from 'chalk';
 
-import { ci, clean, diff, generate, init, validate } from './commands';
+import { ci, clean, diff, generate, init, ir, validate } from './commands';
 import { Severity } from './types';
 
 import {
@@ -13,6 +13,7 @@ import {
   diffArgs,
   generateArgs,
   initArgs,
+  irArgs,
   validateArgs,
 } from './args';
 
@@ -65,6 +66,12 @@ const { argv } = yargs(hideBin(process.argv))
         filter: filter as 'all' | 'major' | 'minor' | 'patch',
       });
     },
+  )
+  .command(
+    ['ir'],
+    'Writes the Intermediate Representation (IR) of the parsed service as JSON to stdout.',
+    (y) => y.options(irArgs),
+    (args) => ir(args),
   )
   .command(
     ['validate'],

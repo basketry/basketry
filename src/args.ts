@@ -126,6 +126,13 @@ export const cleanArgs = {
   ...outputArg,
 };
 
+export const irArgs = {
+  ...perfArg,
+  ...configArg,
+  ...parserArg,
+  ...sourceArg,
+};
+
 export const ciArgs = {
   ...jsonArg,
   ...configArg,
