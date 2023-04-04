@@ -1,0 +1,20 @@
+name: version
+
+on:
+  workflow_dispatch:
+    inputs:
+      newversion:
+        description: 'npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease | from-git]'
+        required: true
+      preid:
+        description: 'The "prerelease identifier" to use as a prefix for the "prerelease" part of a semver.'
+        required: false
+
+jobs:
+  npm-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: skonves/npm-version@main
+        with:
+          newversion: ${{ inputs.newversion }}
+          preid: ${{ inputs.preid }}
