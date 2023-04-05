@@ -1,10 +1,11 @@
 import { MethodScope, ParameterChangeInfo, RuleChangeInfo } from '.';
-import { Parameter } from '../types';
+import { Parameter } from '../ir';
 import { parameters } from './parameters';
 import {
   buildInterface,
   buildMethod,
   buildParameter,
+  buildScalar,
   buildService,
 } from './test-utils';
 
@@ -26,8 +27,14 @@ function setup(
     parameters: b ? [b] : [],
   });
 
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
   const a_service = buildService({
     title: { value: title },
     interfaces: [a_int],
@@ -84,7 +91,6 @@ describe(parameters, () => {
             required: false,
           },
           value: parameterName,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -96,7 +102,7 @@ describe(parameters, () => {
       undefined,
       buildParameter({
         name: { value: parameterName },
-        rules: [{ id: 'required' }],
+        rules: [{ kind: 'ValidationRule', id: 'required' }],
       }),
     );
 
@@ -121,7 +127,6 @@ describe(parameters, () => {
             required: true,
           },
           value: parameterName,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -153,7 +158,6 @@ describe(parameters, () => {
             required: false,
           },
           value: parameterName,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -164,7 +168,7 @@ describe(parameters, () => {
     const [a, b] = setup(
       buildParameter({
         name: { value: parameterName },
-        rules: [{ id: 'required' }],
+        rules: [{ kind: 'ValidationRule', id: 'required' }],
       }),
       undefined,
     );
@@ -190,7 +194,6 @@ describe(parameters, () => {
             required: true,
           },
           value: parameterName,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -361,6 +364,76 @@ describe(parameters, () => {
     ]);
   });
 
+  it('identifies an added parameter deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildParameter({ name: buildScalar(parameterName) }),
+      buildParameter({
+        name: buildScalar(parameterName),
+        deprecated: buildScalar(true),
+      }),
+    );
+
+    // ACT
+    const result = parameters(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
+      {
+        kind: 'added',
+        target: 'parameter-deprecated',
+        category: 'minor',
+        b: {
+          context: {
+            scope: 'parameter',
+            service: title,
+            interface: interfaceName,
+            method: methodName,
+            parameter: parameterName,
+            required: false,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
+  it('identifies a removed parameter deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildParameter({
+        name: buildScalar(parameterName),
+        deprecated: buildScalar(true),
+      }),
+      buildParameter({
+        name: buildScalar(parameterName),
+      }),
+    );
+
+    // ACT
+    const result = parameters(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<ParameterChangeInfo[]>([
+      {
+        kind: 'removed',
+        target: 'parameter-deprecated',
+        category: 'patch',
+        a: {
+          context: {
+            scope: 'parameter',
+            service: title,
+            interface: interfaceName,
+            method: methodName,
+            parameter: parameterName,
+            required: false,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
   it('identifies a changed parameter type', () => {
     // ARRANGE
     const [a, b] = setup(
@@ -441,7 +514,6 @@ describe(parameters, () => {
             required: false,
           },
           value: true,
-          loc: '1;1;0',
         },
         b: {
           context: {
@@ -453,7 +525,6 @@ describe(parameters, () => {
             required: false,
           },
           value: false,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -491,7 +562,6 @@ describe(parameters, () => {
             required: false,
           },
           value: true,
-          loc: '1;1;0',
         },
         b: {
           context: {
@@ -503,7 +573,6 @@ describe(parameters, () => {
             required: false,
           },
           value: false,
-          loc: '1;1;0',
         },
       },
     ]);

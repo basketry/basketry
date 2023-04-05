@@ -8,7 +8,7 @@ import {
   RuleChangeInfo,
   RuleContext,
 } from '.';
-import { ValidationRule } from '../types';
+import { ValidationRule } from '../ir';
 import { Mode, rules } from './rules';
 import {
   buildInterface,
@@ -16,6 +16,7 @@ import {
   buildParameter,
   buildProperty,
   buildReturnType,
+  buildScalar,
   buildService,
   buildType,
 } from './test-utils';
@@ -53,8 +54,14 @@ function setupParameter(
     name: { value: methodName },
     parameters: [b_param],
   });
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
   const a_service = buildService({
     title: { value: title },
     interfaces: [a_int],
@@ -92,8 +99,14 @@ function setupReturnType(
     name: { value: methodName },
     returnType: buildReturnType({ rules: b ? [b] : [] }),
   });
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
   const a_service = buildService({
     title: { value: title },
     interfaces: [a_int],
@@ -180,8 +193,14 @@ function setupProperty(
           }),
   });
 
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
 
   const a_service = buildService({
     title: { value: title },
@@ -199,8 +218,6 @@ function setupProperty(
     { service: b_service, type: b_type, property: b_property },
   ];
 }
-
-const loc = '1;1;0';
 
 function describeRule<T extends ValidationRule['id']>(
   ruleId: T,
@@ -276,8 +293,8 @@ describe(rules, () => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, max: { value: 5 }, loc },
-          { id, max: { value: 5 }, loc },
+          { kind: 'ValidationRule', id, max: { value: 5 } },
+          { kind: 'ValidationRule', id, max: { value: 5 } },
         );
 
         // ACT
@@ -289,7 +306,11 @@ describe(rules, () => {
 
       it('identifies an added rule', () => {
         // ARRANGE
-        const [a, b] = setup(undefined, { id, max: { value: 5 }, loc });
+        const [a, b] = setup(undefined, {
+          kind: 'ValidationRule',
+          id,
+          max: { value: 5 },
+        });
 
         // ACT
         const result = rules(mode, a, b);
@@ -307,7 +328,10 @@ describe(rules, () => {
 
       it('identifies a removed rule', () => {
         // ARRANGE
-        const [a, b] = setup({ id, max: { value: 5 }, loc }, undefined);
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, max: { value: 5 } },
+          undefined,
+        );
 
         // ACT
         const result = rules(mode, a, b);
@@ -326,8 +350,8 @@ describe(rules, () => {
       it('identifies an increased max', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, max: { value: 5 }, loc },
-          { id, max: { value: 7 }, loc },
+          { kind: 'ValidationRule', id, max: { value: 5 } },
+          { kind: 'ValidationRule', id, max: { value: 7 } },
         );
 
         // ACT
@@ -348,8 +372,8 @@ describe(rules, () => {
       it('identifies a decreased max', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, max: { value: 5 }, loc },
-          { id, max: { value: 3 }, loc },
+          { kind: 'ValidationRule', id, max: { value: 5 } },
+          { kind: 'ValidationRule', id, max: { value: 3 } },
         );
 
         // ACT
@@ -372,8 +396,8 @@ describe(rules, () => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, min: { value: 5 }, loc },
-          { id, min: { value: 5 }, loc },
+          { kind: 'ValidationRule', id, min: { value: 5 } },
+          { kind: 'ValidationRule', id, min: { value: 5 } },
         );
 
         // ACT
@@ -385,7 +409,11 @@ describe(rules, () => {
 
       it('identifies an added rule', () => {
         // ARRANGE
-        const [a, b] = setup(undefined, { id, min: { value: 5 }, loc });
+        const [a, b] = setup(undefined, {
+          kind: 'ValidationRule',
+          id,
+          min: { value: 5 },
+        });
 
         // ACT
         const result = rules(mode, a, b);
@@ -403,7 +431,10 @@ describe(rules, () => {
 
       it('identifies a removed rule', () => {
         // ARRANGE
-        const [a, b] = setup({ id, min: { value: 5 }, loc }, undefined);
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, min: { value: 5 } },
+          undefined,
+        );
 
         // ACT
         const result = rules(mode, a, b);
@@ -422,8 +453,8 @@ describe(rules, () => {
       it('identifies an increased min', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, min: { value: 5 }, loc },
-          { id, min: { value: 7 }, loc },
+          { kind: 'ValidationRule', id, min: { value: 5 } },
+          { kind: 'ValidationRule', id, min: { value: 7 } },
         );
 
         // ACT
@@ -444,8 +475,8 @@ describe(rules, () => {
       it('identifies a decreased min', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, min: { value: 5 }, loc },
-          { id, min: { value: 3 }, loc },
+          { kind: 'ValidationRule', id, min: { value: 5 } },
+          { kind: 'ValidationRule', id, min: { value: 3 } },
         );
 
         // ACT
@@ -468,8 +499,8 @@ describe(rules, () => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, required: true, loc },
-          { id, required: true, loc },
+          { kind: 'ValidationRule', id, required: true },
+          { kind: 'ValidationRule', id, required: true },
         );
 
         // ACT
@@ -481,7 +512,11 @@ describe(rules, () => {
 
       it('identifies an added rule', () => {
         // ARRANGE
-        const [a, b] = setup(undefined, { id, required: true, loc });
+        const [a, b] = setup(undefined, {
+          kind: 'ValidationRule',
+          id,
+          required: true,
+        });
 
         // ACT
         const result = rules(mode, a, b);
@@ -499,7 +534,10 @@ describe(rules, () => {
 
       it('identifies a removed rule', () => {
         // ARRANGE
-        const [a, b] = setup({ id, required: true, loc }, undefined);
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, required: true },
+          undefined,
+        );
 
         // ACT
         const result = rules(mode, a, b);
@@ -528,8 +566,8 @@ describe(rules, () => {
         it('identifies two identical rules', () => {
           // ARRANGE
           const [a, b] = setup(
-            { id, value: { value: 5 }, loc },
-            { id, value: { value: 5 }, loc },
+            { kind: 'ValidationRule', id, value: { value: 5 } },
+            { kind: 'ValidationRule', id, value: { value: 5 } },
           );
 
           // ACT
@@ -541,7 +579,11 @@ describe(rules, () => {
 
         it('identifies an added rule', () => {
           // ARRANGE
-          const [a, b] = setup(undefined, { id, value: { value: 5 }, loc });
+          const [a, b] = setup(undefined, {
+            kind: 'ValidationRule',
+            id,
+            value: { value: 5 },
+          });
 
           // ACT
           const result = rules(mode, a, b);
@@ -559,7 +601,10 @@ describe(rules, () => {
 
         it('identifies a removed rule', () => {
           // ARRANGE
-          const [a, b] = setup({ id, value: { value: 5 }, loc }, undefined);
+          const [a, b] = setup(
+            { kind: 'ValidationRule', id, value: { value: 5 } },
+            undefined,
+          );
 
           // ACT
           const result = rules(mode, a, b);
@@ -578,8 +623,8 @@ describe(rules, () => {
         it('identifies an increased value', () => {
           // ARRANGE
           const [a, b] = setup(
-            { id, value: { value: 5 }, loc },
-            { id, value: { value: 7 }, loc },
+            { kind: 'ValidationRule', id, value: { value: 5 } },
+            { kind: 'ValidationRule', id, value: { value: 7 } },
           );
 
           // ACT
@@ -601,8 +646,8 @@ describe(rules, () => {
         it('identifies a decreased value', () => {
           // ARRANGE
           const [a, b] = setup(
-            { id, value: { value: 5 }, loc },
-            { id, value: { value: 3 }, loc },
+            { kind: 'ValidationRule', id, value: { value: 5 } },
+            { kind: 'ValidationRule', id, value: { value: 3 } },
           );
 
           // ACT
@@ -627,8 +672,8 @@ describe(rules, () => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, format: { value: 'date' }, loc },
-          { id, format: { value: 'date' }, loc },
+          { kind: 'ValidationRule', id, format: { value: 'date' } },
+          { kind: 'ValidationRule', id, format: { value: 'date' } },
         );
 
         // ACT
@@ -640,7 +685,11 @@ describe(rules, () => {
 
       it('identifies an added rule', () => {
         // ARRANGE
-        const [a, b] = setup(undefined, { id, format: { value: 'date' }, loc });
+        const [a, b] = setup(undefined, {
+          kind: 'ValidationRule',
+          id,
+          format: { value: 'date' },
+        });
 
         // ACT
         const result = rules(mode, a, b);
@@ -658,7 +707,10 @@ describe(rules, () => {
 
       it('identifies a removed rule', () => {
         // ARRANGE
-        const [a, b] = setup({ id, format: { value: 'date' }, loc }, undefined);
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, format: { value: 'date' } },
+          undefined,
+        );
 
         // ACT
         const result = rules(mode, a, b);
@@ -677,8 +729,8 @@ describe(rules, () => {
       it('identifies a changed format', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, format: { value: 'date' }, loc },
-          { id, format: { value: 'date-time' }, loc },
+          { kind: 'ValidationRule', id, format: { value: 'date' } },
+          { kind: 'ValidationRule', id, format: { value: 'date-time' } },
         );
 
         // ACT
@@ -701,8 +753,8 @@ describe(rules, () => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, length: { value: 50 }, loc },
-          { id, length: { value: 50 }, loc },
+          { kind: 'ValidationRule', id, length: { value: 50 } },
+          { kind: 'ValidationRule', id, length: { value: 50 } },
         );
 
         // ACT
@@ -714,7 +766,11 @@ describe(rules, () => {
 
       it('identifies an added rule', () => {
         // ARRANGE
-        const [a, b] = setup(undefined, { id, length: { value: 50 }, loc });
+        const [a, b] = setup(undefined, {
+          kind: 'ValidationRule',
+          id,
+          length: { value: 50 },
+        });
 
         // ACT
         const result = rules(mode, a, b);
@@ -732,7 +788,10 @@ describe(rules, () => {
 
       it('identifies a removed rule', () => {
         // ARRANGE
-        const [a, b] = setup({ id, length: { value: 50 }, loc }, undefined);
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, length: { value: 50 } },
+          undefined,
+        );
 
         // ACT
         const result = rules(mode, a, b);
@@ -751,8 +810,8 @@ describe(rules, () => {
       it('identifies an increased value', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, length: { value: 50 }, loc },
-          { id, length: { value: 100 }, loc },
+          { kind: 'ValidationRule', id, length: { value: 50 } },
+          { kind: 'ValidationRule', id, length: { value: 100 } },
         );
 
         // ACT
@@ -773,8 +832,8 @@ describe(rules, () => {
       it('identifies a decreased value', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, length: { value: 50 }, loc },
-          { id, length: { value: 25 }, loc },
+          { kind: 'ValidationRule', id, length: { value: 50 } },
+          { kind: 'ValidationRule', id, length: { value: 25 } },
         );
 
         // ACT
@@ -797,8 +856,8 @@ describe(rules, () => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, pattern: { value: '^asdf$' }, loc },
-          { id, pattern: { value: '^asdf$' }, loc },
+          { kind: 'ValidationRule', id, pattern: { value: '^asdf$' } },
+          { kind: 'ValidationRule', id, pattern: { value: '^asdf$' } },
         );
 
         // ACT
@@ -811,9 +870,9 @@ describe(rules, () => {
       it('identifies an added rule', () => {
         // ARRANGE
         const [a, b] = setup(undefined, {
+          kind: 'ValidationRule',
           id,
           pattern: { value: '^asdf$' },
-          loc,
         });
 
         // ACT
@@ -833,7 +892,7 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, pattern: { value: '^asdf$' }, loc },
+          { kind: 'ValidationRule', id, pattern: { value: '^asdf$' } },
           undefined,
         );
 
@@ -854,8 +913,8 @@ describe(rules, () => {
       it('identifies a changed pattern', () => {
         // ARRANGE
         const [a, b] = setup(
-          { id, pattern: { value: '^original$' }, loc },
-          { id, pattern: { value: '^new$' }, loc },
+          { kind: 'ValidationRule', id, pattern: { value: '^original$' } },
+          { kind: 'ValidationRule', id, pattern: { value: '^new$' } },
         );
 
         // ACT
@@ -877,7 +936,10 @@ describe(rules, () => {
     describeRule('required', (id) => {
       it('no-ops on identical rules', () => {
         // ARRANGE
-        const [a, b] = setup({ id }, { id });
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id },
+          { kind: 'ValidationRule', id },
+        );
 
         // ACT
         const result = rules(mode, a, b);
@@ -888,7 +950,7 @@ describe(rules, () => {
 
       it('identifies an added rule', () => {
         // ARRANGE
-        const [a, b] = setup(undefined, { id });
+        const [a, b] = setup(undefined, { kind: 'ValidationRule', id });
         const ctx =
           mode === 'return-type'
             ? context
@@ -910,7 +972,7 @@ describe(rules, () => {
 
       it('identifies a removed rule', () => {
         // ARRANGE
-        const [a, b] = setup({ id }, undefined);
+        const [a, b] = setup({ kind: 'ValidationRule', id }, undefined);
         const ctx =
           mode === 'return-type'
             ? context

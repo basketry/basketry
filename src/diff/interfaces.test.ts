@@ -1,7 +1,7 @@
 import { InterfaceChangeInfo, ServiceScope } from '.';
 import { Interface } from '..';
 import { interfaces } from './interfaces';
-import { buildInterface, buildService } from './test-utils';
+import { buildInterface, buildScalar, buildService } from './test-utils';
 
 const title = 'service title';
 const name = 'interface name';
@@ -10,11 +10,11 @@ function setup(
   b: Interface | undefined,
 ): [ServiceScope, ServiceScope] {
   const a_service = buildService({
-    title: { value: title },
+    title: buildScalar(title),
     interfaces: a ? [a] : [],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: buildScalar(title),
     interfaces: b ? [b] : [],
   });
 
@@ -24,7 +24,10 @@ function setup(
 describe(interfaces, () => {
   it('identifies two identical interfaces', () => {
     // ARRANGE
-    const [a, b] = setup(buildInterface({ name }), buildInterface({ name }));
+    const [a, b] = setup(
+      buildInterface({ name: buildScalar(name) }),
+      buildInterface({ name: buildScalar(name) }),
+    );
 
     // ACT
     const result = interfaces(a, b);
@@ -35,7 +38,10 @@ describe(interfaces, () => {
 
   it('identifies an added interface', () => {
     // ARRANGE
-    const [a, b] = setup(undefined, buildInterface({ name }));
+    const [a, b] = setup(
+      undefined,
+      buildInterface({ name: buildScalar(name) }),
+    );
 
     // ACT
     const result = interfaces(a, b);
@@ -60,7 +66,10 @@ describe(interfaces, () => {
 
   it('identifies a removed interface', () => {
     // ARRANGE
-    const [a, b] = setup(buildInterface({ name }), undefined);
+    const [a, b] = setup(
+      buildInterface({ name: buildScalar(name) }),
+      undefined,
+    );
 
     // ACT
     const result = interfaces(a, b);
@@ -89,8 +98,8 @@ describe(interfaces, () => {
     const newName = 'someName';
 
     const [a, b] = setup(
-      buildInterface({ name: originalName }),
-      buildInterface({ name: newName }),
+      buildInterface({ name: buildScalar(originalName) }),
+      buildInterface({ name: buildScalar(newName) }),
     );
 
     // ACT
@@ -126,8 +135,11 @@ describe(interfaces, () => {
     // ARRANGE
     const description = 'some description';
     const [a, b] = setup(
-      buildInterface({ name }),
-      buildInterface({ name, description }),
+      buildInterface({ name: buildScalar(name) }),
+      buildInterface({
+        name: buildScalar(name),
+        description: buildScalar(description),
+      }),
     );
 
     // ACT
@@ -155,8 +167,11 @@ describe(interfaces, () => {
     // ARRANGE
     const description = 'some description';
     const [a, b] = setup(
-      buildInterface({ name, description }),
-      buildInterface({ name }),
+      buildInterface({
+        name: buildScalar(name),
+        description: buildScalar(description),
+      }),
+      buildInterface({ name: buildScalar(name) }),
     );
 
     // ACT
@@ -185,8 +200,14 @@ describe(interfaces, () => {
     const originalDescription = 'some description';
     const newDescription = 'different description';
     const [a, b] = setup(
-      buildInterface({ name, description: originalDescription }),
-      buildInterface({ name, description: newDescription }),
+      buildInterface({
+        name: buildScalar(name),
+        description: buildScalar(originalDescription),
+      }),
+      buildInterface({
+        name: buildScalar(name),
+        description: buildScalar(newDescription),
+      }),
     );
 
     // ACT
@@ -213,6 +234,70 @@ describe(interfaces, () => {
             interface: name,
           },
           value: newDescription,
+        },
+      },
+    ]);
+  });
+
+  it('identifies an added interface deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildInterface({ name: buildScalar(name) }),
+      buildInterface({
+        name: buildScalar(name),
+        deprecated: buildScalar(true),
+      }),
+    );
+
+    // ACT
+    const result = interfaces(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([
+      {
+        kind: 'added',
+        target: 'interface-deprecated',
+        category: 'minor',
+        b: {
+          context: {
+            scope: 'interface',
+            service: title,
+            interface: name,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
+  it('identifies a removed interface deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildInterface({
+        name: buildScalar(name),
+        deprecated: buildScalar(true),
+      }),
+      buildInterface({
+        name: buildScalar(name),
+      }),
+    );
+
+    // ACT
+    const result = interfaces(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<InterfaceChangeInfo[]>([
+      {
+        kind: 'removed',
+        target: 'interface-deprecated',
+        category: 'patch',
+        a: {
+          context: {
+            scope: 'interface',
+            service: title,
+            interface: name,
+          },
+          value: true,
         },
       },
     ]);

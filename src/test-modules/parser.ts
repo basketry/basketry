@@ -3,7 +3,8 @@ import { Parser } from '../types';
 let parser: Parser = () => {
   return {
     service: {
-      basketry: '1',
+      kind: 'Service',
+      basketry: '1.1-rc',
       title: { value: 'test' },
       majorVersion: { value: 1 },
       sourcePath: 'overwritten.ext',

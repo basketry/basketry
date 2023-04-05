@@ -1,7 +1,7 @@
 import { decodeRange } from '../helpers';
 import { Rule, Violation } from '../types';
 
-const rule: Rule = (_, sourcePath, options) => {
+const rule: Rule = (service, options) => {
   const violation: Violation = {
     code: 'rule-that-returns-duplicate-violations',
     message: 'some message',
@@ -18,7 +18,7 @@ const rule: Rule = (_, sourcePath, options) => {
       },
     },
     severity: options?.severity || 'error',
-    sourcePath,
+    sourcePath: service.sourcePath,
   };
 
   return [violation, violation, violation, violation];

@@ -19,7 +19,7 @@ export function* methods(
     const a_context: MethodContext = {
       scope: 'method',
       service: a.service.title.value,
-      interface: a.interface.name,
+      interface: a.interface.name.value,
       method: a_method.name.value,
     };
     const b_method = cache.getMethod(b.service, a_method.name.value);
@@ -27,7 +27,7 @@ export function* methods(
       const b_context: MethodContext = {
         scope: 'method',
         service: b.service.title.value,
-        interface: b.interface.name,
+        interface: b.interface.name.value,
         method: b_method.name.value,
       };
 
@@ -84,6 +84,22 @@ export function* methods(
         };
       }
 
+      if (!a_method.deprecated?.value && b_method.deprecated?.value) {
+        yield {
+          kind: 'added',
+          target: 'method-deprecated',
+          category: 'minor',
+          b: { context: b_context, ...asValue(b_method.deprecated) },
+        };
+      } else if (a_method.deprecated?.value && !b_method.deprecated?.value) {
+        yield {
+          kind: 'removed',
+          target: 'method-deprecated',
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_method.deprecated) },
+        };
+      }
+
       if (a_method.returnType && b_method.returnType) {
         yield* returnTypes(
           { ...a, method: a_method, returnType: a_method.returnType },
@@ -98,7 +114,7 @@ export function* methods(
             context: {
               scope: 'return-type',
               service: a.service.title.value,
-              interface: a.interface.name,
+              interface: a.interface.name.value,
               method: a_method.name.value,
               returnType: a_method.returnType.typeName.value,
             },
@@ -115,7 +131,7 @@ export function* methods(
             context: {
               scope: 'return-type',
               service: b.service.title.value,
-              interface: b.interface.name,
+              interface: b.interface.name.value,
               method: b_method.name.value,
               returnType: b_method.returnType.typeName.value,
             },
@@ -144,7 +160,7 @@ export function* methods(
     const b_context: MethodContext = {
       scope: 'method',
       service: b.service.title.value,
-      interface: b.interface.name,
+      interface: b.interface.name.value,
       method: b_method.name.value,
     };
 
@@ -173,7 +189,7 @@ function* returnTypes(
   const a_context: ReturnTypeContext = {
     scope: 'return-type',
     service: a.service.title.value,
-    interface: a.interface.name,
+    interface: a.interface.name.value,
     method: a.method.name.value,
     returnType: a.returnType.typeName.value,
   };
@@ -181,7 +197,7 @@ function* returnTypes(
   const b_context: ReturnTypeContext = {
     scope: 'return-type',
     service: b.service.title.value,
-    interface: b.interface.name,
+    interface: b.interface.name.value,
     method: b.method.name.value,
     returnType: b.returnType.typeName.value,
   };

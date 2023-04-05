@@ -1,11 +1,13 @@
 import { PropertyChangeInfo, RuleChangeInfo, TypeScope } from '.';
-import { Property } from '../types';
+import { Property } from '../ir';
 import { properties, Mode } from './properties';
 import {
   buildInterface,
   buildMethod,
+  buildParameter,
   buildProperty,
   buildReturnType,
+  buildScalar,
   buildService,
   buildType,
 } from './test-utils';
@@ -32,12 +34,12 @@ function setup(
     properties: b ? [b] : [],
   });
 
-  const a_parameter = buildProperty({
+  const a_parameter = buildParameter({
     name: { value: parameterName },
     isPrimitive: false,
     typeName: a ? { value: a.name.value } : undefined,
   });
-  const b_parameter = buildProperty({
+  const b_parameter = buildParameter({
     name: { value: parameterName },
     isPrimitive: false,
     typeName: b ? { value: b.name.value } : undefined,
@@ -66,8 +68,14 @@ function setup(
           }),
   });
 
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
 
   const a_service = buildService({
     title: { value: title },
@@ -135,7 +143,6 @@ describe(properties, () => {
               property: propertyName,
               required: false,
             },
-            loc: '1;1;0',
             value: propertyName,
           },
         },
@@ -149,7 +156,7 @@ describe(properties, () => {
         undefined,
         buildProperty({
           name: { value: propertyName },
-          rules: [{ id: 'required' }],
+          rules: [{ kind: 'ValidationRule', id: 'required' }],
         }),
       );
 
@@ -172,7 +179,6 @@ describe(properties, () => {
               property: propertyName,
               required: true,
             },
-            loc: '1;1;0',
             value: propertyName,
           },
         },
@@ -204,7 +210,6 @@ describe(properties, () => {
               property: propertyName,
               required: false,
             },
-            loc: '1;1;0',
             value: propertyName,
           },
         },
@@ -217,7 +222,7 @@ describe(properties, () => {
         mode,
         buildProperty({
           name: { value: propertyName },
-          rules: [{ id: 'required' }],
+          rules: [{ kind: 'ValidationRule', id: 'required' }],
         }),
         undefined,
       );
@@ -241,14 +246,13 @@ describe(properties, () => {
               property: propertyName,
               required: true,
             },
-            loc: '1;1;0',
             value: propertyName,
           },
         },
       ]);
     });
 
-    it('identifies a changed input property casing', () => {
+    it('identifies a changed property casing', () => {
       // ARRANGE
       const originalName = 'SOME_NAME';
       const newName = 'someName';
@@ -275,7 +279,6 @@ describe(properties, () => {
               property: originalName,
               required: false,
             },
-            loc: '1;1;0',
             value: originalName,
           },
           b: {
@@ -286,8 +289,194 @@ describe(properties, () => {
               property: newName,
               required: false,
             },
-            loc: '1;1;0',
             value: newName,
+          },
+        },
+      ]);
+    });
+
+    it('identifies an added property description', () => {
+      // ARRANGE
+      const description = 'some description';
+      const [a, b] = setup(
+        mode,
+        buildProperty({ name: buildScalar(propertyName) }),
+        buildProperty({
+          name: buildScalar(propertyName),
+          description: buildScalar(description),
+        }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'added',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          b: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: description,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a removed property description', () => {
+      // ARRANGE
+      const description = 'some description';
+      const [a, b] = setup(
+        mode,
+        buildProperty({
+          name: buildScalar(propertyName),
+          description: buildScalar(description),
+        }),
+        buildProperty({ name: buildScalar(propertyName) }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'removed',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: description,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a changed property description', () => {
+      // ARRANGE
+      const originalDescription = 'some description';
+      const newDescription = 'different description';
+      const [a, b] = setup(
+        mode,
+        buildProperty({
+          name: buildScalar(propertyName),
+          description: buildScalar(originalDescription),
+        }),
+        buildProperty({
+          name: buildScalar(propertyName),
+          description: buildScalar(newDescription),
+        }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'changed',
+          target: `${mode}-property-description`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: originalDescription,
+          },
+          b: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: newDescription,
+          },
+        },
+      ]);
+    });
+
+    it('identifies an added property deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildProperty({ name: buildScalar(propertyName) }),
+        buildProperty({
+          name: buildScalar(propertyName),
+          deprecated: buildScalar(true),
+        }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'added',
+          target: `${mode}-property-deprecated`,
+          category: 'minor',
+          b: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: true,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a removed property deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildProperty({
+          name: buildScalar(propertyName),
+          deprecated: buildScalar(true),
+        }),
+        buildProperty({ name: buildScalar(propertyName) }),
+      );
+
+      // ACT
+      const result = properties(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<PropertyChangeInfo[]>([
+        {
+          kind: 'removed',
+          target: `${mode}-property-deprecated`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-property`,
+              service: title,
+              property: propertyName,
+              type: typeName,
+              required: false,
+            },
+            value: true,
           },
         },
       ]);
@@ -372,7 +561,6 @@ describe(properties, () => {
               required: false,
             },
             value: true,
-            loc: '1;1;0',
           },
           b: {
             context: {
@@ -383,7 +571,6 @@ describe(properties, () => {
               required: false,
             },
             value: false,
-            loc: '1;1;0',
           },
         },
       ]);
@@ -421,7 +608,6 @@ describe(properties, () => {
               required: false,
             },
             value: true,
-            loc: '1;1;0',
           },
           b: {
             context: {
@@ -432,7 +618,6 @@ describe(properties, () => {
               required: false,
             },
             value: false,
-            loc: '1;1;0',
           },
         },
       ]);

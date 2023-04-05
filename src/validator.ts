@@ -1,6 +1,7 @@
 import Ajv from 'ajv';
 import schema from './schema.json';
-import { BasketryError, Service } from './types';
+import { Service } from './ir';
+import { BasketryError } from './types';
 
 const ajv = new Ajv({ allErrors: true });
 const runner = ajv.compile(schema);
