@@ -30,77 +30,147 @@ export type ChangeTarget =
   | EnumChangeTarget
   | RuleChangeTarget;
 
-type InterfaceChangeTarget =
-  | 'interface'
-  | 'interface-name-casing'
-  | 'interface-description'
-  | 'interface-deprecated';
+const interfaceChangeTarget = [
+  'interface',
+  'interface-name-casing',
+  'interface-description',
+  'interface-deprecated',
+] as const;
+export type InterfaceChangeTarget = typeof interfaceChangeTarget[number];
+export function isInterfaceChangeTarget(
+  changeTarget: ChangeTarget,
+): changeTarget is InterfaceChangeTarget {
+  return interfaceChangeTarget.includes(changeTarget as any);
+}
 
-type MethodChangeTarget =
-  | 'method'
-  | 'method-name-casing'
-  | 'method-description'
-  | 'method-deprecated';
+const methodChangeTarget = [
+  'method',
+  'method-name-casing',
+  'method-description',
+  'method-deprecated',
+] as const;
+export type MethodChangeTarget = typeof methodChangeTarget[number];
+export function isMethodChangeTarget(
+  changeTarget: ChangeTarget,
+): changeTarget is MethodChangeTarget {
+  return methodChangeTarget.includes(changeTarget as any);
+}
 
-type ParameterChangeTarget =
-  | 'parameter'
-  | 'parameter-name-casing'
-  | 'parameter-description'
-  | 'parameter-deprecated'
-  | 'parameter-type'
-  | 'parameter-type-array'
-  | 'parameter-type-primitive';
+const parameterChangeTarget = [
+  'parameter',
+  'parameter-name-casing',
+  'parameter-description',
+  'parameter-deprecated',
+  'parameter-type',
+  'parameter-type-array',
+  'parameter-type-primitive',
+] as const;
+export type ParameterChangeTarget = typeof parameterChangeTarget[number];
+export function isParameterChangeTarget(
+  changeTarget: ChangeTarget,
+): changeTarget is ParameterChangeTarget {
+  return parameterChangeTarget.includes(changeTarget as any);
+}
 
-type ReturnTypeChangeTarget =
-  | 'return-type'
-  | 'return-type-array'
-  | 'return-type-primitive';
+const returnTypeChangeTarget = [
+  'return-type',
+  'return-type-array',
+  'return-type-primitive',
+] as const;
+export type ReturnTypeChangeTarget = typeof returnTypeChangeTarget[number];
+export function isReturnTypeChangeTarget(
+  changeTarget: ChangeTarget,
+): changeTarget is ReturnTypeChangeTarget {
+  return returnTypeChangeTarget.includes(changeTarget as any);
+}
 
-type TypeChangeTarget =
-  | 'input-type'
-  | 'input-type-name-casing'
-  | 'input-type-description'
-  | 'input-type-deprecated'
-  | 'output-type'
-  | 'output-type-name-casing'
-  | 'output-type-description'
-  | 'output-type-deprecated';
+const typeChangeTarget = [
+  'input-type',
+  'input-type-name-casing',
+  'input-type-description',
+  'input-type-deprecated',
+  'output-type',
+  'output-type-name-casing',
+  'output-type-description',
+  'output-type-deprecated',
+] as const;
+export type TypeChangeTarget = typeof typeChangeTarget[number];
+export function isTypeChangeTarget(
+  changeTarget: ChangeTarget,
+): changeTarget is TypeChangeTarget {
+  return typeChangeTarget.includes(changeTarget as any);
+}
 
-type PropertyChangeTarget =
-  | 'input-property'
-  | 'input-property-name-casing'
-  | 'input-property-description'
-  | 'input-property-deprecated'
-  | 'input-property-type'
-  | 'input-property-type-array'
-  | 'input-property-type-primitive'
-  | 'output-property'
-  | 'output-property-name-casing'
-  | 'output-property-description'
-  | 'output-property-deprecated'
-  | 'output-property-type'
-  | 'output-property-type-array'
-  | 'output-property-type-primitive';
+const propertyChangeTarget = [
+  'input-property',
+  'input-property-name-casing',
+  'input-property-description',
+  'input-property-deprecated',
+  'input-property-type',
+  'input-property-type-array',
+  'input-property-type-primitive',
+  'output-property',
+  'output-property-name-casing',
+  'output-property-description',
+  'output-property-deprecated',
+  'output-property-type',
+  'output-property-type-array',
+  'output-property-type-primitive',
+] as const;
+export type PropertyChangeTarget = typeof propertyChangeTarget[number];
+export function isPropertyChangeTarget(
+  changeTarget: ChangeTarget,
+): changeTarget is PropertyChangeTarget {
+  return propertyChangeTarget.includes(changeTarget as any);
+}
 
-type EnumChangeTarget =
-  | 'input-enum'
-  | 'input-enum-name-casing'
-  | 'input-enum-description'
-  | 'input-enum-deprecated'
-  | 'input-enum-value'
-  | 'input-enum-value-casing'
-  | 'input-enum-value-description'
-  | 'input-enum-value-deprecated'
-  | 'output-enum'
-  | 'output-enum-name-casing'
-  | 'output-enum-description'
-  | 'output-enum-deprecated'
-  | 'output-enum-value'
-  | 'output-enum-value-casing'
-  | 'output-enum-value-description'
-  | 'output-enum-value-deprecated';
+const enumChangeTarget = [
+  'input-enum',
+  'input-enum-name-casing',
+  'input-enum-description',
+  'input-enum-deprecated',
+  'input-enum-value',
+  'input-enum-value-casing',
+  'input-enum-value-description',
+  'input-enum-value-deprecated',
+  'output-enum',
+  'output-enum-name-casing',
+  'output-enum-description',
+  'output-enum-deprecated',
+  'output-enum-value',
+  'output-enum-value-casing',
+  'output-enum-value-description',
+  'output-enum-value-deprecated',
+] as const;
+export type EnumChangeTarget = typeof enumChangeTarget[number];
+export function isEnumChangeTarget(
+  changeTarget: ChangeTarget,
+): changeTarget is EnumChangeTarget {
+  return enumChangeTarget.includes(changeTarget as any);
+}
 
+const ruleChangeTarget = [
+  'required',
+  'string-max-length',
+  'string-min-length',
+  'string-pattern',
+  'string-format',
+  'string-enum',
+  'number-multiple-of',
+  'number-gt',
+  'number-gte',
+  'number-lt',
+  'number-lte',
+  'array-max-items',
+  'array-min-items',
+  'array-unique-items',
+];
 type RuleChangeTarget = ValidationRule['id'];
+export function isRuleChangeTarget(
+  changeTarget: ChangeTarget,
+): changeTarget is RuleChangeTarget {
+  return ruleChangeTarget.includes(changeTarget as any);
+}
 
 export type ChangeContext =
   | ServiceContext
@@ -227,32 +297,72 @@ export type InterfaceChangeInfo = ChangeInfoKind<
   InterfaceChangeTarget,
   InterfaceContext
 >;
+export function isInterfaceChangeInfo(
+  changeInfo: ChangeInfo,
+): changeInfo is InterfaceChangeInfo {
+  return isInterfaceChangeTarget(changeInfo.target);
+}
 
 export type MethodChangeInfo = ChangeInfoKind<
   MethodChangeTarget,
   MethodContext
 >;
+export function isMethodChangeInfo(
+  changeInfo: ChangeInfo,
+): changeInfo is MethodChangeInfo {
+  return isMethodChangeTarget(changeInfo.target);
+}
 
 export type ParameterChangeInfo = ChangeInfoKind<
   ParameterChangeTarget,
   ParameterContext
 >;
+export function isParameterChangeInfo(
+  changeInfo: ChangeInfo,
+): changeInfo is ParameterChangeInfo {
+  return isParameterChangeTarget(changeInfo.target);
+}
 
 export type ReturnTypeChangeInfo = ChangeInfoKind<
   ReturnTypeChangeTarget,
   ReturnTypeContext
 >;
+export function isReturnTypeChangeInfo(
+  changeInfo: ChangeInfo,
+): changeInfo is ReturnTypeChangeInfo {
+  return isReturnTypeChangeTarget(changeInfo.target);
+}
 
 export type TypeChangeInfo = ChangeInfoKind<TypeChangeTarget, TypeContext>;
+export function isTypeChangeInfo(
+  changeInfo: ChangeInfo,
+): changeInfo is TypeChangeInfo {
+  return isTypeChangeTarget(changeInfo.target);
+}
 
 export type PropertyChangeInfo = ChangeInfoKind<
   PropertyChangeTarget,
   PropertyContext
 >;
+export function isPropertyChangeInfo(
+  changeInfo: ChangeInfo,
+): changeInfo is PropertyChangeInfo {
+  return isPropertyChangeTarget(changeInfo.target);
+}
 
 export type EnumChangeInfo = ChangeInfoKind<EnumChangeTarget, EnumContext>;
+export function isEnumChangeInfo(
+  changeInfo: ChangeInfo,
+): changeInfo is EnumChangeInfo {
+  return isEnumChangeTarget(changeInfo.target);
+}
 
 export type RuleChangeInfo = ChangeInfoKind<RuleChangeTarget, RuleContext>;
+export function isRuleChangeInfo(
+  changeInfo: ChangeInfo,
+): changeInfo is RuleChangeInfo {
+  return isRuleChangeTarget(changeInfo.target);
+}
 
 export function diff(a: Service, b: Service): ChangeInfo[] {
   const changes: ChangeInfo[] = [];

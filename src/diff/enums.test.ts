@@ -120,7 +120,7 @@ describe(enums, () => {
         {
           kind: 'added',
           target: `${mode}-enum`,
-          category: 'major',
+          category: mode === 'input' ? 'minor' : 'major',
           b: {
             context: {
               scope: `${mode}-enum`,

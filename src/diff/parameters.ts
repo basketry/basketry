@@ -55,7 +55,7 @@ export function* parameters(
           category: 'patch',
           b: { context: b_context, ...asValue(b_param.description) },
         };
-      } else if (a_param.description !== b_param.description) {
+      } else if (!eq(a_param.description, b_param.description)) {
         yield {
           kind: 'changed',
           target: 'parameter-description',
