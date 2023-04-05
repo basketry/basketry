@@ -1,12 +1,13 @@
 import { performance } from 'perf_hooks';
 
-import { BasketryError, PerfEvent, Service } from '../types';
+import { BasketryError, PerfEvent } from '../types';
 import { Engine, getInput } from '../engine';
 import * as perf from '../performance';
 
 import { CommmonArgs } from './types';
 
 import { error, readStreamToString } from '../private-utils';
+import { Service } from '../ir';
 
 export type CliOutput = {
   errors: BasketryError[];
