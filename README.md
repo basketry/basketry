@@ -1,5 +1,6 @@
 [![main](https://github.com/basketry/basketry/workflows/build/badge.svg?branch=main&event=push)](https://github.com/basketry/basketry/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
-[![main](https://img.shields.io/npm/v/basketry)](https://www.npmjs.com/package/basketry)
+[![latest](https://img.shields.io/npm/v/basketry)](https://www.npmjs.com/package/basketry)
+[![rc](https://img.shields.io/npm/v/basketry/rc)](https://www.npmjs.com/package/basketry/v/rc)
 
 # 🧺 Basketry
 
