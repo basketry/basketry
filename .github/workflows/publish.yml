@@ -6,31 +6,6 @@ on:
       - closed
 
 jobs:
-  compare:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    outputs:
-      base_version: ${{ steps.base.outputs.version }}
-      current_version: ${{ steps.current.outputs.version }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-      - id: base
-        run: echo "version=$(jq -r .version < package.json)" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v3
-      - id: current
-        run: echo "version=$(jq -r .version < package.json)" >> "$GITHUB_OUTPUT"
-  publish:
-    needs: compare
-    if: needs.compare.outputs.base_version != needs.compare.outputs.current_version
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      discussions: write
-      id-token: write
-      pull-requests: write
-    steps:
-      - uses: skonves/npm-publish@provenance
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+  merge:
+    uses: basketry/workflows/.github/workflows/publish.yml@main
+    secrets: inherit

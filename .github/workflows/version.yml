@@ -11,10 +11,6 @@ on:
         required: false
 
 jobs:
-  npm-version:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: skonves/npm-version@main
-        with:
-          newversion: ${{ inputs.newversion }}
-          preid: ${{ inputs.preid }}
+  version:
+    uses: basketry/workflows/.github/workflows/version.yml@main
+    secrets: inherit
