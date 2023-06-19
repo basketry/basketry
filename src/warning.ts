@@ -1,5 +1,6 @@
 import { title } from 'case';
 import { NamespacedBasketryOptions, Service } from './';
+import { relative } from 'path';
 
 export function* warning(
   service: Service,
@@ -16,7 +17,7 @@ export function* warning(
   yield 'the code is regenerated.';
   yield '';
   yield 'To make changes to the contents of this file:';
-  yield `1. Edit ${service.sourcePath}`;
+  yield `1. Edit ${relative(process.cwd(), service.sourcePath)}`;
   if (options?.basketry?.command) {
     yield `2. Run \`${options.basketry.command}\``;
   } else {
