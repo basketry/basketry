@@ -566,7 +566,9 @@ function runParser(options: {
     });
     push(errors, validation.errors);
 
-    value = validation.service;
+    value = validation.service
+      ? { ...validation.service, sourcePath }
+      : undefined;
   } catch (ex) {
     errors.push({
       code: 'PARSER_ERROR',
