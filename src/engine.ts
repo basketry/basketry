@@ -242,7 +242,7 @@ export class Engine {
           }
 
           try {
-            await writeFile(filepath, file.contents);
+            await writeFile(filepath, await file.contents); // This seemingly unnecessary await accounts for an odd bug caused by generators using an older version (<=2) of prettier
           } catch (ex) {
             this.pushErrors({
               code: 'WRITE_ERROR',
