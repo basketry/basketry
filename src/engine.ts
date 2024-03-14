@@ -521,7 +521,7 @@ function areEquivalent(previous: string | null, next: string): boolean {
     const firstLineBreakPrevious = previous.indexOf('\n');
     if (firstLineBreakPrevious === -1) return false;
 
-    const firstLineBreakNext = previous.indexOf('\n');
+    const firstLineBreakNext = next.indexOf('\n');
     if (firstLineBreakNext === -1) return false;
 
     // If either the previous or next versions only contain whitespace after the first line break, then all of the significant differences must be on the first line
