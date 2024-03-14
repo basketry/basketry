@@ -207,7 +207,9 @@ export class Engine {
   private async compare(file: File): Promise<FileStatus> {
     try {
       const previous = (await readFile(join(...file.path))).toString();
-      return areEquivalent(previous, file.contents) ? 'no-change' : 'modified';
+      return areEquivalent(previous, await file.contents)
+        ? 'no-change'
+        : 'modified';
     } catch {
       return 'added';
     }
