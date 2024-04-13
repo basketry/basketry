@@ -224,6 +224,21 @@
             "isArray": false,
             "rules": []
           }
+        },
+        {
+          "kind": "Method",
+          "name": { "value": "uploadGizmo" },
+          "security": [],
+          "parameters": [
+            {
+              "kind": "Parameter",
+              "name": { "value": "data" },
+              "typeName": { "value": "binary" },
+              "isPrimitive": true,
+              "isArray": false,
+              "rules": [{ "kind": "ValidationRule", "id": "required" }]
+            }
+          ]
         }
       ],
       "protocols": {
@@ -243,6 +258,8 @@
                     "in": { "value": "query" }
                   }
                 ],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 200 }
               },
               {
@@ -256,6 +273,8 @@
                     "in": { "value": "query" }
                   }
                 ],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 201 }
               },
               {
@@ -274,6 +293,29 @@
                     "array": { "value": "csv" }
                   }
                 ],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
+                "successCode": { "value": 200 }
+              }
+            ]
+          },
+          {
+            "kind": "HttpPath",
+            "path": { "value": "/gizmos/data" },
+            "methods": [
+              {
+                "kind": "HttpMethod",
+                "name": { "value": "uploadGizmo" },
+                "verb": { "value": "post" },
+                "parameters": [
+                  {
+                    "kind": "HttpParameter",
+                    "name": { "value": "data" },
+                    "in": { "value": "formData" }
+                  }
+                ],
+                "requestMediaType": { "value": "multipart/form-data" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 200 }
               }
             ]
@@ -445,6 +487,8 @@
                 "name": { "value": "getWidgets" },
                 "verb": { "value": "get" },
                 "parameters": [],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 200 }
               },
               {
@@ -460,6 +504,8 @@
                     "in": { "value": "body" }
                   }
                 ],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 204 }
               },
               {
@@ -467,6 +513,8 @@
                 "name": { "value": "putWidget" },
                 "verb": { "value": "put" },
                 "parameters": [],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 200 }
               }
             ]
@@ -490,6 +538,8 @@
                     "in": { "value": "path" }
                   }
                 ],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 200 }
               },
               {
@@ -505,6 +555,8 @@
                     "in": { "value": "path" }
                   }
                 ],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 204 }
               }
             ]
@@ -1082,6 +1134,8 @@
                     "in": { "value": "query" }
                   }
                 ],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 204 }
               }
             ]
@@ -1332,6 +1386,8 @@
                     "in": { "value": "body" }
                   }
                 ],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 204 }
               }
             ]
@@ -1497,6 +1553,8 @@
                 },
                 "verb": { "value": "get" },
                 "parameters": [],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 200 }
               },
               {
@@ -1506,6 +1564,8 @@
                 },
                 "verb": { "value": "put" },
                 "parameters": [],
+                "requestMediaType": { "value": "application/json" },
+                "responseMediaType": { "value": "application/json" },
                 "successCode": { "value": 200 }
               }
             ]
