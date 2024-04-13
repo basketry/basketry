@@ -427,7 +427,15 @@
     },
     "httpMethod": {
       "type": "object",
-      "required": ["kind", "name", "verb", "parameters", "successCode"],
+      "required": [
+        "kind",
+        "name",
+        "verb",
+        "parameters",
+        "successCode",
+        "requestMediaTypes",
+        "responseMediaTypes"
+      ],
       "properties": {
         "kind": { "type": "string", "const": "HttpMethod" },
         "name": { "$ref": "#/definitions/string" },
@@ -468,8 +476,14 @@
           },
           "additionalProperties": false
         },
-        "requestMediaType": { "$ref": "#/definitions/string" },
-        "responseMediaType": { "$ref": "#/definitions/string" },
+        "requestMediaTypes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "responseMediaTypes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false

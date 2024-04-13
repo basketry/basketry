@@ -134,8 +134,8 @@ export type HttpMethod = {
   >;
   parameters: HttpParameter[];
   successCode: Scalar<number>;
-  requestMediaType?: Scalar<string>;
-  responseMediaType?: Scalar<string>;
+  requestMediaTypes: Scalar<string>[];
+  responseMediaTypes: Scalar<string>[];
   loc?: string;
 };
 

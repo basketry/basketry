@@ -258,8 +258,8 @@
                     "in": { "value": "query" }
                   }
                 ],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 200 }
               },
               {
@@ -273,8 +273,8 @@
                     "in": { "value": "query" }
                   }
                 ],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 201 }
               },
               {
@@ -293,8 +293,8 @@
                     "array": { "value": "csv" }
                   }
                 ],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 200 }
               }
             ]
@@ -314,8 +314,8 @@
                     "in": { "value": "formData" }
                   }
                 ],
-                "requestMediaType": { "value": "multipart/form-data" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "multipart/form-data" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 200 }
               }
             ]
@@ -487,8 +487,8 @@
                 "name": { "value": "getWidgets" },
                 "verb": { "value": "get" },
                 "parameters": [],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 200 }
               },
               {
@@ -504,8 +504,8 @@
                     "in": { "value": "body" }
                   }
                 ],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 204 }
               },
               {
@@ -513,8 +513,8 @@
                 "name": { "value": "putWidget" },
                 "verb": { "value": "put" },
                 "parameters": [],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 200 }
               }
             ]
@@ -538,8 +538,8 @@
                     "in": { "value": "path" }
                   }
                 ],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 200 }
               },
               {
@@ -555,8 +555,8 @@
                     "in": { "value": "path" }
                   }
                 ],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 204 }
               }
             ]
@@ -1134,8 +1134,8 @@
                     "in": { "value": "query" }
                   }
                 ],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 204 }
               }
             ]
@@ -1386,8 +1386,8 @@
                     "in": { "value": "body" }
                   }
                 ],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 204 }
               }
             ]
@@ -1553,8 +1553,8 @@
                 },
                 "verb": { "value": "get" },
                 "parameters": [],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 200 }
               },
               {
@@ -1564,8 +1564,8 @@
                 },
                 "verb": { "value": "put" },
                 "parameters": [],
-                "requestMediaType": { "value": "application/json" },
-                "responseMediaType": { "value": "application/json" },
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
                 "successCode": { "value": 200 }
               }
             ]
