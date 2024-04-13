@@ -468,6 +468,8 @@
           },
           "additionalProperties": false
         },
+        "requestMediaType": { "$ref": "#/definitions/string" },
+        "responseMediaType": { "$ref": "#/definitions/string" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
