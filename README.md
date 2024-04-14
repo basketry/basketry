@@ -1,5 +1,6 @@
 [![main](https://github.com/basketry/basketry/workflows/build/badge.svg?branch=main&event=push)](https://github.com/basketry/basketry/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
-[![main](https://img.shields.io/npm/v/basketry)](https://www.npmjs.com/package/basketry)
+[![latest](https://img.shields.io/npm/v/basketry)](https://www.npmjs.com/package/basketry)
+[![rc](https://img.shields.io/npm/v/basketry/rc)](https://www.npmjs.com/package/basketry/v/rc)
 
 # 🧺 Basketry
 
@@ -398,11 +399,13 @@ Note that the `lint` script is run prior to `build`. Auto-fixable linting or for
 
 ### Publish a new package version
 
-1. Ensure latest code is published on the `main` branch.
-1. Create the new version number with `npm version {major|minor|patch}`
-1. Push the branch and the version tag: `git push origin main --follow-tags`
-
-The [publish workflow](https://github.com/basketry/basketry/actions/workflows/publish.yml) will build and pack the new version then push the package to NPM. Note that publishing requires write access to the `main` branch.
+1. Create new version
+   1. Navigate to the [version workflow](https://github.com/basketry/basketry/actions/workflows/version.yml) from the Actions tab.
+   1. Manually dispatch the action with the appropriate inputs
+   1. This will create a PR with the new version
+1. Publish to NPM
+   1. Review and merge the PR
+   1. The [publish workflow](https://github.com/basketry/basketry/actions/workflows/publish.yml) will create a git tag and publish the package on NPM
 
 ---
 
