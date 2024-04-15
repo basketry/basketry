@@ -1,5 +1,5 @@
 import { Enum, getEnumByName, getTypeByName, Service, Type } from '..';
-import { Literal } from '../types';
+import { Scalar } from '../ir';
 
 export function getInputs(service: Service): {
   types: Iterable<Type>;
@@ -85,7 +85,7 @@ function* traverseType(service: Service, type: Type): Iterable<Type> {
 }
 
 export function asValue<T extends string | number | boolean | null>(
-  value: T | Literal<T> | T[] | Literal<T>[] | undefined,
+  value: T | Scalar<T> | T[] | Scalar<T>[] | undefined,
 ): { value: T | T[] | undefined; loc?: string } {
   if (value === undefined) return { value: undefined };
   if (Array.isArray(value)) {
@@ -93,7 +93,7 @@ export function asValue<T extends string | number | boolean | null>(
     const values: T[] = [];
 
     for (const item of value) {
-      if (isLiteral(item)) {
+      if (isScalar(item)) {
         loc ||= item.loc;
         values.push(item.value);
       } else {
@@ -103,7 +103,7 @@ export function asValue<T extends string | number | boolean | null>(
 
     return { value: values, loc };
   } else {
-    if (isLiteral(value)) {
+    if (isScalar(value)) {
       return value;
     } else {
       return { value };
@@ -112,8 +112,8 @@ export function asValue<T extends string | number | boolean | null>(
 }
 
 export function eq<T extends string | number | boolean | null>(
-  a: T | Literal<T> | T[] | Literal<T>[] | undefined,
-  b: T | Literal<T> | T[] | Literal<T>[] | undefined,
+  a: T | Scalar<T> | T[] | Scalar<T>[] | undefined,
+  b: T | Scalar<T> | T[] | Scalar<T>[] | undefined,
 ): boolean {
   if (a === undefined && b === undefined) return true;
   if (a === undefined || b === undefined) return false;
@@ -126,15 +126,15 @@ export function eq<T extends string | number | boolean | null>(
   }
   if (Array.isArray(a) || Array.isArray(b)) return false;
 
-  if (isLiteral(a) && isLiteral(b)) return a.value === b.value;
-  if (isLiteral(a) || isLiteral(b)) return false;
+  if (isScalar(a) && isScalar(b)) return a.value === b.value;
+  if (isScalar(a) || isScalar(b)) return false;
 
   return a === b;
 }
 
-function isLiteral<T extends string | number | boolean | null>(
-  value: T | Literal<T>,
-): value is Literal<T> {
+function isScalar<T extends string | number | boolean | null>(
+  value: T | Scalar<T>,
+): value is Scalar<T> {
   if (value === null) return false;
   const t = typeof value;
 

@@ -1,11 +1,12 @@
 import { ServiceScope, TypeChangeInfo } from '.';
-import { Type } from '../types';
+import { Type } from '../ir';
 import { types, Mode } from './types';
 import {
   buildInterface,
   buildMethod,
   buildParameter,
   buildReturnType,
+  buildScalar,
   buildService,
   buildType,
 } from './test-utils';
@@ -55,8 +56,14 @@ function setup(
           }),
   });
 
-  const a_int = buildInterface({ name: interfaceName, methods: [a_method] });
-  const b_int = buildInterface({ name: interfaceName, methods: [b_method] });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [a_method],
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: [b_method],
+  });
 
   const a_service = buildService({
     title: { value: title },
@@ -119,7 +126,6 @@ describe(types, () => {
               service: title,
               type: typeName,
             },
-            loc: '1;1;0',
             value: typeName,
           },
         },
@@ -149,7 +155,6 @@ describe(types, () => {
               service: title,
               type: typeName,
             },
-            loc: '1;1;0',
             value: typeName,
           },
         },
@@ -181,7 +186,6 @@ describe(types, () => {
               service: title,
               type: originalName,
             },
-            loc: '1;1;0',
             value: originalName,
           },
           b: {
@@ -190,8 +194,71 @@ describe(types, () => {
               service: title,
               type: newName,
             },
-            loc: '1;1;0',
             value: newName,
+          },
+        },
+      ]);
+    });
+
+    it('identifies an added type deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildType({ name: buildScalar(typeName) }),
+        buildType({
+          name: buildScalar(typeName),
+          deprecated: buildScalar(true),
+        }),
+      );
+
+      // ACT
+      const result = types(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<TypeChangeInfo[]>([
+        {
+          kind: 'added',
+          target: `${mode}-type-deprecated`,
+          category: 'minor',
+          b: {
+            context: {
+              scope: `${mode}-type`,
+              service: title,
+              type: typeName,
+            },
+            value: true,
+          },
+        },
+      ]);
+    });
+
+    it('identifies a removed type deprecation', () => {
+      // ARRANGE
+      const [a, b] = setup(
+        mode,
+        buildType({
+          name: buildScalar(typeName),
+          deprecated: buildScalar(true),
+        }),
+        buildType({ name: buildScalar(typeName) }),
+      );
+
+      // ACT
+      const result = types(mode, a, b);
+
+      // ASSERT
+      expect(Array.from(result)).toEqual<TypeChangeInfo[]>([
+        {
+          kind: 'removed',
+          target: `${mode}-type-deprecated`,
+          category: 'patch',
+          a: {
+            context: {
+              scope: `${mode}-type`,
+              service: title,
+              type: typeName,
+            },
+            value: true,
           },
         },
       ]);

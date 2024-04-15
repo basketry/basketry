@@ -1,6 +1,6 @@
 import { MethodScope, ParameterContext, ChangeInfo } from '.';
 import * as cache from './cache';
-import { Parameter } from '../types';
+import { Parameter } from '../ir';
 import { isRequired } from '..';
 import { eq, asValue } from './utils';
 import { rules } from './rules';
@@ -12,7 +12,7 @@ function buildContext(
   return {
     scope: 'parameter',
     service: scope.service.title.value,
-    interface: scope.interface.name,
+    interface: scope.interface.name.value,
     method: scope.method.name.value,
     parameter: parameter.name.value,
     required: isRequired(parameter),
@@ -62,6 +62,23 @@ export function* parameters(
           category: 'patch',
           a: { context: a_context, ...asValue(a_param.description) },
           b: { context: b_context, ...asValue(b_param.description) },
+        };
+      }
+
+      // Deprecated
+      if (!a_param.deprecated?.value && b_param.deprecated?.value) {
+        yield {
+          kind: 'added',
+          target: 'parameter-deprecated',
+          category: 'minor',
+          b: { context: b_context, ...asValue(b_param.deprecated) },
+        };
+      } else if (a_param.deprecated?.value && !b_param.deprecated?.value) {
+        yield {
+          kind: 'removed',
+          target: 'parameter-deprecated',
+          category: 'patch',
+          a: { context: a_context, ...asValue(a_param.deprecated) },
         };
       }
 

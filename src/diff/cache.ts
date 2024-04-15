@@ -1,6 +1,14 @@
 import { snake } from 'case';
-import { Enum, Literal, Property } from '..';
-import { Interface, Method, Parameter, Service, Type } from '../types';
+import {
+  Enum,
+  EnumValue,
+  Interface,
+  Method,
+  Parameter,
+  Property,
+  Service,
+  Type,
+} from '../ir';
 
 const interfaceCache = new WeakMap<Service, Map<string, Interface | null>>();
 export function getInterface(
@@ -14,7 +22,7 @@ export function getInterface(
   if (hit === null) return undefined;
 
   for (const int of service.interfaces) {
-    if (n === snake(int.name)) {
+    if (n === snake(int.name.value)) {
       interfaceCache.get(service)!.set(n, int);
       return int;
     }
@@ -124,11 +132,8 @@ export function getEnum(service: Service, name: string): Enum | undefined {
   return undefined;
 }
 
-const enumValueCache = new WeakMap<Enum, Map<string, Literal<string> | null>>();
-export function getEnumValue(
-  e: Enum,
-  value: string,
-): Literal<string> | undefined {
+const enumValueCache = new WeakMap<Enum, Map<string, EnumValue | null>>();
+export function getEnumValue(e: Enum, value: string): EnumValue | undefined {
   const key = snake(value);
   if (!enumValueCache.has(e)) enumValueCache.set(e, new Map());
   const hit = enumValueCache.get(e)!.get(key);
@@ -136,7 +141,7 @@ export function getEnumValue(
   if (hit === null) return undefined;
 
   for (const v of e.values) {
-    if (key === snake(v.value)) {
+    if (key === snake(v.content.value)) {
       enumValueCache.get(e)!.set(key, v);
       return v;
     }

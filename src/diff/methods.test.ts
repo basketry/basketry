@@ -1,10 +1,11 @@
 import { InterfaceScope, MethodChangeInfo, ReturnTypeChangeInfo } from '.';
-import { Method } from '..';
+import { Method } from '../ir';
 import { methods } from './methods';
 import {
   buildInterface,
   buildMethod,
   buildReturnType,
+  buildScalar,
   buildService,
 } from './test-utils';
 
@@ -18,8 +19,14 @@ function setup(
   const a_methods = a ? [a] : [];
   const b_methods = b ? [b] : [];
 
-  const a_int = buildInterface({ name: interfaceName, methods: a_methods });
-  const b_int = buildInterface({ name: interfaceName, methods: b_methods });
+  const a_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: a_methods,
+  });
+  const b_int = buildInterface({
+    name: buildScalar(interfaceName),
+    methods: b_methods,
+  });
   const a_service = buildService({
     title: { value: title },
     interfaces: [a_int],
@@ -73,7 +80,6 @@ describe(methods, () => {
             scope: 'method',
             service: 'service title',
           },
-          loc: '1;1;0',
           value: 'method name',
         },
       },
@@ -103,7 +109,6 @@ describe(methods, () => {
             scope: 'method',
             service: 'service title',
           },
-          loc: '1;1;0',
           value: 'method name',
         },
       },
@@ -262,6 +267,74 @@ describe(methods, () => {
     ]);
   });
 
+  it('identifies an added method deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildMethod({
+        name: buildScalar(methodName),
+      }),
+      buildMethod({
+        name: buildScalar(methodName),
+        deprecated: buildScalar(true),
+      }),
+    );
+
+    // ACT
+    const result = methods(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
+      {
+        kind: 'added',
+        target: 'method-deprecated',
+        category: 'minor',
+        b: {
+          context: {
+            scope: 'method',
+            service: title,
+            interface: interfaceName,
+            method: methodName,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
+  it('identifies a removed method deprecation', () => {
+    // ARRANGE
+    const [a, b] = setup(
+      buildMethod({
+        name: buildScalar(methodName),
+        deprecated: buildScalar(true),
+      }),
+      buildMethod({
+        name: buildScalar(methodName),
+      }),
+    );
+
+    // ACT
+    const result = methods(a, b);
+
+    // ASSERT
+    expect(Array.from(result)).toEqual<MethodChangeInfo[]>([
+      {
+        kind: 'removed',
+        target: 'method-deprecated',
+        category: 'patch',
+        a: {
+          context: {
+            scope: 'method',
+            service: title,
+            interface: interfaceName,
+            method: methodName,
+          },
+          value: true,
+        },
+      },
+    ]);
+  });
+
   it('identifies two identical method return types', () => {
     // ARRANGE
     const [a, b] = setup(
@@ -310,7 +383,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: 'string',
-          loc: '1;1;0',
         },
       },
     ]);
@@ -344,7 +416,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: 'string',
-          loc: '1;1;0',
         },
       },
     ]);
@@ -433,7 +504,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: true,
-          loc: '1;1;0',
         },
         b: {
           context: {
@@ -444,7 +514,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: false,
-          loc: '1;1;0',
         },
       },
     ]);
@@ -487,7 +556,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: true,
-          loc: '1;1;0',
         },
         b: {
           context: {
@@ -498,7 +566,6 @@ describe(methods, () => {
             returnType: 'string',
           },
           value: false,
-          loc: '1;1;0',
         },
       },
     ]);

@@ -7,7 +7,7 @@ import { performance } from 'perf_hooks';
 import { merge as webpackMerge } from 'webpack-merge';
 import { NamespacedBasketryOptions } from '.';
 import { encodeRange, withGitattributes } from './helpers';
-
+import { Service } from './ir';
 import {
   BasketryError,
   Config,
@@ -21,7 +21,6 @@ import {
   Parser,
   Rule,
   RuleOptions,
-  Service,
   Violation,
 } from './types';
 import { getConfigs, isLocalConfig } from './utils';
@@ -161,7 +160,6 @@ export class Engine {
         const { errors, violations } = runRules({
           fns: this.rules,
           service: this._service,
-          sourcePath: this.input.sourcePath,
         });
         this.pushErrors(...errors);
         this.pushViolations(...violations);
@@ -209,7 +207,9 @@ export class Engine {
   private async compare(file: File): Promise<FileStatus> {
     try {
       const previous = (await readFile(join(...file.path))).toString();
-      return areEquivalent(previous, file.contents) ? 'no-change' : 'modified';
+      return areEquivalent(previous, await file.contents)
+        ? 'no-change'
+        : 'modified';
     } catch {
       return 'added';
     }
@@ -244,7 +244,7 @@ export class Engine {
           }
 
           try {
-            await writeFile(filepath, file.contents);
+            await writeFile(filepath, await file.contents); // This seemingly unnecessary await accounts for an odd bug caused by generators using an older version (<=2) of prettier
           } catch (ex) {
             this.pushErrors({
               code: 'WRITE_ERROR',
@@ -523,7 +523,7 @@ function areEquivalent(previous: string | null, next: string): boolean {
     const firstLineBreakPrevious = previous.indexOf('\n');
     if (firstLineBreakPrevious === -1) return false;
 
-    const firstLineBreakNext = previous.indexOf('\n');
+    const firstLineBreakNext = next.indexOf('\n');
     if (firstLineBreakNext === -1) return false;
 
     // If either the previous or next versions only contain whitespace after the first line break, then all of the significant differences must be on the first line
@@ -568,7 +568,9 @@ function runParser(options: {
     });
     push(errors, validation.errors);
 
-    value = validation.service;
+    value = validation.service
+      ? { ...validation.service, sourcePath }
+      : undefined;
   } catch (ex) {
     errors.push({
       code: 'PARSER_ERROR',
@@ -587,15 +589,11 @@ function runParser(options: {
   return { value, errors, violations };
 }
 
-function runRules(options: {
-  fns: Rule[];
-  service: Service;
-  sourcePath: string;
-}): {
+function runRules(options: { fns: Rule[]; service: Service }): {
   errors: BasketryError[];
   violations: Violation[];
 } {
-  const { fns, service, sourcePath } = options;
+  const { fns, service } = options;
   const errors: BasketryError[] = [];
   const violations: Violation[] = [];
 
@@ -603,7 +601,7 @@ function runRules(options: {
   for (const fn of fns) {
     try {
       performance.mark('rule-start');
-      push(violations, fn(service, sourcePath));
+      push(violations, fn(service));
     } catch (ex) {
       errors.push({
         code: 'RULE_ERROR',
@@ -708,8 +706,8 @@ function getRules(
         const { fn, errors } = loadModule<Rule>(moduleName, configPath);
 
         const rule: Rule | undefined = fn
-          ? (service, sourcePath, localOptions) =>
-              fn(service, sourcePath, merge(ruleOptions, localOptions))
+          ? (service, localOptions) =>
+              fn(service, merge(ruleOptions, localOptions))
           : undefined;
 
         if (rule) componentNames.set(rule, moduleName);

@@ -7,7 +7,7 @@ import {
   Service,
   Type,
   ValidationRule,
-} from '../types';
+} from '../ir';
 import { types } from './types';
 import { interfaces } from './interfaces';
 import { enums } from './enums';

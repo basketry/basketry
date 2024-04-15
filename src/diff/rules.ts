@@ -8,7 +8,7 @@ import {
 } from '.';
 import { isRequired } from '..';
 
-import { ValidationRule } from '../types';
+import { ValidationRule } from '../ir';
 
 function buildContext(
   mode: Mode,
@@ -18,7 +18,7 @@ function buildContext(
     return {
       scope: 'parameter',
       service: scope.service.title.value,
-      interface: scope.interface.name,
+      interface: scope.interface.name.value,
       method: scope.method.name.value,
       parameter: scope.parameter.name.value,
       required: isRequired(scope.parameter),
@@ -27,7 +27,7 @@ function buildContext(
     return {
       scope: 'return-type',
       service: scope.service.title.value,
-      interface: scope.interface.name,
+      interface: scope.interface.name.value,
       method: scope.method.name.value,
       returnType: scope.returnType.typeName.value,
     };
@@ -150,6 +150,19 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
             }
           }
           break;
+        case 'constant':
+          if (a_rule.id === b_rule.id) {
+            if (a_rule.value?.value !== b_rule.value?.value) {
+              yield {
+                kind: 'changed',
+                target: a_rule.id,
+                category: 'major',
+                a: { context: a_context, ...asValue(a_rule) },
+                b: { context: b_context, ...asValue(b_rule) },
+              };
+            }
+          }
+          break;
         case 'number-gt':
         case 'number-gte':
         case 'number-lt':
@@ -266,6 +279,8 @@ function asValue(rule: ValidationRule): {
       return rule.min;
     case 'array-unique-items':
       return { value: rule.required };
+    case 'constant':
+      return { value: rule.value.value };
     case 'number-gt':
     case 'number-gte':
     case 'number-lt':

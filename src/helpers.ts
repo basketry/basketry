@@ -3,13 +3,12 @@ import { join, relative } from 'path';
 import {
   ApiKeyScheme,
   BasicScheme,
-  File,
   Method,
   OAuth2Scheme,
-  Range,
   SecurityScheme,
   ValidationRule,
-} from './types';
+} from './ir';
+import { File, Range } from './types';
 
 export function hasParameters(method: Method): boolean {
   return !!method.parameters.length;
@@ -51,10 +50,14 @@ export function isOAuth2Scheme(scheme: SecurityScheme): scheme is OAuth2Scheme {
   return scheme.type.value === 'oauth2';
 }
 
-const emptyRange = '1;1;0';
+export function encodeRange<T extends Range | null | undefined>(
+  range: T,
+): typeof range extends null | undefined ? undefined : string {
+  return innerEncodeRange(range) as any;
+}
 
-export function encodeRange(range: Range | null | undefined): string {
-  if (!range) return emptyRange;
+function innerEncodeRange(range: Range | null | undefined): string | undefined {
+  if (!range) return undefined;
   if (range.start.offset === range.end.offset) {
     return [range.start.line, range.start.column, range.start.offset].join(';');
   } else if (range.start.line === range.end.line) {
@@ -78,7 +81,7 @@ export function encodeRange(range: Range | null | undefined): string {
 }
 
 export function decodeRange(range: string | null | undefined): Range {
-  if (!range) return decodeRange(emptyRange);
+  if (!range) return decodeRange('1;1;0');
 
   const parts = range.split(';').map((x) => Number(x));
 

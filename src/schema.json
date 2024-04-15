@@ -3,6 +3,7 @@
   "type": "object",
   "description": "Intermediate Representation (IR) of a service",
   "required": [
+    "kind",
     "basketry",
     "title",
     "majorVersion",
@@ -10,12 +11,12 @@
     "interfaces",
     "types",
     "enums",
-    "unions",
-    "loc"
+    "unions"
   ],
   "properties": {
     "$schema": { "type": "string" },
-    "basketry": { "type": "string", "const": "1" },
+    "kind": { "type": "string", "const": "Service" },
+    "basketry": { "type": "string", "const": "1.1-rc" },
     "title": { "$ref": "#/definitions/string" },
     "majorVersion": { "$ref": "#/definitions/integer" },
     "sourcePath": {
@@ -70,6 +71,24 @@
       },
       "additionalProperties": false
     },
+    "boolean": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "value": { "type": "boolean" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "null": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "value": { "type": "null" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
     "nonNegativeInteger": {
       "type": "object",
       "required": ["value"],
@@ -84,6 +103,15 @@
       "required": ["value"],
       "properties": {
         "value": { "type": "number", "minimum": 0 },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "deprecated": {
+      "type": "object",
+      "required": ["value"],
+      "properties": {
+        "value": { "type": "boolean", "const": true },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
@@ -112,15 +140,17 @@
     },
     "interface": {
       "type": "object",
-      "required": ["name", "methods", "protocols"],
+      "required": ["kind", "name", "methods", "protocols"],
       "properties": {
-        "name": { "type": "string" },
+        "kind": { "type": "string", "const": "Interface" },
+        "name": { "$ref": "#/definitions/string" },
         "description": {
           "oneOf": [
-            { "type": "string" },
-            { "type": "array", "items": { "type": "string" } }
+            { "$ref": "#/definitions/string" },
+            { "type": "array", "items": { "$ref": "#/definitions/string" } }
           ]
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "methods": {
           "type": "array",
           "items": { "$ref": "#/definitions/method" }
@@ -142,8 +172,9 @@
     },
     "type": {
       "type": "object",
-      "required": ["name", "properties", "rules", "loc"],
+      "required": ["kind", "name", "properties", "rules"],
       "properties": {
+        "kind": { "type": "string", "const": "Type" },
         "name": { "$ref": "#/definitions/string" },
         "description": {
           "oneOf": [
@@ -151,6 +182,7 @@
             { "type": "array", "items": { "$ref": "#/definitions/string" } }
           ]
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "properties": {
           "type": "array",
           "items": { "$ref": "#/definitions/property" }
@@ -166,12 +198,20 @@
     },
     "enum": {
       "type": "object",
-      "required": ["name", "values", "loc"],
+      "required": ["kind", "name", "values"],
       "properties": {
+        "kind": { "type": "string", "const": "Enum" },
         "name": { "$ref": "#/definitions/string" },
+        "description": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "type": "array", "items": { "$ref": "#/definitions/string" } }
+          ]
+        },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "values": {
           "type": "array",
-          "items": { "$ref": "#/definitions/string" },
+          "items": { "$ref": "#/definitions/enumValue" },
           "minItems": 1
         },
         "loc": { "$ref": "#/definitions/range" },
@@ -179,9 +219,29 @@
       },
       "additionalProperties": false
     },
+    "enumValue": {
+      "type": "object",
+      "required": ["kind", "content"],
+      "properties": {
+        "kind": { "type": "string", "const": "EnumValue" },
+        "content": { "$ref": "#/definitions/string" },
+        "description": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "type": "array", "items": { "$ref": "#/definitions/string" } }
+          ]
+        },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
     "union": {
       "type": "object",
+      "required": ["kind"],
       "properties": {
+        "kind": { "type": "string", "const": "Union" },
         "name": { "$ref": "#/definitions/string" },
         "members": {
           "type": "array",
@@ -205,6 +265,7 @@
         "boolean",
         "date",
         "date-time",
+        "binary",
         "untyped"
       ]
     },
@@ -222,6 +283,21 @@
         },
         "isArray": { "type": "boolean" },
         "isPrimitive": { "type": "boolean", "const": true },
+        "constant": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "$ref": "#/definitions/number" },
+            { "$ref": "#/definitions/boolean" }
+          ]
+        },
+        "default": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "$ref": "#/definitions/number" },
+            { "$ref": "#/definitions/boolean" },
+            { "$ref": "#/definitions/null" }
+          ]
+        },
         "rules": {
           "type": "array",
           "items": { "$ref": "#/definitions/validationRule" }
@@ -252,8 +328,9 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["name", "loc"],
+          "required": ["kind", "name"],
           "properties": {
+            "kind": { "type": "string", "const": "Property" },
             "name": { "$ref": "#/definitions/string" },
             "description": {
               "oneOf": [
@@ -261,6 +338,7 @@
                 { "type": "array", "items": { "$ref": "#/definitions/string" } }
               ]
             },
+            "deprecated": { "$ref": "#/definitions/deprecated" },
             "loc": { "$ref": "#/definitions/range" },
             "meta": { "$ref": "#/definitions/meta" }
           }
@@ -270,8 +348,9 @@
     },
     "method": {
       "type": "object",
-      "required": ["name", "security", "parameters", "loc"],
+      "required": ["kind", "name", "security", "parameters"],
       "properties": {
+        "kind": { "type": "string", "const": "Method" },
         "name": { "$ref": "#/definitions/string" },
         "security": {
           "type": "array",
@@ -283,6 +362,7 @@
             { "type": "array", "items": { "$ref": "#/definitions/string" } }
           ]
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "parameters": {
           "type": "array",
           "items": { "$ref": "#/definitions/parameter" }
@@ -298,8 +378,9 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["name", "loc"],
+          "required": ["kind", "name"],
           "properties": {
+            "kind": { "type": "string", "const": "Parameter" },
             "name": { "$ref": "#/definitions/string" },
             "description": {
               "oneOf": [
@@ -307,6 +388,7 @@
                 { "type": "array", "items": { "$ref": "#/definitions/string" } }
               ]
             },
+            "deprecated": { "$ref": "#/definitions/deprecated" },
             "loc": { "$ref": "#/definitions/range" },
             "meta": { "$ref": "#/definitions/meta" }
           }
@@ -319,8 +401,9 @@
       "allOf": [
         {
           "type": "object",
-          "required": ["loc"],
+          "required": ["kind"],
           "properties": {
+            "kind": { "type": "string", "const": "ReturnType" },
             "loc": { "$ref": "#/definitions/range" },
             "meta": { "$ref": "#/definitions/meta" }
           }
@@ -330,8 +413,9 @@
     },
     "httpPath": {
       "type": "object",
-      "required": ["path", "methods", "loc"],
+      "required": ["kind", "path", "methods"],
       "properties": {
+        "kind": { "type": "string", "const": "HttpPath" },
         "path": { "$ref": "#/definitions/string" },
         "methods": {
           "type": "array",
@@ -343,8 +427,17 @@
     },
     "httpMethod": {
       "type": "object",
-      "required": ["name", "verb", "parameters", "successCode", "loc"],
+      "required": [
+        "kind",
+        "name",
+        "verb",
+        "parameters",
+        "successCode",
+        "requestMediaTypes",
+        "responseMediaTypes"
+      ],
       "properties": {
+        "kind": { "type": "string", "const": "HttpMethod" },
         "name": { "$ref": "#/definitions/string" },
         "verb": {
           "type": "object",
@@ -383,14 +476,23 @@
           },
           "additionalProperties": false
         },
+        "requestMediaTypes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "responseMediaTypes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
     },
     "httpParameter": {
       "type": "object",
-      "required": ["name", "in", "loc"],
+      "required": ["kind", "name", "in"],
       "properties": {
+        "kind": { "type": "string", "const": "HttpParameter" },
         "name": { "$ref": "#/definitions/string" },
         "in": {
           "type": "object",
@@ -433,8 +535,9 @@
     },
     "basicScheme": {
       "type": "object",
-      "required": ["type", "name", "loc"],
+      "required": ["kind", "type", "name"],
       "properties": {
+        "kind": { "type": "string", "const": "BasicScheme" },
         "type": {
           "type": "object",
           "required": ["value"],
@@ -447,6 +550,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "name": { "$ref": "#/definitions/string" },
         "description": { "$ref": "#/definitions/string" },
         "loc": { "$ref": "#/definitions/range" },
@@ -456,8 +560,9 @@
     },
     "apiKeyScheme": {
       "type": "object",
-      "required": ["type", "name", "parameter", "in", "loc"],
+      "required": ["kind", "type", "name", "parameter", "in"],
       "properties": {
+        "kind": { "type": "string", "const": "ApiKeyScheme" },
         "type": {
           "type": "object",
           "required": ["value"],
@@ -470,6 +575,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "name": { "$ref": "#/definitions/string" },
         "description": { "$ref": "#/definitions/string" },
         "parameter": { "$ref": "#/definitions/string" },
@@ -492,8 +598,9 @@
     },
     "oauth2Scheme": {
       "type": "object",
-      "required": ["type", "name", "flows", "loc"],
+      "required": ["kind", "type", "name", "flows"],
       "properties": {
+        "kind": { "type": "string", "const": "OAuth2Scheme" },
         "type": {
           "type": "object",
           "required": ["value"],
@@ -503,6 +610,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "name": { "$ref": "#/definitions/string" },
         "description": { "type": "string" },
         "flows": {
@@ -524,8 +632,9 @@
     },
     "oauth2ImplicitFlow": {
       "type": "object",
-      "required": ["type", "authorizationUrl", "scopes", "loc"],
+      "required": ["kind", "type", "authorizationUrl", "scopes"],
       "properties": {
+        "kind": { "type": "string", "const": "OAuth2ImplicitFlow" },
         "type": {
           "type": "object",
           "required": ["value"],
@@ -535,6 +644,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "authorizationUrl": { "$ref": "#/definitions/string" },
         "refreshUrl": { "$ref": "#/definitions/string" },
         "scopes": {
@@ -548,8 +658,9 @@
     },
     "oauth2PasswordFlow": {
       "type": "object",
-      "required": ["type", "tokenUrl", "scopes", "loc"],
+      "required": ["kind", "type", "tokenUrl", "scopes"],
       "properties": {
+        "kind": { "type": "string", "const": "OAuth2PasswordFlow" },
         "type": {
           "type": "object",
           "required": ["value"],
@@ -559,6 +670,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "tokenUrl": { "type": "string" },
         "refreshUrl": { "type": "string" },
         "scopes": {
@@ -572,8 +684,9 @@
     },
     "oauth2ClientCredentialsFlow": {
       "type": "object",
-      "required": ["type", "tokenUrl", "scopes", "loc"],
+      "required": ["kind", "type", "tokenUrl", "scopes"],
       "properties": {
+        "kind": { "type": "string", "const": "OAuth2ClientCredentialsFlow" },
         "type": {
           "type": "object",
           "required": ["value"],
@@ -583,6 +696,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "tokenUrl": { "$ref": "#/definitions/string" },
         "refreshUrl": { "$ref": "#/definitions/string" },
         "scopes": {
@@ -596,8 +710,9 @@
     },
     "oauth2AuthorizationCodeFlow": {
       "type": "object",
-      "required": ["type", "authorizationUrl", "tokenUrl", "scopes", "loc"],
+      "required": ["kind", "type", "authorizationUrl", "tokenUrl", "scopes"],
       "properties": {
+        "kind": { "type": "string", "const": "OAuth2AuthorizationCodeFlow" },
         "type": {
           "type": "object",
           "required": ["value"],
@@ -607,6 +722,7 @@
           },
           "additionalProperties": false
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "authorizationUrl": { "$ref": "#/definitions/string" },
         "tokenUrl": { "$ref": "#/definitions/string" },
         "refreshUrl": { "$ref": "#/definitions/string" },
@@ -621,10 +737,12 @@
     },
     "oauth2Scope": {
       "type": "object",
-      "required": ["name", "description", "loc"],
+      "required": ["kind", "name", "description"],
       "properties": {
+        "kind": { "type": "string", "const": "OAuth2Scope" },
         "name": { "$ref": "#/definitions/string" },
         "description": { "$ref": "#/definitions/string" },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
@@ -639,6 +757,7 @@
     "validationRule": {
       "oneOf": [
         { "$ref": "#/definitions/requiredRule" },
+        { "$ref": "#/definitions/constantRule" },
         { "$ref": "#/definitions/stringMaxLengthRule" },
         { "$ref": "#/definitions/stringMinLengthRule" },
         { "$ref": "#/definitions/stringPatternRule" },
@@ -663,8 +782,9 @@
     },
     "requiredRule": {
       "type": "object",
-      "required": ["id"],
+      "required": ["kind", "id"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "required"
@@ -672,11 +792,31 @@
       },
       "additionalProperties": false
     },
+    "constantRule": {
+      "type": "object",
+      "required": ["kind", "id", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
+        "id": {
+          "type": "string",
+          "const": "constant"
+        },
+        "value": {
+          "oneOf": [
+            { "$ref": "#/definitions/string" },
+            { "$ref": "#/definitions/number" },
+            { "$ref": "#/definitions/boolean" }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
 
     "stringMaxLengthRule": {
       "type": "object",
-      "required": ["id", "length", "loc"],
+      "required": ["kind", "id", "length"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "string-max-length"
@@ -688,8 +828,9 @@
     },
     "stringMinLengthRule": {
       "type": "object",
-      "required": ["id", "length", "loc"],
+      "required": ["kind", "id", "length"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "string-min-length"
@@ -701,8 +842,9 @@
     },
     "stringPatternRule": {
       "type": "object",
-      "required": ["id", "pattern", "loc"],
+      "required": ["kind", "id", "pattern"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "string-pattern"
@@ -722,8 +864,9 @@
     },
     "stringFormatRule": {
       "type": "object",
-      "required": ["id", "format", "loc"],
+      "required": ["kind", "id", "format"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "string-format"
@@ -743,8 +886,9 @@
     },
     "stringEnumRule": {
       "type": "object",
-      "required": ["id", "values", "loc"],
+      "required": ["kind", "id", "values"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "string-enum"
@@ -760,8 +904,9 @@
     },
     "numberMultipleOfRule": {
       "type": "object",
-      "required": ["id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "number-multiple-of"
@@ -773,8 +918,9 @@
     },
     "numberGtRule": {
       "type": "object",
-      "required": ["id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "number-gt"
@@ -786,8 +932,9 @@
     },
     "numberGteRule": {
       "type": "object",
-      "required": ["id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "number-gte"
@@ -799,8 +946,9 @@
     },
     "numberLtRule": {
       "type": "object",
-      "required": ["id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "number-lt"
@@ -812,8 +960,9 @@
     },
     "numberLteRule": {
       "type": "object",
-      "required": ["id", "value", "loc"],
+      "required": ["kind", "id", "value"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "number-lte"
@@ -825,8 +974,9 @@
     },
     "arrayMaxItemsRule": {
       "type": "object",
-      "required": ["id", "max", "loc"],
+      "required": ["kind", "id", "max"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "array-max-items"
@@ -838,8 +988,9 @@
     },
     "arrayMinItemsRule": {
       "type": "object",
-      "required": ["id", "min", "loc"],
+      "required": ["kind", "id", "min"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "array-min-items"
@@ -851,8 +1002,9 @@
     },
     "arrayUniqueItemsRule": {
       "type": "object",
-      "required": ["id", "required", "loc"],
+      "required": ["kind", "id", "required"],
       "properties": {
+        "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
           "const": "array-unique-items"
@@ -866,8 +1018,9 @@
     },
     "objectMinPropertiesRule": {
       "type": "object",
-      "required": ["id", "min", "loc"],
+      "required": ["kind", "id", "min"],
       "properties": {
+        "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {
           "type": "string",
           "const": "object-min-properties"
@@ -879,8 +1032,9 @@
     },
     "objectMaxPropertiesRule": {
       "type": "object",
-      "required": ["id", "max", "loc"],
+      "required": ["kind", "id", "max"],
       "properties": {
+        "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {
           "type": "string",
           "const": "object-max-properties"
@@ -892,8 +1046,9 @@
     },
     "objectAdditionalPropertiesRule": {
       "type": "object",
-      "required": ["id", "forbidden", "loc"],
+      "required": ["kind", "id", "forbidden"],
       "properties": {
+        "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {
           "type": "string",
           "const": "object-additional-properties"
