@@ -238,20 +238,41 @@
       "additionalProperties": false
     },
     "union": {
-      "type": "object",
-      "required": ["kind"],
-      "properties": {
-        "kind": { "type": "string", "const": "Union" },
-        "name": { "$ref": "#/definitions/string" },
-        "members": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/typedValue" },
-          "minItems": 1
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["kind", "name", "members"],
+          "properties": {
+            "kind": { "type": "string", "const": "Union" },
+            "name": { "$ref": "#/definitions/string" },
+            "members": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/typedValue" },
+              "minItems": 1
+            },
+            "loc": { "$ref": "#/definitions/range" },
+            "meta": { "$ref": "#/definitions/meta" }
+          },
+          "additionalProperties": false
         },
-        "loc": { "$ref": "#/definitions/range" },
-        "meta": { "$ref": "#/definitions/meta" }
-      },
-      "additionalProperties": false
+        {
+          "type": "object",
+          "required": ["kind", "name", "discriminator", "members"],
+          "properties": {
+            "kind": { "type": "string", "const": "Union" },
+            "name": { "$ref": "#/definitions/string" },
+            "discriminator": { "$ref": "#/definitions/string" },
+            "members": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/customValue" },
+              "minItems": 1
+            },
+            "loc": { "$ref": "#/definitions/range" },
+            "meta": { "$ref": "#/definitions/meta" }
+          },
+          "additionalProperties": false
+        }
+      ]
     },
     "primitive": {
       "type": "string",
