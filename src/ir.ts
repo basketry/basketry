@@ -74,10 +74,18 @@ export type EnumValue = {
 export type Union = {
   kind: 'Union';
   name: Scalar<string>;
-  members: TypedValue[];
   loc?: string;
   meta?: Meta;
-};
+} & (
+  | {
+      members: TypedValue[];
+    }
+  | {
+      /* The name of the discriminating property on each of the member types */
+      discriminator: Scalar<string>;
+      members: CustomValue[];
+    }
+);
 
 export type PrimitiveValue = {
   typeName: Scalar<Primitive>;
