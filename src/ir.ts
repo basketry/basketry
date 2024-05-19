@@ -78,6 +78,7 @@ export type Union = {
   meta?: Meta;
 } & (
   | {
+      discriminator?: undefined;
       members: TypedValue[];
     }
   | {
