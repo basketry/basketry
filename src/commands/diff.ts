@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 
-import { BasketryError, Engine, getInput } from '..';
+import { BasketryError, LegacyEngine, getInput } from '..';
 import { CommmonArgs } from './types';
 
 import { diff as compare } from '../diff';
@@ -76,11 +76,11 @@ export async function diff(args: DiffArgs) {
 
   // TODO: ensure that a and b only have one value each
 
-  const a = new Engine(a_inputs.values[0], { onError: console.error });
+  const a = new LegacyEngine(a_inputs.values[0], { onError: console.error });
   a.loadParser();
   a.runParser();
 
-  const b = new Engine(b_inputs.values[0], { onError: console.error });
+  const b = new LegacyEngine(b_inputs.values[0], { onError: console.error });
   b.loadParser();
   b.runParser();
 
