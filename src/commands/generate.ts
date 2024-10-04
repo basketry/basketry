@@ -1,8 +1,14 @@
 import { StatWatcher, watchFile } from 'fs';
 import { performance } from 'perf_hooks';
 
-import { BasketryError, CliOutput, FileStatus, Violation } from '../types';
-import { Engine, getInput } from '../engine';
+import {
+  BasketryError,
+  CliOutput,
+  EngineEvents,
+  FileStatus,
+  Violation,
+} from '../types';
+import { Engine } from '../engine';
 import * as perf from '../performance';
 
 import { CommmonArgs } from './types';
@@ -60,38 +66,34 @@ export async function generate(args: GenerateArgs) {
     let watcher: StatWatcher | undefined = undefined;
 
     const go = async () => {
-      const inputs = await getInput(config, {
+      const events: EngineEvents = json
+        ? {}
+        : {
+            onError: printError,
+            onViolation: printViolation,
+          };
+
+      const { engines: pipelines, errors: errorsMkII } = await Engine.load({
+        configPath: config,
         output,
-        validate: false,
         generators,
         parser,
         rules,
         sourceContent,
         sourcePath: source,
+        ...events,
       });
-      errors.push(...inputs.errors);
-      if (!json) printErrors(inputs.errors);
+
+      errors.push(...errorsMkII);
+      if (!json) printErrors(errorsMkII);
 
       // TODO: fail if multiplexed with stdin (#24)
 
-      for (const input of inputs.values) {
-        if (!json) console.log(info(`Parsing ${input.sourcePath}`));
-
-        const pipeline = new Engine(
-          input,
-          json
-            ? undefined
-            : {
-                onError: printError,
-                onViolation: printViolation,
-              },
-        );
+      for (const pipeline of pipelines) {
+        if (!json) console.log(info(`Parsing ${pipeline.sourcePath}`));
 
         performance.mark('run-start');
 
-        pipeline.loadParser();
-        pipeline.loadRules();
-        if (!validate) pipeline.loadGenerators();
         pipeline.runParser();
         pipeline.runRules();
         if (!validate) pipeline.runGenerators();
@@ -111,9 +113,9 @@ export async function generate(args: GenerateArgs) {
       }
 
       if (!watcher && watch && !stdin && !json) {
-        for (const input of inputs.values) {
+        for (const pipeline of pipelines) {
           let timer: NodeJS.Timeout | undefined = undefined;
-          watcher = watchFile(input.sourcePath, () => {
+          watcher = watchFile(pipeline.sourcePath, () => {
             if (timer) clearTimeout(timer);
             timer = setTimeout(go, 100);
           });

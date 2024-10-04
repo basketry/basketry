@@ -47,7 +47,7 @@ export type Options = {
 
 export type GeneratorOptions = {
   /** CommonJS module that contain a Generator function */
-  generator: string;
+  generator: string | Generator;
   /** Options passed only to this generator. These generator-specific options will override common options. */
   options?: any;
 };
@@ -72,7 +72,7 @@ export type Parser = (
 };
 
 export type RuleOptions = {
-  rule: string;
+  rule: string | Rule;
   /** Options passed only to this Rule. */
   options?: any;
 };
@@ -92,13 +92,29 @@ export type FileStatus =
   | 'no-change'
   | 'error';
 
-export type Input = {
+export type EngineEvents = {
+  onError?: (error: BasketryError) => void;
+  onViolation?: (violation: Violation, line: string) => void;
+};
+
+export type EngineInput = {
+  sourcePath: string;
+  sourceContent: string;
+  parser: Parser;
+  rules: Rule[];
+  generators: Generator[];
+  output?: string;
+  options?: any;
+};
+
+/** @deprecated */
+export type LegacyInput = {
   sourcePath: string;
   sourceContent: string;
   configPath?: string;
-  parser: string;
-  rules: (string | RuleOptions)[];
-  generators: (string | GeneratorOptions)[];
+  parser: string | Parser;
+  rules: (string | Rule | RuleOptions)[];
+  generators: (string | Generator | GeneratorOptions)[];
   validate: boolean;
   output?: string;
   /** Common options passed only to all generators. These common options will be overridden by generator-specific options. */
@@ -129,11 +145,12 @@ export type PerfEvent = {
 export type Overrides = {
   sourcePath?: string;
   sourceContent?: string;
-  parser?: string;
-  rules?: (string | RuleOptions)[];
-  generators?: (string | GeneratorOptions)[];
+  parser?: string | Parser;
+  rules?: (string | Rule | RuleOptions)[];
+  generators?: (string | Generator | GeneratorOptions)[];
   validate?: boolean;
   output?: string;
+  options?: any;
 };
 
 export type BasketryError = {

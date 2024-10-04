@@ -1,7 +1,13 @@
 import chalk from 'chalk';
 
-import { Engine, getInput } from '../engine';
-import { BasketryError, CliOutput, FileStatus, Violation } from '../types';
+import { Engine } from '../engine';
+import {
+  BasketryError,
+  CliOutput,
+  EngineEvents,
+  FileStatus,
+  Violation,
+} from '../types';
 import {
   bold,
   error,
@@ -42,36 +48,32 @@ export async function ci(args: CiArgs) {
       : undefined;
 
     const go = async () => {
-      const inputs = await getInput(config, {
+      const events: EngineEvents = json
+        ? {}
+        : {
+            onError: printError,
+            onViolation: printViolation,
+          };
+
+      const { engines: pipelines, errors: errorsMkII } = await Engine.load({
+        configPath: config,
         output,
-        validate: false,
         generators,
         parser,
         rules,
         sourceContent,
         sourcePath: source,
+        ...events,
       });
-      errors.push(...inputs.errors);
-      if (!json) printErrors(inputs.errors);
+
+      errors.push(...errorsMkII);
+      if (!json) printErrors(errorsMkII);
 
       // TODO: fail if multiplexed with stdin (#24)
 
-      for (const input of inputs.values) {
-        if (!json) console.log(info(`Parsing ${input.sourcePath}`));
+      for (const pipeline of pipelines) {
+        if (!json) console.log(info(`Parsing ${pipeline.sourcePath}`));
 
-        const pipeline = new Engine(
-          input,
-          json
-            ? undefined
-            : {
-                onError: printError,
-                onViolation: printViolation,
-              },
-        );
-
-        pipeline.loadParser();
-        pipeline.loadRules();
-        pipeline.loadGenerators();
         pipeline.runParser();
         pipeline.runRules();
         pipeline.runGenerators();

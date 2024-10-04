@@ -10,12 +10,13 @@ import { encodeRange, withGitattributes } from './helpers';
 import { Service } from './ir';
 import {
   BasketryError,
-  Config,
+  EngineEvents,
+  EngineInput,
   File,
   FileStatus,
   Generator,
   GeneratorOptions,
-  Input,
+  LegacyInput,
   Output,
   Overrides,
   Parser,
@@ -34,11 +35,286 @@ const componentNames = new WeakMap<Function, string>();
 
 export class Engine {
   constructor(
-    private readonly input: Input,
+    private readonly input: EngineInput,
     private readonly events?: {
       onError?: (error: BasketryError) => void;
       onViolation?: (violation: Violation, line: string) => void;
     },
+  ) {}
+
+  static async load({
+    configPath,
+    onError,
+    onViolation,
+    ...overrides
+  }: {
+    configPath?: string | undefined;
+  } & Overrides &
+    EngineEvents): Promise<{ engines: Engine[]; errors: BasketryError[] }> {
+    const { values: inputs, errors } = await getInput(configPath, overrides);
+
+    const engines: Engine[] = [];
+
+    for (const input of inputs) {
+      const parserInfo = getParser(input.parser, input.configPath);
+      const rulesInfo = getRules(input.rules, input.configPath);
+      const generatorsInfo = getGenerators(
+        input.generators,
+        input.configPath,
+        input.options,
+        input.output,
+      );
+
+      const engine = new Engine(
+        {
+          sourceContent: input.sourceContent,
+          sourcePath: input.sourcePath,
+          parser: parserInfo.fn ?? nullParser,
+          rules: rulesInfo.fns,
+          generators: generatorsInfo.fns,
+          options: input.options,
+          output: input.output,
+        },
+        { onError, onViolation },
+      );
+
+      engine.pushErrors(
+        ...parserInfo.errors,
+        ...rulesInfo.errors,
+        ...generatorsInfo.errors,
+      );
+
+      engines.push(engine);
+    }
+    return { engines, errors };
+  }
+
+  private readonly _files: File[] = [];
+  private readonly _changes: Record<string, FileStatus> = {};
+  private readonly _errors: BasketryError[] = [];
+  private readonly _violations: Violation[] = [];
+  private readonly _filesByFilepath: Map<string, File> = new Map();
+  private readonly _violationsByRange = new Map<string, Violation[]>();
+
+  public get sourcePath(): string {
+    return this.input.sourcePath;
+  }
+
+  public get files() {
+    return this._files;
+  }
+  public get changes() {
+    return this._changes;
+  }
+  public get errors() {
+    return this._errors;
+  }
+  public get violations() {
+    return this._violations;
+  }
+  public get output(): Output {
+    return {
+      files: this._files,
+      errors: this._errors,
+      violations: this._violations,
+    };
+  }
+  public get service(): Service | undefined {
+    return this._service;
+  }
+
+  private _service: Service | undefined;
+  private hasParserRun: boolean = false;
+
+  private rulesRun: boolean = false;
+  private hasGeneratorsRun: boolean = false;
+
+  public runParser() {
+    if (!this.hasParserRun) {
+      try {
+        const { value, errors, violations } = runParser({
+          fn: this.input.parser,
+          sourcePath: this.input.sourcePath,
+          sourceContent: this.input.sourceContent,
+        });
+        this._service = value;
+        this.pushErrors(...errors);
+        this.pushViolations(...violations);
+        this.hasParserRun = true;
+      } catch (ex) {
+        this.pushErrors(fatal(ex));
+      }
+    }
+  }
+
+  public runRules() {
+    if (this._service && this.input.rules.length && !this.rulesRun) {
+      try {
+        const { errors, violations } = runRules({
+          fns: this.input.rules,
+          service: this._service,
+        });
+        this.pushErrors(...errors);
+        this.pushViolations(...violations);
+        this.rulesRun = true;
+      } catch (ex) {
+        this.pushErrors(fatal(ex));
+      }
+    }
+  }
+
+  public runGenerators() {
+    if (
+      this._service &&
+      this.input.generators.length &&
+      !this.hasGeneratorsRun
+    ) {
+      try {
+        const { files, errors, violations } = runGenerators({
+          fns: this.input.generators,
+          service: this._service,
+        });
+        this._files.push(...withGitattributes(files, this.input.output));
+        this.pushErrors(...errors);
+        this.pushViolations(...violations);
+        this.hasGeneratorsRun = true;
+      } catch (ex) {
+        this.pushErrors(fatal(ex));
+      }
+    }
+  }
+
+  public async compareFiles() {
+    if (this.hasGeneratorsRun) {
+      const removed = await getRemoved(this.files);
+
+      for (const file of removed) {
+        this._changes[file] = 'removed';
+      }
+
+      for (const file of this.files) {
+        const filepath = join(...file.path);
+        this._filesByFilepath.set(filepath, file);
+        const status = await this.compare(file);
+        this._changes[filepath] = status;
+      }
+    }
+  }
+
+  private async compare(file: File): Promise<FileStatus> {
+    try {
+      const previous = (await readFile(join(...file.path))).toString();
+      return areEquivalent(previous, await file.contents)
+        ? 'no-change'
+        : 'modified';
+    } catch {
+      return 'added';
+    }
+  }
+
+  public async commitFiles() {
+    for (const filepath of Object.keys(this._changes)) {
+      const status = this._changes[filepath];
+
+      if (status === 'removed') {
+        try {
+          await unlink(filepath);
+        } catch (ex) {
+          this.pushErrors({
+            code: 'WRITE_ERROR',
+            message: `Unable to remove file. (${ex.message})`,
+            filepath: filepath,
+          });
+        }
+      }
+
+      if (status === 'added' || status === 'modified') {
+        const file = this._filesByFilepath.get(filepath);
+        if (file) {
+          if (file.path.length > 1 && status === 'added') {
+            // Create subfolder for added file with subfolder
+            try {
+              await readFile(filepath);
+            } catch {
+              await mkdir(join(...file.path.slice(0, -1)), { recursive: true });
+            }
+          }
+
+          try {
+            await writeFile(filepath, await file.contents); // This seemingly unnecessary await accounts for an odd bug caused by generators using an older version (<=2) of prettier
+          } catch (ex) {
+            this.pushErrors({
+              code: 'WRITE_ERROR',
+              message: `Error writing ${filepath} (${ex.message})`,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  private pushErrors(...errors: BasketryError[]) {
+    this._errors.push(...errors);
+    if (this.events?.onError) {
+      for (const error of errors) {
+        try {
+          this.events.onError(error);
+        } catch {}
+      }
+    }
+  }
+
+  private pushViolations(...violations: Violation[]) {
+    for (const violation of violations) {
+      const range = encodeRange(violation.range);
+      if (!this._violationsByRange.has(range)) {
+        this._violationsByRange.set(range, []);
+      }
+      const sameLocation = this._violationsByRange.get(range)!;
+
+      const existing = sameLocation.find(
+        (v) =>
+          v.code === violation.code &&
+          v.message === violation.message &&
+          v.severity === violation.severity &&
+          v.sourcePath === violation.sourcePath,
+      );
+
+      if (!existing) {
+        sameLocation.push(violation);
+        this._violations.push(violation);
+
+        if (this.events?.onViolation) {
+          try {
+            const line = this.getLine(
+              violation.sourcePath,
+              violation.range.start.line,
+            );
+            this.events?.onViolation?.(violation, line);
+          } catch {}
+        }
+      }
+    }
+  }
+
+  private readonly _contentBySource = new Map<string, string[]>();
+
+  private getLine(sourcePath: string, lineNumber: number): string {
+    if (!this._contentBySource.has(sourcePath)) {
+      this._contentBySource.set(
+        sourcePath,
+        readFileSync(sourcePath).toString().split(EOL),
+      );
+    }
+    return this._contentBySource.get(sourcePath)![lineNumber - 1];
+  }
+}
+
+/** @deprecated */
+export class LegacyEngine {
+  constructor(
+    private readonly input: LegacyInput,
+    private readonly events?: EngineEvents,
   ) {}
 
   private readonly _files: File[] = [];
@@ -313,23 +589,42 @@ export class Engine {
   }
 }
 
+/** @deprecated Use Engine.load() */
 export async function getInput(
   configPath: string | undefined,
   overrides?: Overrides,
 ): Promise<{
-  values: Input[];
+  values: LegacyInput[];
   errors: BasketryError[];
 }> {
-  const values: Input[] = [];
+  const values: LegacyInput[] = [];
   const errors: BasketryError[] = [];
 
   const configs = await getConfigs(configPath);
   push(errors, configs.errors);
 
+  if (!configPath) {
+    const input: LegacyInput = {
+      sourcePath: overrides?.sourcePath
+        ? resolve(process.cwd(), overrides?.sourcePath)
+        : 'direct input',
+      sourceContent: overrides?.sourceContent ?? '',
+      configPath,
+      parser: overrides?.parser ?? nullParser,
+      rules: overrides?.rules ?? [],
+      generators: overrides?.generators ?? [],
+      validate: overrides?.validate || false,
+      output: overrides?.output,
+      options: overrides?.options,
+    };
+
+    values.push(input);
+  }
+
   for (const config of configs.value) {
     if (!isLocalConfig(config)) continue;
 
-    let inputs: Input | undefined = undefined;
+    let inputs: LegacyInput | undefined = undefined;
     const sourcePath = overrides?.sourcePath || config.source;
 
     const source = await getSource(sourcePath);
@@ -384,8 +679,8 @@ export async function getInput(
 }
 
 /** @deprecated Use the Engine class instead */
-export function run(input: Input): Output {
-  const runner = new Engine(input);
+export function run(input: LegacyInput): Output {
+  const runner = new LegacyEngine(input);
 
   performance.mark('run-start');
 
@@ -678,17 +973,17 @@ async function getSource(
 }
 
 function getParser(
-  moduleName: string,
+  moduleNameOrParser: string | Parser,
   configPath?: string,
 ): {
   fn: Parser | undefined;
   errors: BasketryError[];
 } {
-  return loadModule<Parser>(moduleName, configPath);
+  return loadModule<Parser>(moduleNameOrParser, configPath);
 }
 
 function getRules(
-  moduleNames: (string | RuleOptions)[],
+  moduleNamesOrRules: (string | Rule | RuleOptions)[],
   configPath?: string,
 ): {
   fns: Rule[];
@@ -696,21 +991,34 @@ function getRules(
 } {
   try {
     performance.mark('load-rules-start');
-    const rules = moduleNames.reduce(
+    const rules = moduleNamesOrRules.reduce(
       (acc, item) => {
-        const moduleName = typeof item === 'string' ? item : item.rule;
+        if (item instanceof Function) {
+          return {
+            fns: [...acc.fns, item],
+            errors: acc.errors,
+          };
+        }
+
+        const moduleNameOrRule = typeof item === 'string' ? item : item.rule;
 
         const ruleOptions: any =
           typeof item === 'string' ? undefined : item.options;
 
-        const { fn, errors } = loadModule<Rule>(moduleName, configPath);
+        const { fn, errors } = loadModule<Rule>(moduleNameOrRule, configPath);
 
         const rule: Rule | undefined = fn
           ? (service, localOptions) =>
               fn(service, merge(ruleOptions, localOptions))
           : undefined;
 
-        if (rule) componentNames.set(rule, moduleName);
+        if (rule)
+          componentNames.set(
+            rule,
+            typeof moduleNameOrRule === 'string'
+              ? moduleNameOrRule
+              : moduleNameOrRule.name,
+          );
 
         return {
           fns: [...acc.fns, rule].filter(
@@ -735,7 +1043,7 @@ function getRules(
 }
 
 function getGenerators(
-  moduleNames: (string | GeneratorOptions)[],
+  moduleNames: (string | Generator | GeneratorOptions)[],
   configPath: string | undefined,
   commonOptions: any,
   output?: string,
@@ -747,12 +1055,23 @@ function getGenerators(
     performance.mark('load-generators-start');
     const generators = moduleNames.reduce(
       (acc, item) => {
-        const moduleName = typeof item === 'string' ? item : item.generator;
+        if (item instanceof Function) {
+          return {
+            fns: [...acc.fns, item],
+            errors: acc.errors,
+          };
+        }
+
+        const moduleNameOrGenerator =
+          typeof item === 'string' ? item : item.generator;
 
         const generatorOptions: any =
           typeof item === 'string' ? undefined : item.options;
 
-        const { fn, errors } = loadModule<Generator>(moduleName, configPath);
+        const { fn, errors } = loadModule<Generator>(
+          moduleNameOrGenerator,
+          configPath,
+        );
 
         const gen: Generator | undefined = fn
           ? (service, localOptions) => {
@@ -775,7 +1094,14 @@ function getGenerators(
             }
           : undefined;
 
-        if (gen) componentNames.set(gen, moduleName);
+        if (gen) {
+          componentNames.set(
+            gen,
+            typeof moduleNameOrGenerator === 'string'
+              ? moduleNameOrGenerator
+              : moduleNameOrGenerator.name,
+          );
+        }
 
         return {
           fns: [...acc.fns, gen].filter(
@@ -830,9 +1156,13 @@ function fatal(ex: any): BasketryError {
 }
 
 function loadModule<T extends Function>(
-  moduleName: string,
+  moduleName: string | Function,
   filepath?: string,
 ): { fn: T | undefined; errors: BasketryError[] } {
+  if (moduleName instanceof Function) {
+    return { fn: moduleName as T, errors: [] };
+  }
+
   let fn: T | undefined = undefined;
   const errors: BasketryError[] = [];
 
@@ -877,3 +1207,18 @@ function merge<T extends object>(
 
   return input.length ? webpackMerge(input) : undefined;
 }
+
+const nullParser: Parser = (_, sourcePath) => ({
+  service: {
+    basketry: '1.1-rc',
+    kind: 'Service',
+    sourcePath,
+    title: { value: 'null' },
+    majorVersion: { value: 1 },
+    interfaces: [],
+    types: [],
+    enums: [],
+    unions: [],
+  },
+  violations: [],
+});
