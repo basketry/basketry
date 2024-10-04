@@ -1056,8 +1056,11 @@ function getGenerators(
     const generators = moduleNames.reduce(
       (acc, item) => {
         if (item instanceof Function) {
+          const withOptions = (service: Service, options: any) =>
+            item(service, merge(commonOptions, options));
+
           return {
-            fns: [...acc.fns, item],
+            fns: [...acc.fns, withOptions],
             errors: acc.errors,
           };
         }
