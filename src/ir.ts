@@ -32,7 +32,7 @@ export type ApiKeyScheme = {
   type: ApiKeySchemeType;
   deprecated?: TrueLiteral;
   name: StringLiteral;
-  description?: StringLiteral;
+  description?: StringLiteral[];
   parameter: StringLiteral;
   in: ApiKeySchemeIn;
   loc?: string;
@@ -185,12 +185,12 @@ export type HttpParameter = {
   kind: 'HttpParameter';
   name: StringLiteral;
   location: HttpLocationLiteral;
-  arrayFormat?: HttpArrayFormat;
+  arrayFormat?: HttpArrayFormatLiteral;
   loc?: string;
 };
 
 export type HttpRoute = {
-  kind: 'httpRoute';
+  kind: 'HttpRoute';
   pattern: StringLiteral;
   methods: HttpMethod[];
   loc?: string;
@@ -230,7 +230,7 @@ export type MetaValue = {
 export type Method = {
   kind: 'Method';
   name: StringLiteral;
-  security: SecurityScheme[];
+  security: SecurityOption[];
   description?: StringLiteral[];
   parameters: Parameter[];
   returns?: ReturnValue;
@@ -308,67 +308,67 @@ export type NumberMultipleOfRule = {
   loc?: string;
 };
 
-export type Oauth2AuthorizationCodeFlow = {
+export type OAuth2AuthorizationCodeFlow = {
   kind: 'OAuth2AuthorizationCodeFlow';
-  type: Oauth2AuthorizationCodeFlowType;
+  type: OAuth2AuthorizationCodeFlowType;
   deprecated?: TrueLiteral;
   authorizationUrl: StringLiteral;
   tokenUrl: StringLiteral;
   refreshUrl?: StringLiteral;
-  scopes: Oauth2Scope[];
+  scopes: OAuth2Scope[];
   loc?: string;
   meta?: MetaValue[];
 };
 
-export type Oauth2AuthorizationCodeFlowType = {
+export type OAuth2AuthorizationCodeFlowType = {
   value: 'authorizationCode';
   loc?: string;
 };
 
-export type Oauth2ClientCredentialsFlow = {
+export type OAuth2ClientCredentialsFlow = {
   kind: 'OAuth2ClientCredentialsFlow';
-  type: Oauth2ClientCredentialsFlowType;
+  type: OAuth2ClientCredentialsFlowType;
   deprecated?: TrueLiteral;
   tokenUrl: StringLiteral;
   refreshUrl?: StringLiteral;
-  scopes: Oauth2Scope[];
+  scopes: OAuth2Scope[];
   loc?: string;
   meta?: MetaValue[];
 };
 
-export type Oauth2ClientCredentialsFlowType = {
+export type OAuth2ClientCredentialsFlowType = {
   value: 'clientCredentials';
   loc?: string;
 };
 
-export type Oauth2ImplicitFlow = {
+export type OAuth2ImplicitFlow = {
   kind: 'OAuth2ImplicitFlow';
-  type: Oauth2ImplicitFlowType;
+  type: OAuth2ImplicitFlowType;
   deprecated?: TrueLiteral;
   authorizationUrl: StringLiteral;
   refreshUrl?: StringLiteral;
-  scopes: Oauth2Scope[];
+  scopes: OAuth2Scope[];
   loc?: string;
   meta?: MetaValue[];
 };
 
-export type Oauth2ImplicitFlowType = {
+export type OAuth2ImplicitFlowType = {
   value: 'implicit';
   loc?: string;
 };
 
-export type Oauth2PasswordFlow = {
+export type OAuth2PasswordFlow = {
   kind: 'OAuth2PasswordFlow';
-  type: Oauth2PasswordFlowType;
+  type: OAuth2PasswordFlowType;
   deprecated?: TrueLiteral;
-  tokenUrl: string;
-  refreshUrl?: string;
-  scopes: Oauth2Scope[];
+  tokenUrl: StringLiteral;
+  refreshUrl?: StringLiteral;
+  scopes: OAuth2Scope[];
   loc?: string;
   meta?: MetaValue[];
 };
 
-export type Oauth2PasswordFlowType = {
+export type OAuth2PasswordFlowType = {
   value: 'password';
   loc?: string;
 };
@@ -378,8 +378,8 @@ export type OAuth2Scheme = {
   type: OAuth2SchemeType;
   deprecated?: TrueLiteral;
   name: StringLiteral;
-  description?: string;
-  flows: Oauth2Flow[];
+  description?: StringLiteral[];
+  flows: OAuth2Flow[];
   loc?: string;
   meta?: MetaValue[];
 };
@@ -389,10 +389,10 @@ export type OAuth2SchemeType = {
   loc?: string;
 };
 
-export type Oauth2Scope = {
+export type OAuth2Scope = {
   kind: 'OAuth2Scope';
   name: StringLiteral;
-  description: StringLiteral;
+  description: StringLiteral[];
   deprecated?: TrueLiteral;
   loc?: string;
   meta?: MetaValue[];
@@ -486,6 +486,12 @@ export type ReturnValue = {
   value: MemberValue;
 };
 
+export type SecurityOption = {
+  kind: 'SecurityOption';
+  schemes: SecurityScheme[];
+  loc?: string;
+};
+
 /**
  * Intermediate Representation (IR) of a service
  */
@@ -576,6 +582,7 @@ export type Type = {
 };
 
 export type UntypedLiteral = {
+  kind: 'UntypedLiteral';
   value: any;
   loc?: string;
 };
@@ -592,33 +599,33 @@ export function isComplexValue(obj: MemberValue): obj is ComplexValue {
   return obj.kind === 'ComplexValue';
 }
 
-export type Oauth2Flow =
-  | Oauth2ImplicitFlow
-  | Oauth2PasswordFlow
-  | Oauth2ClientCredentialsFlow
-  | Oauth2AuthorizationCodeFlow;
+export type OAuth2Flow =
+  | OAuth2ImplicitFlow
+  | OAuth2PasswordFlow
+  | OAuth2ClientCredentialsFlow
+  | OAuth2AuthorizationCodeFlow;
 
-export function isOauth2ImplicitFlow(
-  obj: Oauth2Flow,
-): obj is Oauth2ImplicitFlow {
+export function isOAuth2ImplicitFlow(
+  obj: OAuth2Flow,
+): obj is OAuth2ImplicitFlow {
   return obj.kind === 'OAuth2ImplicitFlow';
 }
 
-export function isOauth2PasswordFlow(
-  obj: Oauth2Flow,
-): obj is Oauth2PasswordFlow {
+export function isOAuth2PasswordFlow(
+  obj: OAuth2Flow,
+): obj is OAuth2PasswordFlow {
   return obj.kind === 'OAuth2PasswordFlow';
 }
 
-export function isOauth2ClientCredentialsFlow(
-  obj: Oauth2Flow,
-): obj is Oauth2ClientCredentialsFlow {
+export function isOAuth2ClientCredentialsFlow(
+  obj: OAuth2Flow,
+): obj is OAuth2ClientCredentialsFlow {
   return obj.kind === 'OAuth2ClientCredentialsFlow';
 }
 
-export function isOauth2AuthorizationCodeFlow(
-  obj: Oauth2Flow,
-): obj is Oauth2AuthorizationCodeFlow {
+export function isOAuth2AuthorizationCodeFlow(
+  obj: OAuth2Flow,
+): obj is OAuth2AuthorizationCodeFlow {
   return obj.kind === 'OAuth2AuthorizationCodeFlow';
 }
 

@@ -58,9 +58,10 @@
         "key": { "$ref": "#/definitions/string" },
         "value": {
           "type": "object",
-          "required": ["value"],
+          "required": ["kind", "value"],
           "title": "UntypedLiteral",
           "properties": {
+            "kind": { "type": "string", "const": "UntypedLiteral" },
             "value": {},
             "loc": { "type": "string" }
           }
@@ -437,7 +438,7 @@
       "type": "object",
       "required": ["kind", "pattern", "methods"],
       "properties": {
-        "kind": { "type": "string", "const": "httpRoute" },
+        "kind": { "type": "string", "const": "HttpRoute" },
         "pattern": { "$ref": "#/definitions/string" },
         "methods": {
           "type": "array",
@@ -497,15 +498,23 @@
         "kind": { "type": "string", "const": "HttpParameter" },
         "name": { "$ref": "#/definitions/string" },
         "location": { "$ref": "#/definitions/httpLocationLiteral" },
-        "arrayFormat": { "$ref": "#/definitions/httpArrayFormat" },
+        "arrayFormat": { "$ref": "#/definitions/httpArrayFormatLiteral" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
     },
 
     "securityOption": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/securityScheme" }
+      "type": "object",
+      "required": ["kind", "schemes"],
+      "properties": {
+        "kind": { "type": "string", "const": "SecurityOption" },
+        "schemes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/securityScheme" }
+        },
+        "loc": { "$ref": "#/definitions/range" }
+      }
     },
     "securityScheme": {
       "discriminator": {
@@ -514,7 +523,7 @@
       "oneOf": [
         { "$ref": "#/definitions/basicScheme" },
         { "$ref": "#/definitions/apiKeyScheme" },
-        { "$ref": "#/definitions/oauth2Scheme" }
+        { "$ref": "#/definitions/oAuth2Scheme" }
       ]
     },
     "basicScheme": {
@@ -561,7 +570,10 @@
         },
         "deprecated": { "$ref": "#/definitions/deprecated" },
         "name": { "$ref": "#/definitions/string" },
-        "description": { "$ref": "#/definitions/string" },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
         "parameter": { "$ref": "#/definitions/string" },
         "in": {
           "type": "object",
@@ -580,8 +592,7 @@
       },
       "additionalProperties": false
     },
-    "oauth2Scheme": {
-      "title": "OAuth2Scheme",
+    "oAuth2Scheme": {
       "type": "object",
       "required": ["kind", "type", "name", "flows"],
       "properties": {
@@ -597,28 +608,31 @@
         },
         "deprecated": { "$ref": "#/definitions/deprecated" },
         "name": { "$ref": "#/definitions/string" },
-        "description": { "type": "string" },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
         "flows": {
           "type": "array",
-          "items": { "$ref": "#/definitions/oauth2Flow" }
+          "items": { "$ref": "#/definitions/oAuth2Flow" }
         },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
-    "oauth2Flow": {
+    "oAuth2Flow": {
       "discriminator": {
         "propertyName": "kind"
       },
       "oneOf": [
-        { "$ref": "#/definitions/oauth2ImplicitFlow" },
-        { "$ref": "#/definitions/oauth2PasswordFlow" },
-        { "$ref": "#/definitions/oauth2ClientCredentialsFlow" },
-        { "$ref": "#/definitions/oauth2AuthorizationCodeFlow" }
+        { "$ref": "#/definitions/oAuth2ImplicitFlow" },
+        { "$ref": "#/definitions/oAuth2PasswordFlow" },
+        { "$ref": "#/definitions/oAuth2ClientCredentialsFlow" },
+        { "$ref": "#/definitions/oAuth2AuthorizationCodeFlow" }
       ]
     },
-    "oauth2ImplicitFlow": {
+    "oAuth2ImplicitFlow": {
       "type": "object",
       "required": ["kind", "type", "authorizationUrl", "scopes"],
       "properties": {
@@ -637,14 +651,14 @@
         "refreshUrl": { "$ref": "#/definitions/string" },
         "scopes": {
           "type": "array",
-          "items": { "$ref": "#/definitions/oauth2Scope" }
+          "items": { "$ref": "#/definitions/oAuth2Scope" }
         },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
-    "oauth2PasswordFlow": {
+    "oAuth2PasswordFlow": {
       "type": "object",
       "required": ["kind", "type", "tokenUrl", "scopes"],
       "properties": {
@@ -659,18 +673,18 @@
           "additionalProperties": false
         },
         "deprecated": { "$ref": "#/definitions/deprecated" },
-        "tokenUrl": { "type": "string" },
-        "refreshUrl": { "type": "string" },
+        "tokenUrl": { "$ref": "#/definitions/string" },
+        "refreshUrl": { "$ref": "#/definitions/string" },
         "scopes": {
           "type": "array",
-          "items": { "$ref": "#/definitions/oauth2Scope" }
+          "items": { "$ref": "#/definitions/oAuth2Scope" }
         },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
-    "oauth2ClientCredentialsFlow": {
+    "oAuth2ClientCredentialsFlow": {
       "type": "object",
       "required": ["kind", "type", "tokenUrl", "scopes"],
       "properties": {
@@ -689,14 +703,14 @@
         "refreshUrl": { "$ref": "#/definitions/string" },
         "scopes": {
           "type": "array",
-          "items": { "$ref": "#/definitions/oauth2Scope" }
+          "items": { "$ref": "#/definitions/oAuth2Scope" }
         },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
-    "oauth2AuthorizationCodeFlow": {
+    "oAuth2AuthorizationCodeFlow": {
       "type": "object",
       "required": ["kind", "type", "authorizationUrl", "tokenUrl", "scopes"],
       "properties": {
@@ -716,20 +730,23 @@
         "refreshUrl": { "$ref": "#/definitions/string" },
         "scopes": {
           "type": "array",
-          "items": { "$ref": "#/definitions/oauth2Scope" }
+          "items": { "$ref": "#/definitions/oAuth2Scope" }
         },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
-    "oauth2Scope": {
+    "oAuth2Scope": {
       "type": "object",
       "required": ["kind", "name", "description"],
       "properties": {
         "kind": { "type": "string", "const": "OAuth2Scope" },
         "name": { "$ref": "#/definitions/string" },
-        "description": { "$ref": "#/definitions/string" },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
         "deprecated": { "$ref": "#/definitions/deprecated" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
