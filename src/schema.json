@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
+  "title": "Service",
   "description": "Intermediate Representation (IR) of a service",
   "required": [
     "kind",
@@ -14,9 +15,8 @@
     "unions"
   ],
   "properties": {
-    "$schema": { "type": "string" },
     "kind": { "type": "string", "const": "Service" },
-    "basketry": { "type": "string", "const": "1.1-rc" },
+    "basketry": { "type": "string", "const": "0.2" },
     "title": { "$ref": "#/definitions/string" },
     "majorVersion": { "$ref": "#/definitions/integer" },
     "sourcePath": {
@@ -44,79 +44,6 @@
   },
   "additionalProperties": false,
   "definitions": {
-    "string": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": { "type": "string" },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
-    },
-    "integer": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": { "type": "integer" },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
-    },
-    "number": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": { "type": "number" },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
-    },
-    "boolean": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": { "type": "boolean" },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
-    },
-    "null": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": { "type": "null" },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
-    },
-    "nonNegativeInteger": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": { "type": "integer", "minimum": 0 },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
-    },
-    "nonNegativeNumber": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": { "type": "number", "minimum": 0 },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
-    },
-    "deprecated": {
-      "type": "object",
-      "required": ["value"],
-      "properties": {
-        "value": { "type": "boolean", "const": true },
-        "loc": { "$ref": "#/definitions/range" }
-      },
-      "additionalProperties": false
-    },
-    "range": { "type": "string" },
     "meta": {
       "type": "array",
       "items": {
@@ -125,12 +52,14 @@
     },
     "metaValue": {
       "type": "object",
-      "required": ["key", "value"],
+      "required": ["kind", "key", "value"],
       "properties": {
+        "kind": { "type": "string", "const": "MetaValue" },
         "key": { "$ref": "#/definitions/string" },
         "value": {
           "type": "object",
           "required": ["value"],
+          "title": "UntypedLiteral",
           "properties": {
             "value": {},
             "loc": { "type": "string" }
@@ -138,38 +67,85 @@
         }
       }
     },
+
     "interface": {
       "type": "object",
-      "required": ["kind", "name", "methods", "protocols"],
+      "required": ["kind", "name", "methods"],
       "properties": {
         "kind": { "type": "string", "const": "Interface" },
         "name": { "$ref": "#/definitions/string" },
         "description": {
-          "oneOf": [
-            { "$ref": "#/definitions/string" },
-            { "type": "array", "items": { "$ref": "#/definitions/string" } }
-          ]
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
         },
-        "deprecated": { "$ref": "#/definitions/deprecated" },
         "methods": {
           "type": "array",
           "items": { "$ref": "#/definitions/method" }
         },
-        "protocols": {
-          "type": "object",
-          "required": ["http"],
-          "properties": {
-            "http": {
-              "type": "array",
-              "items": { "$ref": "#/definitions/httpPath" }
-            }
-          },
-          "additionalProperties": false
-        },
+        "protocols": { "$ref": "#/definitions/protocols" },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
+    "method": {
+      "type": "object",
+      "required": ["kind", "name", "security", "parameters"],
+      "properties": {
+        "kind": { "type": "string", "const": "Method" },
+        "name": { "$ref": "#/definitions/string" },
+        "security": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/securityOption" }
+        },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "parameters": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/parameter" }
+        },
+        "returns": { "$ref": "#/definitions/returnValue" },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+    "parameter": {
+      "type": "object",
+      "required": ["kind", "name", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "Parameter" },
+        "name": { "$ref": "#/definitions/string" },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "value": { "$ref": "#/definitions/memberValue" },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+    "returnValue": {
+      "type": "object",
+      "allOf": [
+        {
+          "type": "object",
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": { "type": "string", "const": "ReturnValue" },
+            "loc": { "$ref": "#/definitions/range" },
+            "meta": { "$ref": "#/definitions/meta" },
+            "value": { "$ref": "#/definitions/memberValue" }
+          }
+        }
+      ]
+    },
+
     "type": {
       "type": "object",
       "required": ["kind", "name", "properties", "rules"],
@@ -177,12 +153,10 @@
         "kind": { "type": "string", "const": "Type" },
         "name": { "$ref": "#/definitions/string" },
         "description": {
-          "oneOf": [
-            { "$ref": "#/definitions/string" },
-            { "type": "array", "items": { "$ref": "#/definitions/string" } }
-          ]
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
         },
-        "deprecated": { "$ref": "#/definitions/deprecated" },
+        "deprecated": { "$ref": "#/definitions/true" },
         "properties": {
           "type": "array",
           "items": { "$ref": "#/definitions/property" }
@@ -196,22 +170,82 @@
       },
       "additionalProperties": false
     },
+    "property": {
+      "type": "object",
+      "required": ["kind", "name", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "Property" },
+        "name": { "$ref": "#/definitions/string" },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "value": { "$ref": "#/definitions/memberValue" },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+
     "enum": {
       "type": "object",
-      "required": ["kind", "name", "values"],
+      "required": ["kind", "name", "members"],
       "properties": {
         "kind": { "type": "string", "const": "Enum" },
         "name": { "$ref": "#/definitions/string" },
         "description": {
-          "oneOf": [
-            { "$ref": "#/definitions/string" },
-            { "type": "array", "items": { "$ref": "#/definitions/string" } }
-          ]
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/enumMember" },
+          "minItems": 1
         },
         "deprecated": { "$ref": "#/definitions/deprecated" },
-        "values": {
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+    "enumMember": {
+      "type": "object",
+      "required": ["kind", "content"],
+      "properties": {
+        "kind": { "type": "string", "const": "EnumMember" },
+        "content": { "$ref": "#/definitions/string" },
+        "description": {
           "type": "array",
-          "items": { "$ref": "#/definitions/enumValue" },
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+
+    "union": {
+      "discriminator": {
+        "propertyName": "kind"
+      },
+      "oneOf": [
+        { "$ref": "#/definitions/primitiveUnion" },
+        { "$ref": "#/definitions/complexUnion" },
+        { "$ref": "#/definitions/discriminatedUnion" }
+      ]
+    },
+    "primitiveUnion": {
+      "type": "object",
+      "required": ["kind", "name", "members"],
+      "description": "TODO: don't allow arrays in primitive unions",
+      "properties": {
+        "kind": { "type": "string", "const": "PrimitiveUnion" },
+        "name": { "$ref": "#/definitions/string" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/primitiveValue" },
           "minItems": 1
         },
         "loc": { "$ref": "#/definitions/range" },
@@ -219,62 +253,44 @@
       },
       "additionalProperties": false
     },
-    "enumValue": {
+    "complexUnion": {
       "type": "object",
-      "required": ["kind", "content"],
+      "required": ["kind", "name", "members"],
+      "description": "TODO: don't allow arrays, enums, or other unions in complex unions",
       "properties": {
-        "kind": { "type": "string", "const": "EnumValue" },
-        "content": { "$ref": "#/definitions/string" },
-        "description": {
-          "oneOf": [
-            { "$ref": "#/definitions/string" },
-            { "type": "array", "items": { "$ref": "#/definitions/string" } }
-          ]
+        "kind": { "type": "string", "const": "ComplexUnion" },
+        "name": { "$ref": "#/definitions/string" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/complexValue" },
+          "minItems": 1
         },
-        "deprecated": { "$ref": "#/definitions/deprecated" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
       "additionalProperties": false
     },
-    "union": {
-      "oneOf": [
-        {
-          "type": "object",
-          "required": ["kind", "name", "members"],
-          "properties": {
-            "kind": { "type": "string", "const": "Union" },
-            "name": { "$ref": "#/definitions/string" },
-            "members": {
-              "type": "array",
-              "items": { "$ref": "#/definitions/typedValue" },
-              "minItems": 1
-            },
-            "loc": { "$ref": "#/definitions/range" },
-            "meta": { "$ref": "#/definitions/meta" }
-          },
-          "additionalProperties": false
+    "discriminatedUnion": {
+      "type": "object",
+      "required": ["kind", "name", "discriminator", "members"],
+      "description": "TODO: don't allow arrays, enums, or other unions in discriminated unions",
+      "properties": {
+        "kind": { "type": "string", "const": "DiscriminatedUnion" },
+        "name": { "$ref": "#/definitions/string" },
+        "discriminator": { "$ref": "#/definitions/string" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/complexValue" },
+          "minItems": 1
         },
-        {
-          "type": "object",
-          "required": ["kind", "name", "discriminator", "members"],
-          "properties": {
-            "kind": { "type": "string", "const": "Union" },
-            "name": { "$ref": "#/definitions/string" },
-            "discriminator": { "$ref": "#/definitions/string" },
-            "members": {
-              "type": "array",
-              "items": { "$ref": "#/definitions/customValue" },
-              "minItems": 1
-            },
-            "loc": { "$ref": "#/definitions/range" },
-            "meta": { "$ref": "#/definitions/meta" }
-          },
-          "additionalProperties": false
-        }
-      ]
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
     },
+
     "primitive": {
+      "description": "The name of a primitive type.",
       "type": "string",
       "enum": [
         "string",
@@ -290,20 +306,23 @@
         "untyped"
       ]
     },
+    "primitiveLiteral": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "PrimitiveLiteral" },
+        "value": { "$ref": "#/definitions/primitive" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
     "primitiveValue": {
       "type": "object",
-      "required": ["typeName", "isArray", "isPrimitive", "rules"],
+      "required": ["kind", "typeName", "rules"],
       "properties": {
-        "typeName": {
-          "type": "object",
-          "required": ["value"],
-          "properties": {
-            "value": { "$ref": "#/definitions/primitive" },
-            "loc": { "$ref": "#/definitions/range" }
-          }
-        },
-        "isArray": { "type": "boolean" },
-        "isPrimitive": { "type": "boolean", "const": true },
+        "kind": { "type": "string", "const": "PrimitiveValue" },
+        "typeName": { "$ref": "#/definitions/primitiveLiteral" },
+        "isArray": { "$ref": "#/definitions/true" },
         "constant": {
           "oneOf": [
             { "$ref": "#/definitions/string" },
@@ -312,11 +331,11 @@
           ]
         },
         "default": {
+          "description": "TODO: add null literal",
           "oneOf": [
             { "$ref": "#/definitions/string" },
             { "$ref": "#/definitions/number" },
-            { "$ref": "#/definitions/boolean" },
-            { "$ref": "#/definitions/null" }
+            { "$ref": "#/definitions/boolean" }
           ]
         },
         "rules": {
@@ -325,119 +344,101 @@
         }
       }
     },
-    "customValue": {
+    "complexValue": {
       "type": "object",
-      "required": ["typeName", "isArray", "isPrimitive", "rules"],
+      "required": ["kind", "typeName", "rules"],
       "properties": {
-        "typeName": { "$ref": "#/definitions/string" },
-        "isArray": { "type": "boolean" },
-        "isPrimitive": { "type": "boolean", "const": false },
+        "kind": { "type": "string", "const": "ComplexValue" },
+        "typeName": {
+          "description": "The name of a type, enum, or union defined in this Service.",
+          "$ref": "#/definitions/string"
+        },
+        "isArray": { "$ref": "#/definitions/true" },
         "rules": {
           "type": "array",
           "items": { "$ref": "#/definitions/validationRule" }
         }
       }
     },
-    "typedValue": {
+    "memberValue": {
+      "discriminator": {
+        "propertyName": "kind"
+      },
       "oneOf": [
         { "$ref": "#/definitions/primitiveValue" },
-        { "$ref": "#/definitions/customValue" }
+        { "$ref": "#/definitions/complexValue" }
       ]
     },
-    "property": {
+
+    "protocols": {
       "type": "object",
-      "allOf": [
-        {
-          "type": "object",
-          "required": ["kind", "name"],
-          "properties": {
-            "kind": { "type": "string", "const": "Property" },
-            "name": { "$ref": "#/definitions/string" },
-            "description": {
-              "oneOf": [
-                { "$ref": "#/definitions/string" },
-                { "type": "array", "items": { "$ref": "#/definitions/string" } }
-              ]
-            },
-            "deprecated": { "$ref": "#/definitions/deprecated" },
-            "loc": { "$ref": "#/definitions/range" },
-            "meta": { "$ref": "#/definitions/meta" }
-          }
-        },
-        { "$ref": "#/definitions/typedValue" }
-      ]
-    },
-    "method": {
-      "type": "object",
-      "required": ["kind", "name", "security", "parameters"],
+      "required": ["kind"],
       "properties": {
-        "kind": { "type": "string", "const": "Method" },
-        "name": { "$ref": "#/definitions/string" },
-        "security": {
+        "kind": { "type": "string", "const": "InterfaceProtocols" },
+        "http": {
           "type": "array",
-          "items": { "$ref": "#/definitions/securityOption" }
-        },
-        "description": {
-          "oneOf": [
-            { "$ref": "#/definitions/string" },
-            { "type": "array", "items": { "$ref": "#/definitions/string" } }
-          ]
-        },
-        "deprecated": { "$ref": "#/definitions/deprecated" },
-        "parameters": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/parameter" }
-        },
-        "returnType": { "$ref": "#/definitions/returnType" },
-        "loc": { "$ref": "#/definitions/range" },
-        "meta": { "$ref": "#/definitions/meta" }
+          "items": { "$ref": "#/definitions/httpRoute" }
+        }
       },
       "additionalProperties": false
     },
-    "parameter": {
-      "type": "object",
-      "allOf": [
-        {
-          "type": "object",
-          "required": ["kind", "name"],
-          "properties": {
-            "kind": { "type": "string", "const": "Parameter" },
-            "name": { "$ref": "#/definitions/string" },
-            "description": {
-              "oneOf": [
-                { "$ref": "#/definitions/string" },
-                { "type": "array", "items": { "$ref": "#/definitions/string" } }
-              ]
-            },
-            "deprecated": { "$ref": "#/definitions/deprecated" },
-            "loc": { "$ref": "#/definitions/range" },
-            "meta": { "$ref": "#/definitions/meta" }
-          }
-        },
-        { "$ref": "#/definitions/typedValue" }
+    "httpVerb": {
+      "type": "string",
+      "enum": [
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete",
+        "head",
+        "options",
+        "trace"
       ]
     },
-    "returnType": {
+    "httpVerbLiteral": {
       "type": "object",
-      "allOf": [
-        {
-          "type": "object",
-          "required": ["kind"],
-          "properties": {
-            "kind": { "type": "string", "const": "ReturnType" },
-            "loc": { "$ref": "#/definitions/range" },
-            "meta": { "$ref": "#/definitions/meta" }
-          }
-        },
-        { "$ref": "#/definitions/typedValue" }
-      ]
-    },
-    "httpPath": {
-      "type": "object",
-      "required": ["kind", "path", "methods"],
+      "required": ["kind", "value"],
       "properties": {
-        "kind": { "type": "string", "const": "HttpPath" },
-        "path": { "$ref": "#/definitions/string" },
+        "kind": { "type": "string", "const": "HttpVerbLiteral" },
+        "value": { "$ref": "#/definitions/httpVerb" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "httpLocation": {
+      "type": "string",
+      "enum": ["header", "query", "path", "formData", "body"]
+    },
+    "httpLocationLiteral": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "HttpLocationLiteral" },
+        "value": { "$ref": "#/definitions/httpLocation" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "httpArrayFormat": {
+      "type": "string",
+      "enum": ["csv", "ssv", "tsv", "pipes", "multi"]
+    },
+    "httpArrayFormatLiteral": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "HttpArrayFormatLiteral" },
+        "value": { "$ref": "#/definitions/httpArrayFormat" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "httpRoute": {
+      "type": "object",
+      "required": ["kind", "pattern", "methods"],
+      "properties": {
+        "kind": { "type": "string", "const": "httpRoute" },
+        "pattern": { "$ref": "#/definitions/string" },
         "methods": {
           "type": "array",
           "items": { "$ref": "#/definitions/httpMethod" }
@@ -460,27 +461,7 @@
       "properties": {
         "kind": { "type": "string", "const": "HttpMethod" },
         "name": { "$ref": "#/definitions/string" },
-        "verb": {
-          "type": "object",
-          "required": ["value"],
-          "properties": {
-            "value": {
-              "type": "string",
-              "enum": [
-                "get",
-                "post",
-                "put",
-                "patch",
-                "delete",
-                "head",
-                "options",
-                "trace"
-              ]
-            },
-            "loc": { "$ref": "#/definitions/range" }
-          },
-          "additionalProperties": false
-        },
+        "verb": { "$ref": "#/definitions/httpVerbLiteral" },
         "parameters": {
           "type": "array",
           "items": { "$ref": "#/definitions/httpParameter" }
@@ -511,43 +492,25 @@
     },
     "httpParameter": {
       "type": "object",
-      "required": ["kind", "name", "in"],
+      "required": ["kind", "name", "location"],
       "properties": {
         "kind": { "type": "string", "const": "HttpParameter" },
         "name": { "$ref": "#/definitions/string" },
-        "in": {
-          "type": "object",
-          "required": ["value"],
-          "properties": {
-            "value": {
-              "type": "string",
-              "enum": ["header", "query", "path", "formData", "body"]
-            },
-            "loc": { "$ref": "#/definitions/range" }
-          },
-          "additionalProperties": false
-        },
-        "array": {
-          "type": "object",
-          "required": ["value"],
-          "properties": {
-            "value": {
-              "type": "string",
-              "enum": ["csv", "ssv", "tsv", "pipes", "multi"]
-            },
-            "loc": { "$ref": "#/definitions/range" }
-          },
-          "additionalProperties": false
-        },
+        "location": { "$ref": "#/definitions/httpLocationLiteral" },
+        "arrayFormat": { "$ref": "#/definitions/httpArrayFormat" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
     },
+
     "securityOption": {
       "type": "array",
       "items": { "$ref": "#/definitions/securityScheme" }
     },
     "securityScheme": {
+      "discriminator": {
+        "propertyName": "kind"
+      },
       "oneOf": [
         { "$ref": "#/definitions/basicScheme" },
         { "$ref": "#/definitions/apiKeyScheme" },
@@ -618,6 +581,7 @@
       "additionalProperties": false
     },
     "oauth2Scheme": {
+      "title": "OAuth2Scheme",
       "type": "object",
       "required": ["kind", "type", "name", "flows"],
       "properties": {
@@ -644,6 +608,9 @@
       "additionalProperties": false
     },
     "oauth2Flow": {
+      "discriminator": {
+        "propertyName": "kind"
+      },
       "oneOf": [
         { "$ref": "#/definitions/oauth2ImplicitFlow" },
         { "$ref": "#/definitions/oauth2PasswordFlow" },
@@ -769,13 +736,120 @@
       },
       "additionalProperties": false
     },
-    "multilineDescription": {
-      "oneOf": [
-        { "type": "string" },
-        { "type": "array", "items": { "type": "string" } }
-      ]
+
+    "string": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "StringLiteral",
+      "description": "A string literal",
+      "properties": {
+        "kind": { "type": "string", "const": "StringLiteral" },
+        "value": { "type": "string" },
+        "loc": {
+          "description": "The location of this in the doc.",
+          "$ref": "#/definitions/range"
+        }
+      },
+      "additionalProperties": false
     },
+    "integer": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "IntegerLiteral",
+      "description": "An integer literal",
+      "properties": {
+        "kind": { "type": "string", "const": "IntegerLiteral" },
+        "value": { "type": "integer" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "number": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "NumberLiteral",
+      "description": "A number literal",
+      "properties": {
+        "kind": { "type": "string", "const": "NumberLiteral" },
+        "value": { "type": "integer" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "boolean": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "BooleanLiteral",
+      "description": "A boolean literal",
+      "properties": {
+        "kind": { "type": "string", "const": "BooleanLiteral" },
+        "value": { "type": "boolean" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "true": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "TrueLiteral",
+      "description": "A boolean literal whose value is always true",
+      "properties": {
+        "kind": { "type": "string", "const": "TrueLiteral" },
+        "value": { "type": "boolean", "const": true },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "nonEmptyString": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "NonEmptyStringLiteral",
+      "description": "A string literal",
+      "properties": {
+        "kind": { "type": "string", "const": "NonEmptyStringLiteral" },
+        "value": { "type": "string" },
+        "loc": {
+          "description": "The location of this in the doc.",
+          "$ref": "#/definitions/range"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nonNegativeInteger": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "NonNegativeIntegerLiteral",
+      "properties": {
+        "kind": { "type": "string", "const": "NonNegativeIntegerLiteral" },
+        "value": { "type": "integer", "minimum": 0, "multipleOf": 1 },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "nonNegativeNumber": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "NonNegativeNumberLiteral",
+      "properties": {
+        "kind": { "type": "string", "const": "NonNegativeNumberLiteral" },
+        "value": { "type": "number", "minimum": 0 },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+
+    "deprecated": {
+      "description": "A boolean value indicating that this item is deprecated.",
+      "$ref": "#/definitions/true"
+    },
+    "range": {
+      "type": "string"
+    },
+
     "validationRule": {
+      "discriminator": {
+        "propertyName": "id"
+      },
       "oneOf": [
         { "$ref": "#/definitions/requiredRule" },
         { "$ref": "#/definitions/constantRule" },
@@ -794,33 +868,28 @@
         { "$ref": "#/definitions/arrayUniqueItemsRule" }
       ]
     },
-    "objectValidationRule": {
-      "oneOf": [
-        { "$ref": "#/definitions/objectMinPropertiesRule" },
-        { "$ref": "#/definitions/objectMaxPropertiesRule" },
-        { "$ref": "#/definitions/objectAdditionalPropertiesRule" }
-      ]
-    },
     "requiredRule": {
+      "title": "RequiredRule",
       "type": "object",
       "required": ["kind", "id"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "required"
+          "const": "Required"
         }
       },
       "additionalProperties": false
     },
     "constantRule": {
+      "title": "ConstantRule",
       "type": "object",
       "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "constant"
+          "const": "Constant"
         },
         "value": {
           "oneOf": [
@@ -832,15 +901,15 @@
       },
       "additionalProperties": false
     },
-
     "stringMaxLengthRule": {
+      "title": "StringMaxLengthRule",
       "type": "object",
       "required": ["kind", "id", "length"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "string-max-length"
+          "const": "StringMaxLength"
         },
         "length": { "$ref": "#/definitions/nonNegativeInteger" },
         "loc": { "$ref": "#/definitions/range" }
@@ -848,13 +917,14 @@
       "additionalProperties": false
     },
     "stringMinLengthRule": {
+      "title": "StringMinLengthRule",
       "type": "object",
       "required": ["kind", "id", "length"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "string-min-length"
+          "const": "StringMinLength"
         },
         "length": { "$ref": "#/definitions/nonNegativeInteger" },
         "loc": { "$ref": "#/definitions/range" }
@@ -862,57 +932,44 @@
       "additionalProperties": false
     },
     "stringPatternRule": {
+      "title": "StringPatternRule",
       "type": "object",
       "required": ["kind", "id", "pattern"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "string-pattern"
+          "const": "StringPattern"
         },
-        "pattern": {
-          "type": "object",
-          "required": ["value"],
-          "properties": {
-            "value": { "type": "string", "minLength": 1 },
-            "loc": { "$ref": "#/definitions/range" }
-          },
-          "additionalProperties": false
-        },
+        "pattern": { "$ref": "#/definitions/nonEmptyString" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
     },
     "stringFormatRule": {
+      "title": "StringFormatRule",
       "type": "object",
       "required": ["kind", "id", "format"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "string-format"
+          "const": "StringFormat"
         },
-        "format": {
-          "type": "object",
-          "required": ["value"],
-          "properties": {
-            "value": { "type": "string", "minLength": 1 },
-            "loc": { "$ref": "#/definitions/range" }
-          },
-          "additionalProperties": false
-        },
+        "format": { "$ref": "#/definitions/nonEmptyString" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
     },
     "stringEnumRule": {
+      "title": "StringEnumRule",
       "type": "object",
       "required": ["kind", "id", "values"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "string-enum"
+          "const": "StringEnum"
         },
         "values": {
           "type": "array",
@@ -924,13 +981,14 @@
       "additionalProperties": false
     },
     "numberMultipleOfRule": {
+      "title": "NumberMultipleOfRule",
       "type": "object",
       "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "number-multiple-of"
+          "const": "NumberMultipleOf"
         },
         "value": { "$ref": "#/definitions/nonNegativeNumber" },
         "loc": { "$ref": "#/definitions/range" }
@@ -938,13 +996,14 @@
       "additionalProperties": false
     },
     "numberGtRule": {
+      "title": "NumberGtRule",
       "type": "object",
       "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "number-gt"
+          "const": "NumberGT"
         },
         "value": { "$ref": "#/definitions/number" },
         "loc": { "$ref": "#/definitions/range" }
@@ -952,13 +1011,14 @@
       "additionalProperties": false
     },
     "numberGteRule": {
+      "title": "NumberGteRule",
       "type": "object",
       "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "number-gte"
+          "const": "NumberGTE"
         },
         "value": { "$ref": "#/definitions/number" },
         "loc": { "$ref": "#/definitions/range" }
@@ -966,13 +1026,14 @@
       "additionalProperties": false
     },
     "numberLtRule": {
+      "title": "NumberLtRule",
       "type": "object",
       "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "number-lt"
+          "const": "NumberLT"
         },
         "value": { "$ref": "#/definitions/number" },
         "loc": { "$ref": "#/definitions/range" }
@@ -980,13 +1041,14 @@
       "additionalProperties": false
     },
     "numberLteRule": {
+      "title": "NumberLteRule",
       "type": "object",
       "required": ["kind", "id", "value"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "number-lte"
+          "const": "NumberLTE"
         },
         "value": { "$ref": "#/definitions/number" },
         "loc": { "$ref": "#/definitions/range" }
@@ -994,13 +1056,14 @@
       "additionalProperties": false
     },
     "arrayMaxItemsRule": {
+      "title": "ArrayMaxItemsRule",
       "type": "object",
       "required": ["kind", "id", "max"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "array-max-items"
+          "const": "ArrayMaxItems"
         },
         "max": { "$ref": "#/definitions/nonNegativeNumber" },
         "loc": { "$ref": "#/definitions/range" }
@@ -1008,13 +1071,14 @@
       "additionalProperties": false
     },
     "arrayMinItemsRule": {
+      "title": "ArrayMinItemsRule",
       "type": "object",
       "required": ["kind", "id", "min"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "array-min-items"
+          "const": "ArrayMinItems"
         },
         "min": { "$ref": "#/definitions/nonNegativeNumber" },
         "loc": { "$ref": "#/definitions/range" }
@@ -1022,13 +1086,14 @@
       "additionalProperties": false
     },
     "arrayUniqueItemsRule": {
+      "title": "ArrayUniqueItemsRule",
       "type": "object",
       "required": ["kind", "id", "required"],
       "properties": {
         "kind": { "type": "string", "const": "ValidationRule" },
         "id": {
           "type": "string",
-          "const": "array-unique-items"
+          "const": "ArrayUniqueItems"
         },
         "required": {
           "type": "boolean"
@@ -1037,14 +1102,26 @@
       },
       "additionalProperties": false
     },
+
+    "objectValidationRule": {
+      "discriminator": {
+        "propertyName": "id"
+      },
+      "oneOf": [
+        { "$ref": "#/definitions/objectMinPropertiesRule" },
+        { "$ref": "#/definitions/objectMaxPropertiesRule" },
+        { "$ref": "#/definitions/objectAdditionalPropertiesRule" }
+      ]
+    },
     "objectMinPropertiesRule": {
+      "title": "ObjectMinPropertiesRule",
       "type": "object",
       "required": ["kind", "id", "min"],
       "properties": {
         "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {
           "type": "string",
-          "const": "object-min-properties"
+          "const": "ObjectMinProperties"
         },
         "min": { "$ref": "#/definitions/nonNegativeInteger" },
         "loc": { "$ref": "#/definitions/range" }
@@ -1052,13 +1129,14 @@
       "additionalProperties": false
     },
     "objectMaxPropertiesRule": {
+      "title": "ObjectMaxPropertiesRule",
       "type": "object",
       "required": ["kind", "id", "max"],
       "properties": {
         "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {
           "type": "string",
-          "const": "object-max-properties"
+          "const": "ObjectMaxProperties"
         },
         "max": { "$ref": "#/definitions/nonNegativeInteger" },
         "loc": { "$ref": "#/definitions/range" }
@@ -1066,18 +1144,16 @@
       "additionalProperties": false
     },
     "objectAdditionalPropertiesRule": {
+      "title": "ObjectAdditionalPropertiesRule",
       "type": "object",
       "required": ["kind", "id", "forbidden"],
       "properties": {
         "kind": { "type": "string", "const": "ObjectValidationRule" },
         "id": {
           "type": "string",
-          "const": "object-additional-properties"
+          "const": "ObjectAdditionalProperties"
         },
-        "forbidden": {
-          "type": "boolean",
-          "const": true
-        },
+        "forbidden": { "$ref": "#/definitions/true" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false

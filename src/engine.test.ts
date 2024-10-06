@@ -11,9 +11,9 @@ describe('engine', () => {
     setParser(() => ({
       service: {
         kind: 'Service',
-        basketry: '1.1-rc',
-        title: { value: 'test' },
-        majorVersion: { value: 1 },
+        basketry: '0.2',
+        title: { kind: 'StringLiteral', value: 'test' },
+        majorVersion: { kind: 'IntegerLiteral', value: 1 },
         sourcePath: 'overwritten.ext',
         interfaces: [],
         types: [],
@@ -480,11 +480,6 @@ describe('engine', () => {
           code: 'PARSER_ERROR',
           message:
             "Invalid IR: `#/interfaces/0` must have required property 'methods'",
-        },
-        {
-          code: 'PARSER_ERROR',
-          message:
-            "Invalid IR: `#/interfaces/0` must have required property 'protocols'",
         },
         {
           code: 'PARSER_ERROR',

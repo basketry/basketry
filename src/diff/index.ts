@@ -4,6 +4,7 @@ import {
   Method,
   Parameter,
   Property,
+  ReturnValue,
   Service,
   Type,
   ValidationRule,
@@ -11,7 +12,6 @@ import {
 import { types } from './types';
 import { interfaces } from './interfaces';
 import { enums } from './enums';
-import { ReturnType } from '..';
 
 export type ChangeKind =
   | 'added'
@@ -72,16 +72,16 @@ export function isParameterChangeTarget(
   return parameterChangeTarget.includes(changeTarget as any);
 }
 
-const returnTypeChangeTarget = [
-  'return-type',
-  'return-type-array',
-  'return-type-primitive',
+const returnsChangeTarget = [
+  'returns',
+  'returns-array',
+  'returns-primitive',
 ] as const;
-export type ReturnTypeChangeTarget = typeof returnTypeChangeTarget[number];
+export type ReturnTypeChangeTarget = typeof returnsChangeTarget[number];
 export function isReturnTypeChangeTarget(
   changeTarget: ChangeTarget,
 ): changeTarget is ReturnTypeChangeTarget {
-  return returnTypeChangeTarget.includes(changeTarget as any);
+  return returnsChangeTarget.includes(changeTarget as any);
 }
 
 const typeChangeTarget = [
@@ -129,18 +129,18 @@ const enumChangeTarget = [
   'input-enum-name-casing',
   'input-enum-description',
   'input-enum-deprecated',
-  'input-enum-value',
-  'input-enum-value-casing',
-  'input-enum-value-description',
-  'input-enum-value-deprecated',
+  'input-enum-member',
+  'input-enum-member-casing',
+  'input-enum-member-description',
+  'input-enum-member-deprecated',
   'output-enum',
   'output-enum-name-casing',
   'output-enum-description',
   'output-enum-deprecated',
-  'output-enum-value',
-  'output-enum-value-casing',
-  'output-enum-value-description',
-  'output-enum-value-deprecated',
+  'output-enum-member',
+  'output-enum-member-casing',
+  'output-enum-member-description',
+  'output-enum-member-deprecated',
 ] as const;
 export type EnumChangeTarget = typeof enumChangeTarget[number];
 export function isEnumChangeTarget(
@@ -177,7 +177,7 @@ export type ChangeContext =
   | InterfaceContext
   | MethodContext
   | ParameterContext
-  | ReturnTypeContext
+  | ReturnValueContext
   | TypeContext
   | PropertyContext
   | EnumContext;
@@ -219,13 +219,13 @@ export type ParameterScope = MethodScope & {
   parameter: Parameter;
 };
 
-export type ReturnTypeContext = Omit<MethodContext, 'scope'> & {
-  scope: 'return-type';
-  returnType: string;
+export type ReturnValueContext = Omit<MethodContext, 'scope'> & {
+  scope: 'returns';
+  returns: string;
 };
 
-export type ReturnTypeScope = MethodScope & {
-  returnType: ReturnType;
+export type ReturnValueScope = MethodScope & {
+  returns: ReturnValue;
 };
 
 export type TypeContext = Omit<ServiceContext, 'scope'> & {
@@ -258,9 +258,9 @@ export type EnumScope = ServiceScope & {
 
 export type RuleContext =
   | PropertyContext
-  | ReturnTypeContext
+  | ReturnValueContext
   | ParameterContext;
-export type RuleScope = PropertyScope | ReturnTypeScope | ParameterScope;
+export type RuleScope = PropertyScope | ReturnValueScope | ParameterScope;
 
 type Primitive = string | number | boolean | null;
 
@@ -325,7 +325,7 @@ export function isParameterChangeInfo(
 
 export type ReturnTypeChangeInfo = ChangeInfoKind<
   ReturnTypeChangeTarget,
-  ReturnTypeContext
+  ReturnValueContext
 >;
 export function isReturnTypeChangeInfo(
   changeInfo: ChangeInfo,

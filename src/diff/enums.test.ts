@@ -2,14 +2,17 @@ import { EnumChangeInfo, ServiceScope } from '.';
 import { Enum } from '../ir';
 import { enums, Mode } from './enums';
 import {
+  buildComplexValue,
   buildEnum,
-  buildEnumValue,
+  buildEnumMember,
   buildInterface,
   buildMethod,
   buildParameter,
-  buildReturnType,
-  buildScalar,
+  buildPrimitiveValue,
+  buildReturnValue,
   buildService,
+  stringLiteral,
+  trueLiteral,
 } from './test-utils';
 
 const title = 'service title';
@@ -24,55 +27,63 @@ function setup(
   b: Enum | undefined,
 ): [ServiceScope, ServiceScope] {
   const a_parameter = buildParameter({
-    name: { value: parameterName },
-    isPrimitive: false,
-    typeName: a ? { value: a.name.value } : undefined,
+    name: stringLiteral(parameterName),
+    value: a
+      ? buildComplexValue({
+          typeName: stringLiteral(a.name.value),
+        })
+      : buildPrimitiveValue(),
   });
   const b_parameter = buildParameter({
-    name: { value: parameterName },
-    isPrimitive: false,
-    typeName: b ? { value: b.name.value } : undefined,
+    name: stringLiteral(parameterName),
+    value: b
+      ? buildComplexValue({
+          typeName: stringLiteral(b.name.value),
+        })
+      : buildPrimitiveValue(),
   });
 
   const a_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: mode === 'input' ? [a_parameter] : [],
-    returnType:
+    returns:
       mode === 'input' || !a
         ? undefined
-        : buildReturnType({
-            isPrimitive: false,
-            typeName: { value: a.name.value },
+        : buildReturnValue({
+            value: buildComplexValue({
+              typeName: stringLiteral(a.name.value),
+            }),
           }),
   });
   const b_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: mode === 'input' ? [b_parameter] : [],
-    returnType:
+    returns:
       mode === 'input' || !b
         ? undefined
-        : buildReturnType({
-            isPrimitive: false,
-            typeName: { value: b.name.value },
+        : buildReturnValue({
+            value: buildComplexValue({
+              typeName: stringLiteral(b.name.value),
+            }),
           }),
   });
 
   const a_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [a_method],
   });
   const b_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [b_method],
   });
 
   const a_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [a_int],
     enums: a ? [a] : [],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [b_int],
     enums: b ? [b] : [],
   });
@@ -93,8 +104,8 @@ describe(enums, () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
-        buildEnum({ name: { value: enumName } }),
-        buildEnum({ name: { value: enumName } }),
+        buildEnum({ name: stringLiteral(enumName) }),
+        buildEnum({ name: stringLiteral(enumName) }),
       );
 
       // ACT
@@ -109,8 +120,10 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         undefined,
-        buildEnum({ name: { value: enumName } }),
+        buildEnum({ name: stringLiteral(enumName) }),
       );
+
+      // console.log(JSON.stringify({ a, b }, null, 2));
 
       // ACT
       const result = enums(mode, a, b);
@@ -137,7 +150,7 @@ describe(enums, () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
-        buildEnum({ name: { value: enumName } }),
+        buildEnum({ name: stringLiteral(enumName) }),
         undefined,
       );
 
@@ -168,8 +181,8 @@ describe(enums, () => {
       const newName = 'someName';
       const [a, b] = setup(
         mode,
-        buildEnum({ name: { value: originalName } }),
-        buildEnum({ name: { value: newName } }),
+        buildEnum({ name: stringLiteral(originalName) }),
+        buildEnum({ name: stringLiteral(newName) }),
       );
 
       // ACT
@@ -208,12 +221,12 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
-          description: { value: originalDescription },
+          name: stringLiteral(enumName),
+          description: [stringLiteral(originalDescription)],
         }),
         buildEnum({
-          name: { value: enumName },
-          description: { value: newDescription },
+          name: stringLiteral(enumName),
+          description: [stringLiteral(newDescription)],
         }),
       );
 
@@ -232,7 +245,7 @@ describe(enums, () => {
               service: title,
               enum: enumName,
             },
-            value: originalDescription,
+            value: [originalDescription],
           },
           b: {
             context: {
@@ -240,7 +253,7 @@ describe(enums, () => {
               service: title,
               enum: enumName,
             },
-            value: newDescription,
+            value: [newDescription],
           },
         },
       ]);
@@ -251,11 +264,11 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
+          name: stringLiteral(enumName),
         }),
         buildEnum({
-          name: { value: enumName },
-          deprecated: { value: true },
+          name: stringLiteral(enumName),
+          deprecated: trueLiteral(),
         }),
       );
 
@@ -285,11 +298,11 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
-          deprecated: { value: true },
+          name: stringLiteral(enumName),
+          deprecated: trueLiteral(),
         }),
         buildEnum({
-          name: { value: enumName },
+          name: stringLiteral(enumName),
         }),
       );
 
@@ -319,14 +332,14 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
-          values: [buildEnumValue({ content: buildScalar('first') })],
+          name: stringLiteral(enumName),
+          members: [buildEnumMember({ content: stringLiteral('first') })],
         }),
         buildEnum({
-          name: { value: enumName },
-          values: [
-            buildEnumValue({ content: buildScalar('first') }),
-            buildEnumValue({ content: buildScalar('second') }),
+          name: stringLiteral(enumName),
+          members: [
+            buildEnumMember({ content: stringLiteral('first') }),
+            buildEnumMember({ content: stringLiteral('second') }),
           ],
         }),
       );
@@ -338,7 +351,7 @@ describe(enums, () => {
       expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'added',
-          target: `${mode}-enum-value`,
+          target: `${mode}-enum-member`,
           category: mode === 'input' ? 'minor' : 'major',
           b: {
             context: {
@@ -357,15 +370,15 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
-          values: [
-            buildEnumValue({ content: buildScalar('first') }),
-            buildEnumValue({ content: buildScalar('second') }),
+          name: stringLiteral(enumName),
+          members: [
+            buildEnumMember({ content: stringLiteral('first') }),
+            buildEnumMember({ content: stringLiteral('second') }),
           ],
         }),
         buildEnum({
-          name: { value: enumName },
-          values: [buildEnumValue({ content: buildScalar('first') })],
+          name: stringLiteral(enumName),
+          members: [buildEnumMember({ content: stringLiteral('first') })],
         }),
       );
 
@@ -376,7 +389,7 @@ describe(enums, () => {
       expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'removed',
-          target: `${mode}-enum-value`,
+          target: `${mode}-enum-member`,
           category: mode === 'input' ? 'major' : 'minor',
           a: {
             context: {
@@ -397,12 +410,12 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
-          values: [buildEnumValue({ content: buildScalar(originalValue) })],
+          name: stringLiteral(enumName),
+          members: [buildEnumMember({ content: stringLiteral(originalValue) })],
         }),
         buildEnum({
-          name: { value: enumName },
-          values: [buildEnumValue({ content: buildScalar(newValue) })],
+          name: stringLiteral(enumName),
+          members: [buildEnumMember({ content: stringLiteral(newValue) })],
         }),
       );
 
@@ -413,7 +426,7 @@ describe(enums, () => {
       expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'changed',
-          target: `${mode}-enum-value-casing`,
+          target: `${mode}-enum-member-casing`,
           category: 'major',
           a: {
             context: {
@@ -442,15 +455,17 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
-          values: [
-            buildEnumValue({ description: buildScalar(originalDescription) }),
+          name: stringLiteral(enumName),
+          members: [
+            buildEnumMember({
+              description: [stringLiteral(originalDescription)],
+            }),
           ],
         }),
         buildEnum({
-          name: { value: enumName },
-          values: [
-            buildEnumValue({ description: buildScalar(newDescription) }),
+          name: stringLiteral(enumName),
+          members: [
+            buildEnumMember({ description: [stringLiteral(newDescription)] }),
           ],
         }),
       );
@@ -462,7 +477,7 @@ describe(enums, () => {
       expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'changed',
-          target: `${mode}-enum-value-description`,
+          target: `${mode}-enum-member-description`,
           category: 'patch',
           a: {
             context: {
@@ -470,7 +485,7 @@ describe(enums, () => {
               service: title,
               enum: enumName,
             },
-            value: originalDescription,
+            value: [originalDescription],
           },
           b: {
             context: {
@@ -478,7 +493,7 @@ describe(enums, () => {
               service: title,
               enum: enumName,
             },
-            value: newDescription,
+            value: [newDescription],
           },
         },
       ]);
@@ -489,12 +504,12 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
-          values: [buildEnumValue()],
+          name: stringLiteral(enumName),
+          members: [buildEnumMember()],
         }),
         buildEnum({
-          name: { value: enumName },
-          values: [buildEnumValue({ deprecated: buildScalar(true) })],
+          name: stringLiteral(enumName),
+          members: [buildEnumMember({ deprecated: trueLiteral() })],
         }),
       );
 
@@ -505,7 +520,7 @@ describe(enums, () => {
       expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'added',
-          target: `${mode}-enum-value-deprecated`,
+          target: `${mode}-enum-member-deprecated`,
           category: 'minor',
           b: {
             context: {
@@ -524,12 +539,12 @@ describe(enums, () => {
       const [a, b] = setup(
         mode,
         buildEnum({
-          name: { value: enumName },
-          values: [buildEnumValue({ deprecated: buildScalar(true) })],
+          name: stringLiteral(enumName),
+          members: [buildEnumMember({ deprecated: trueLiteral() })],
         }),
         buildEnum({
-          name: { value: enumName },
-          values: [buildEnumValue()],
+          name: stringLiteral(enumName),
+          members: [buildEnumMember()],
         }),
       );
 
@@ -540,7 +555,7 @@ describe(enums, () => {
       expect(Array.from(result)).toEqual<EnumChangeInfo[]>([
         {
           kind: 'removed',
-          target: `${mode}-enum-value-deprecated`,
+          target: `${mode}-enum-member-deprecated`,
           category: 'patch',
           a: {
             context: {

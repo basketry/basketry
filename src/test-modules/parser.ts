@@ -4,9 +4,9 @@ let parser: Parser = () => {
   return {
     service: {
       kind: 'Service',
-      basketry: '1.1-rc',
-      title: { value: 'test' },
-      majorVersion: { value: 1 },
+      basketry: '0.2',
+      title: { kind: 'StringLiteral', value: 'test' },
+      majorVersion: { kind: 'IntegerLiteral', value: 1 },
       sourcePath: 'overwritten.ext',
       interfaces: [],
       types: [],

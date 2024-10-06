@@ -3,7 +3,7 @@ import schema from './schema.json';
 import { Service } from './ir';
 import { BasketryError } from './types';
 
-const ajv = new Ajv({ allErrors: true });
+const ajv = new Ajv({ allErrors: true, strict: false });
 const runner = ajv.compile(schema);
 
 export function validate(service: any): {

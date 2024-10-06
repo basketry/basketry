@@ -2,11 +2,15 @@ import { MethodScope, ParameterChangeInfo, RuleChangeInfo } from '.';
 import { Parameter } from '../ir';
 import { parameters } from './parameters';
 import {
+  buildComplexValue,
   buildInterface,
   buildMethod,
   buildParameter,
-  buildScalar,
+  buildPrimitiveValue,
   buildService,
+  primitiveLiteral,
+  stringLiteral,
+  trueLiteral,
 } from './test-utils';
 
 const title = 'service title';
@@ -18,29 +22,29 @@ function setup(
   b: Parameter | undefined,
 ): [MethodScope, MethodScope] {
   const a_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: a ? [a] : [],
   });
 
   const b_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: b ? [b] : [],
   });
 
   const a_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [a_method],
   });
   const b_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [b_method],
   });
   const a_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [a_int],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [b_int],
   });
 
@@ -54,8 +58,8 @@ describe(parameters, () => {
   it('identifies two identical parameters', () => {
     // ARRANGE
     const [a, b] = setup(
-      buildParameter({ name: { value: parameterName } }),
-      buildParameter({ name: { value: parameterName } }),
+      buildParameter({ name: stringLiteral(parameterName) }),
+      buildParameter({ name: stringLiteral(parameterName) }),
     );
 
     // ACT
@@ -69,7 +73,7 @@ describe(parameters, () => {
     // ARRANGE
     const [a, b] = setup(
       undefined,
-      buildParameter({ name: { value: parameterName } }),
+      buildParameter({ name: stringLiteral(parameterName) }),
     );
 
     // ACT
@@ -101,8 +105,11 @@ describe(parameters, () => {
     const [a, b] = setup(
       undefined,
       buildParameter({
-        name: { value: parameterName },
-        rules: [{ kind: 'ValidationRule', id: 'required' }],
+        name: stringLiteral(parameterName),
+        value: buildPrimitiveValue({
+          typeName: primitiveLiteral('string'),
+          rules: [{ kind: 'ValidationRule', id: 'Required' }],
+        }),
       }),
     );
 
@@ -135,7 +142,7 @@ describe(parameters, () => {
   it('identifies a removed optional parameter', () => {
     // ARRANGE
     const [a, b] = setup(
-      buildParameter({ name: { value: parameterName } }),
+      buildParameter({ name: stringLiteral(parameterName) }),
       undefined,
     );
 
@@ -167,8 +174,11 @@ describe(parameters, () => {
     // ARRANGE
     const [a, b] = setup(
       buildParameter({
-        name: { value: parameterName },
-        rules: [{ kind: 'ValidationRule', id: 'required' }],
+        name: stringLiteral(parameterName),
+        value: buildPrimitiveValue({
+          typeName: primitiveLiteral('string'),
+          rules: [{ kind: 'ValidationRule', id: 'Required' }],
+        }),
       }),
       undefined,
     );
@@ -205,8 +215,8 @@ describe(parameters, () => {
     const newName = 'someName';
 
     const [a, b] = setup(
-      buildParameter({ name: { value: originalName } }),
-      buildParameter({ name: { value: newName } }),
+      buildParameter({ name: stringLiteral(originalName) }),
+      buildParameter({ name: stringLiteral(newName) }),
     );
 
     // ACT
@@ -248,10 +258,10 @@ describe(parameters, () => {
     // ARRANGE
     const description = 'some description';
     const [a, b] = setup(
-      buildParameter({ name: { value: parameterName } }),
+      buildParameter({ name: stringLiteral(parameterName) }),
       buildParameter({
-        name: { value: parameterName },
-        description: { value: description },
+        name: stringLiteral(parameterName),
+        description: [stringLiteral(description)],
       }),
     );
 
@@ -273,7 +283,7 @@ describe(parameters, () => {
             parameter: parameterName,
             required: false,
           },
-          value: description,
+          value: [description],
         },
       },
     ]);
@@ -284,10 +294,10 @@ describe(parameters, () => {
     const description = 'some description';
     const [a, b] = setup(
       buildParameter({
-        name: { value: parameterName },
-        description: { value: description },
+        name: stringLiteral(parameterName),
+        description: [stringLiteral(description)],
       }),
-      buildParameter({ name: { value: parameterName } }),
+      buildParameter({ name: stringLiteral(parameterName) }),
     );
 
     // ACT
@@ -308,7 +318,7 @@ describe(parameters, () => {
             parameter: parameterName,
             required: false,
           },
-          value: description,
+          value: [description],
         },
       },
     ]);
@@ -320,12 +330,12 @@ describe(parameters, () => {
     const newDescription = 'different description';
     const [a, b] = setup(
       buildParameter({
-        name: { value: parameterName },
-        description: { value: originalDescription },
+        name: stringLiteral(parameterName),
+        description: [stringLiteral(originalDescription)],
       }),
       buildParameter({
-        name: { value: parameterName },
-        description: { value: newDescription },
+        name: stringLiteral(parameterName),
+        description: [stringLiteral(newDescription)],
       }),
     );
 
@@ -347,7 +357,7 @@ describe(parameters, () => {
             parameter: parameterName,
             required: false,
           },
-          value: originalDescription,
+          value: [originalDescription],
         },
         b: {
           context: {
@@ -358,7 +368,7 @@ describe(parameters, () => {
             parameter: parameterName,
             required: false,
           },
-          value: newDescription,
+          value: [newDescription],
         },
       },
     ]);
@@ -367,10 +377,10 @@ describe(parameters, () => {
   it('identifies an added parameter deprecation', () => {
     // ARRANGE
     const [a, b] = setup(
-      buildParameter({ name: buildScalar(parameterName) }),
+      buildParameter({ name: stringLiteral(parameterName) }),
       buildParameter({
-        name: buildScalar(parameterName),
-        deprecated: buildScalar(true),
+        name: stringLiteral(parameterName),
+        deprecated: trueLiteral(),
       }),
     );
 
@@ -402,11 +412,11 @@ describe(parameters, () => {
     // ARRANGE
     const [a, b] = setup(
       buildParameter({
-        name: buildScalar(parameterName),
-        deprecated: buildScalar(true),
+        name: stringLiteral(parameterName),
+        deprecated: trueLiteral(),
       }),
       buildParameter({
-        name: buildScalar(parameterName),
+        name: stringLiteral(parameterName),
       }),
     );
 
@@ -438,12 +448,16 @@ describe(parameters, () => {
     // ARRANGE
     const [a, b] = setup(
       buildParameter({
-        name: { value: parameterName },
-        typeName: { value: 'number' },
+        name: stringLiteral(parameterName),
+        value: buildPrimitiveValue({
+          typeName: primitiveLiteral('number'),
+        }),
       }),
       buildParameter({
-        name: { value: parameterName },
-        typeName: { value: 'string' },
+        name: stringLiteral(parameterName),
+        value: buildPrimitiveValue({
+          typeName: primitiveLiteral('string'),
+        }),
       }),
     );
 
@@ -486,12 +500,17 @@ describe(parameters, () => {
     // ARRANGE
     const [a, b] = setup(
       buildParameter({
-        name: { value: parameterName },
-        isArray: true,
+        name: stringLiteral(parameterName),
+        value: buildPrimitiveValue({
+          typeName: primitiveLiteral('string'),
+          isArray: trueLiteral(),
+        }),
       }),
       buildParameter({
-        name: { value: parameterName },
-        isArray: false,
+        name: stringLiteral(parameterName),
+        value: buildPrimitiveValue({
+          typeName: primitiveLiteral('string'),
+        }),
       }),
     );
 
@@ -534,12 +553,16 @@ describe(parameters, () => {
     // ARRANGE
     const [a, b] = setup(
       buildParameter({
-        name: { value: parameterName },
-        isPrimitive: true,
+        name: stringLiteral(parameterName),
+        value: buildPrimitiveValue({
+          typeName: primitiveLiteral('string'),
+        }),
       }),
       buildParameter({
-        name: { value: parameterName },
-        isPrimitive: false,
+        name: stringLiteral(parameterName),
+        value: buildComplexValue({
+          typeName: stringLiteral('string'),
+        }),
       }),
     );
 

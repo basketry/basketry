@@ -1,16 +1,20 @@
-/** @deprecated Use {@link Scalar}. This type will be removed in a future version. */
-export type Literal<T extends string | number | boolean | null> = {
-  value: T;
-  loc?: string;
-};
+export type ApiKeySchemeInValue = 'header' | 'query' | 'cookie';
 
-export type Scalar<T extends string | number | boolean | null> = {
-  value: T;
-  loc?: string;
-};
+export type HttpArrayFormat = 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
+
+export type HttpLocation = 'header' | 'query' | 'path' | 'formData' | 'body';
+
+export type HttpVerb =
+  | 'get'
+  | 'post'
+  | 'put'
+  | 'patch'
+  | 'delete'
+  | 'head'
+  | 'options'
+  | 'trace';
 
 export type Primitive =
-  | 'null'
   | 'string'
   | 'number'
   | 'integer'
@@ -23,392 +27,661 @@ export type Primitive =
   | 'binary'
   | 'untyped';
 
+export type ApiKeyScheme = {
+  kind: 'ApiKeyScheme';
+  type: ApiKeySchemeType;
+  deprecated?: TrueLiteral;
+  name: StringLiteral;
+  description?: StringLiteral;
+  parameter: StringLiteral;
+  in: ApiKeySchemeIn;
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type ApiKeySchemeIn = {
+  value: ApiKeySchemeInValue;
+  loc?: string;
+};
+
+export type ApiKeySchemeType = {
+  value: 'apiKey';
+  loc?: string;
+};
+
+export type ArrayMaxItemsRule = {
+  kind: 'ValidationRule';
+  id: 'ArrayMaxItems';
+  max: NonNegativeNumberLiteral;
+  loc?: string;
+};
+
+export type ArrayMinItemsRule = {
+  kind: 'ValidationRule';
+  id: 'ArrayMinItems';
+  min: NonNegativeNumberLiteral;
+  loc?: string;
+};
+
+export type ArrayUniqueItemsRule = {
+  kind: 'ValidationRule';
+  id: 'ArrayUniqueItems';
+  required: boolean;
+  loc?: string;
+};
+
+export type BasicScheme = {
+  kind: 'BasicScheme';
+  type: BasicSchemeType;
+  deprecated?: TrueLiteral;
+  name: StringLiteral;
+  description?: StringLiteral;
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type BasicSchemeType = {
+  value: 'basic';
+  loc?: string;
+};
+
+/**
+ * A boolean literal
+ */
+export type BooleanLiteral = {
+  kind: 'BooleanLiteral';
+  value: boolean;
+  loc?: string;
+};
+
+/**
+ * TODO: don't allow arrays, enums, or other unions in complex unions
+ */
+export type ComplexUnion = {
+  kind: 'ComplexUnion';
+  name: StringLiteral;
+  members: ComplexValue[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type ComplexValue = {
+  kind: 'ComplexValue';
+
+  /**
+   * The name of a type, enum, or union defined in this Service.
+   */
+  typeName: StringLiteral;
+  isArray?: TrueLiteral;
+  rules: ValidationRule[];
+};
+
+export type ConstantRule = {
+  kind: 'ValidationRule';
+  id: 'Constant';
+  value: ConstantRuleValue;
+};
+
+/**
+ * TODO: don't allow arrays, enums, or other unions in discriminated unions
+ */
+export type DiscriminatedUnion = {
+  kind: 'DiscriminatedUnion';
+  name: StringLiteral;
+  discriminator: StringLiteral;
+  members: ComplexValue[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type Enum = {
+  kind: 'Enum';
+  name: StringLiteral;
+  description?: StringLiteral[];
+  members: EnumMember[];
+  deprecated?: TrueLiteral;
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type EnumMember = {
+  kind: 'EnumMember';
+  content: StringLiteral;
+  description?: StringLiteral[];
+  deprecated?: TrueLiteral;
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type HttpArrayFormatLiteral = {
+  kind: 'HttpArrayFormatLiteral';
+  value: HttpArrayFormat;
+  loc?: string;
+};
+
+export type HttpLocationLiteral = {
+  kind: 'HttpLocationLiteral';
+  value: HttpLocation;
+  loc?: string;
+};
+
+export type HttpMethod = {
+  kind: 'HttpMethod';
+  name: StringLiteral;
+  verb: HttpVerbLiteral;
+  parameters: HttpParameter[];
+  successCode: HttpMethodSuccessCode;
+  requestMediaTypes: StringLiteral[];
+  responseMediaTypes: StringLiteral[];
+  loc?: string;
+};
+
+export type HttpMethodSuccessCode = {
+  value: number;
+  loc?: string;
+};
+
+export type HttpParameter = {
+  kind: 'HttpParameter';
+  name: StringLiteral;
+  location: HttpLocationLiteral;
+  arrayFormat?: HttpArrayFormat;
+  loc?: string;
+};
+
+export type HttpRoute = {
+  kind: 'httpRoute';
+  pattern: StringLiteral;
+  methods: HttpMethod[];
+  loc?: string;
+};
+
+export type HttpVerbLiteral = {
+  kind: 'HttpVerbLiteral';
+  value: HttpVerb;
+  loc?: string;
+};
+
+/**
+ * An integer literal
+ */
+export type IntegerLiteral = {
+  kind: 'IntegerLiteral';
+  value: number;
+  loc?: string;
+};
+
+export type Interface = {
+  kind: 'Interface';
+  name: StringLiteral;
+  description?: StringLiteral[];
+  methods: Method[];
+  protocols?: Protocols;
+  deprecated?: TrueLiteral;
+  meta?: MetaValue[];
+};
+
+export type MetaValue = {
+  kind: 'MetaValue';
+  key: StringLiteral;
+  value: UntypedLiteral;
+};
+
+export type Method = {
+  kind: 'Method';
+  name: StringLiteral;
+  security: SecurityScheme[];
+  description?: StringLiteral[];
+  parameters: Parameter[];
+  returns?: ReturnValue;
+  deprecated?: TrueLiteral;
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+/**
+ * A string literal
+ */
+export type NonEmptyStringLiteral = {
+  kind: 'NonEmptyStringLiteral';
+  value: string;
+
+  /**
+   * The location of this in the doc.
+   */
+  loc?: string;
+};
+
+export type NonNegativeIntegerLiteral = {
+  kind: 'NonNegativeIntegerLiteral';
+  value: number;
+  loc?: string;
+};
+
+export type NonNegativeNumberLiteral = {
+  kind: 'NonNegativeNumberLiteral';
+  value: number;
+  loc?: string;
+};
+
+export type NumberGteRule = {
+  kind: 'ValidationRule';
+  id: 'NumberGTE';
+  value: NumberLiteral;
+  loc?: string;
+};
+
+export type NumberGtRule = {
+  kind: 'ValidationRule';
+  id: 'NumberGT';
+  value: NumberLiteral;
+  loc?: string;
+};
+
+/**
+ * A number literal
+ */
+export type NumberLiteral = {
+  kind: 'NumberLiteral';
+  value: number;
+  loc?: string;
+};
+
+export type NumberLteRule = {
+  kind: 'ValidationRule';
+  id: 'NumberLTE';
+  value: NumberLiteral;
+  loc?: string;
+};
+
+export type NumberLtRule = {
+  kind: 'ValidationRule';
+  id: 'NumberLT';
+  value: NumberLiteral;
+  loc?: string;
+};
+
+export type NumberMultipleOfRule = {
+  kind: 'ValidationRule';
+  id: 'NumberMultipleOf';
+  value: NonNegativeNumberLiteral;
+  loc?: string;
+};
+
+export type Oauth2AuthorizationCodeFlow = {
+  kind: 'OAuth2AuthorizationCodeFlow';
+  type: Oauth2AuthorizationCodeFlowType;
+  deprecated?: TrueLiteral;
+  authorizationUrl: StringLiteral;
+  tokenUrl: StringLiteral;
+  refreshUrl?: StringLiteral;
+  scopes: Oauth2Scope[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type Oauth2AuthorizationCodeFlowType = {
+  value: 'authorizationCode';
+  loc?: string;
+};
+
+export type Oauth2ClientCredentialsFlow = {
+  kind: 'OAuth2ClientCredentialsFlow';
+  type: Oauth2ClientCredentialsFlowType;
+  deprecated?: TrueLiteral;
+  tokenUrl: StringLiteral;
+  refreshUrl?: StringLiteral;
+  scopes: Oauth2Scope[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type Oauth2ClientCredentialsFlowType = {
+  value: 'clientCredentials';
+  loc?: string;
+};
+
+export type Oauth2ImplicitFlow = {
+  kind: 'OAuth2ImplicitFlow';
+  type: Oauth2ImplicitFlowType;
+  deprecated?: TrueLiteral;
+  authorizationUrl: StringLiteral;
+  refreshUrl?: StringLiteral;
+  scopes: Oauth2Scope[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type Oauth2ImplicitFlowType = {
+  value: 'implicit';
+  loc?: string;
+};
+
+export type Oauth2PasswordFlow = {
+  kind: 'OAuth2PasswordFlow';
+  type: Oauth2PasswordFlowType;
+  deprecated?: TrueLiteral;
+  tokenUrl: string;
+  refreshUrl?: string;
+  scopes: Oauth2Scope[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type Oauth2PasswordFlowType = {
+  value: 'password';
+  loc?: string;
+};
+
+export type OAuth2Scheme = {
+  kind: 'OAuth2Scheme';
+  type: OAuth2SchemeType;
+  deprecated?: TrueLiteral;
+  name: StringLiteral;
+  description?: string;
+  flows: Oauth2Flow[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type OAuth2SchemeType = {
+  value: 'oauth2';
+  loc?: string;
+};
+
+export type Oauth2Scope = {
+  kind: 'OAuth2Scope';
+  name: StringLiteral;
+  description: StringLiteral;
+  deprecated?: TrueLiteral;
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type ObjectAdditionalPropertiesRule = {
+  kind: 'ObjectValidationRule';
+  id: 'ObjectAdditionalProperties';
+  forbidden: TrueLiteral;
+  loc?: string;
+};
+
+export type ObjectMaxPropertiesRule = {
+  kind: 'ObjectValidationRule';
+  id: 'ObjectMaxProperties';
+  max: NonNegativeIntegerLiteral;
+  loc?: string;
+};
+
+export type ObjectMinPropertiesRule = {
+  kind: 'ObjectValidationRule';
+  id: 'ObjectMinProperties';
+  min: NonNegativeIntegerLiteral;
+  loc?: string;
+};
+
+export type Parameter = {
+  kind: 'Parameter';
+  name: StringLiteral;
+  description?: StringLiteral[];
+  value: MemberValue;
+  deprecated?: TrueLiteral;
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type PrimitiveLiteral = {
+  kind: 'PrimitiveLiteral';
+  value: Primitive;
+  loc?: string;
+};
+
+/**
+ * TODO: don't allow arrays in primitive unions
+ */
+export type PrimitiveUnion = {
+  kind: 'PrimitiveUnion';
+  name: StringLiteral;
+  members: PrimitiveValue[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type PrimitiveValue = {
+  kind: 'PrimitiveValue';
+  typeName: PrimitiveLiteral;
+  isArray?: TrueLiteral;
+  constant?: PrimitiveValueConstant;
+
+  /**
+   * TODO: add null literal
+   */
+  default?: PrimitiveValueDefault;
+  rules: ValidationRule[];
+};
+
+export type Property = {
+  kind: 'Property';
+  name: StringLiteral;
+  description?: StringLiteral[];
+  value: MemberValue;
+  deprecated?: TrueLiteral;
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type Protocols = {
+  kind: 'InterfaceProtocols';
+  http?: HttpRoute[];
+};
+
+export type RequiredRule = {
+  kind: 'ValidationRule';
+  id: 'Required';
+};
+
+export type ReturnValue = {
+  kind: 'ReturnValue';
+  loc?: string;
+  meta?: MetaValue[];
+  value: MemberValue;
+};
+
 /**
  * Intermediate Representation (IR) of a service
  */
 export type Service = {
   kind: 'Service';
-  basketry: '1.1-rc';
-  title: Scalar<string>;
-  majorVersion: Scalar<number>;
-  /** The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document. */
+  basketry: '0.2';
+  title: StringLiteral;
+  majorVersion: IntegerLiteral;
+
+  /**
+   * The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document.
+   */
   sourcePath: string;
   interfaces: Interface[];
   types: Type[];
   enums: Enum[];
   unions: Union[];
   loc?: string;
-  meta?: Meta;
+  meta?: MetaValue[];
 };
 
-export type Type = {
-  kind: 'Type';
-  name: Scalar<string>;
-  description?: Scalar<string> | Scalar<string>[];
-  deprecated?: Scalar<true>;
-  properties: Property[];
-  rules: ObjectValidationRule[];
-  loc?: string;
-  meta?: Meta;
-};
-
-export type Enum = {
-  kind: 'Enum';
-  name: Scalar<string>;
-  description?: Scalar<string> | Scalar<string>[];
-  deprecated?: Scalar<true>;
-  values: EnumValue[];
-  loc?: string;
-  meta?: Meta;
-};
-
-export type EnumValue = {
-  kind: 'EnumValue';
-  content: Scalar<string>;
-  description?: Scalar<string> | Scalar<string>[];
-  deprecated?: Scalar<true>;
-  loc?: string;
-  meta?: Meta;
-};
-
-export type Union = {
-  kind: 'Union';
-  name: Scalar<string>;
-  loc?: string;
-  meta?: Meta;
-} & (
-  | {
-      discriminator?: undefined;
-      members: TypedValue[];
-    }
-  | {
-      /* The name of the discriminating property on each of the member types */
-      discriminator: Scalar<string>;
-      members: CustomValue[];
-    }
-);
-
-export type PrimitiveValue = {
-  typeName: Scalar<Primitive>;
-  isArray: boolean;
-  isPrimitive: true;
-  constant?: Scalar<string | number | boolean>;
-  default?: Scalar<string | number | boolean | null>;
-  rules: ValidationRule[];
-};
-
-export type CustomValue = {
-  typeName: Scalar<string>;
-  isArray: boolean;
-  isPrimitive: false;
-  rules: ValidationRule[];
-};
-
-export type TypedValue = PrimitiveValue | CustomValue;
-
-export type Property = {
-  kind: 'Property';
-  name: Scalar<string>;
-  description?: Scalar<string> | Scalar<string>[];
-  deprecated?: Scalar<true>;
-  loc?: string;
-  meta?: Meta;
-} & TypedValue;
-
-export type Interface = {
-  kind: 'Interface';
-  name: Scalar<string>;
-  description?: Scalar<string> | Scalar<string>[];
-  deprecated?: Scalar<true>;
-  methods: Method[];
-  protocols: {
-    http: HttpPath[];
-  };
-  meta?: Meta;
-};
-
-export type HttpPath = {
-  kind: 'HttpPath';
-  path: Scalar<string>;
-  methods: HttpMethod[];
-  loc?: string;
-  meta?: Meta;
-};
-
-export type HttpMethod = {
-  kind: 'HttpMethod';
-  name: Scalar<string>;
-  verb: Scalar<
-    'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options' | 'trace'
-  >;
-  parameters: HttpParameter[];
-  successCode: Scalar<number>;
-  requestMediaTypes: Scalar<string>[];
-  responseMediaTypes: Scalar<string>[];
-  loc?: string;
-};
-
-export type HttpParameter = {
-  kind: 'HttpParameter';
-  name: Scalar<string>;
-  in: Scalar<'header' | 'query' | 'path' | 'formData' | 'body'>;
-  array?: Scalar<'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi'>;
-  loc?: string;
-};
-
-export type Method = {
-  kind: 'Method';
-  name: Scalar<string>;
-  security: SecurityOption[];
-  description?: Scalar<string> | Scalar<string>[];
-  deprecated?: Scalar<true>;
-  parameters: Parameter[];
-  returnType: ReturnType | undefined;
-  loc?: string;
-  meta?: Meta;
-};
-
-export type SecurityOption = SecurityScheme[];
-
-export type SecurityScheme = BasicScheme | ApiKeyScheme | OAuth2Scheme;
-
-export type BasicScheme = {
-  kind: 'BasicScheme';
-  type: Scalar<'basic'>;
-  name: Scalar<string>;
-  description?: Scalar<string>;
-  deprecated?: Scalar<true>;
-  loc?: string;
-  meta?: Meta;
-};
-
-export type ApiKeyScheme = {
-  kind: 'ApiKeyScheme';
-  type: Scalar<'apiKey'>;
-  name: Scalar<string>;
-  description?: Scalar<string>;
-  deprecated?: Scalar<true>;
-  parameter: Scalar<string>;
-  in: Scalar<'header' | 'query' | 'cookie'>;
-  loc?: string;
-  meta?: Meta;
-};
-
-export type OAuth2Scheme = {
-  kind: 'OAuth2Scheme';
-  type: Scalar<'oauth2'>;
-  name: Scalar<string>;
-  description?: Scalar<string>;
-  deprecated?: Scalar<true>;
-  flows: OAuth2Flow[];
-  loc?: string;
-  meta?: Meta;
-};
-
-export type OAuth2Flow =
-  | OAuth2ImplicitFlow
-  | OAuth2PasswordFlow
-  | OAuth2ClientCredentialsFlow
-  | OAuth2AuthorizationCodeFlow;
-
-export type OAuth2ImplicitFlow = {
-  kind: 'OAuth2ImplicitFlow';
-  type: Scalar<'implicit'>;
-  deprecated?: Scalar<true>;
-  authorizationUrl: Scalar<string>;
-  refreshUrl?: Scalar<string>;
-  scopes: OAuth2Scope[];
-  loc?: string;
-  meta?: Meta;
-};
-
-export type OAuth2PasswordFlow = {
-  kind: 'OAuth2PasswordFlow';
-  type: Scalar<'password'>;
-  deprecated?: Scalar<true>;
-  tokenUrl: Scalar<string>;
-  refreshUrl?: Scalar<string>;
-  scopes: OAuth2Scope[];
-  loc?: string;
-  meta?: Meta;
-};
-
-export type OAuth2ClientCredentialsFlow = {
-  kind: 'OAuth2ClientCredentialsFlow';
-  type: Scalar<'clientCredentials'>;
-  deprecated?: Scalar<true>;
-  tokenUrl: Scalar<string>;
-  refreshUrl?: Scalar<string>;
-  scopes: OAuth2Scope[];
-  loc?: string;
-  meta?: Meta;
-};
-
-export type OAuth2AuthorizationCodeFlow = {
-  kind: 'OAuth2AuthorizationCodeFlow';
-  type: Scalar<'authorizationCode'>;
-  deprecated?: Scalar<true>;
-  authorizationUrl: Scalar<string>;
-  tokenUrl: Scalar<string>;
-  refreshUrl?: Scalar<string>;
-  scopes: OAuth2Scope[];
-  loc?: string;
-  meta?: Meta;
-};
-
-export type OAuth2Scope = {
-  kind: 'OAuth2Scope';
-  name: Scalar<string>;
-  description: Scalar<string>;
-  deprecated?: Scalar<true>;
-  loc?: string;
-  meta?: Meta;
-};
-
-export type Parameter = {
-  kind: 'Parameter';
-  name: Scalar<string>;
-  description?: Scalar<string> | Scalar<string>[];
-  deprecated?: Scalar<true>;
-  loc?: string;
-  meta?: Meta;
-} & TypedValue;
-
-export type ReturnType = {
-  kind: 'ReturnType';
-  loc?: string;
-  meta?: Meta;
-} & TypedValue;
-
-export type Meta = MetaValue[];
-
-export type MetaValue = {
-  key: Scalar<string>;
-  value: { value: any; loc?: string };
-};
-
-export type RequiredRule = {
+export type StringEnumRule = {
   kind: 'ValidationRule';
-  id: 'required';
-};
-
-export type ConstantRule = {
-  kind: 'ValidationRule';
-  id: 'constant';
-  value: Scalar<string | number | boolean>;
-};
-
-export type StringMaxLengthRule = {
-  kind: 'ValidationRule';
-  id: 'string-max-length';
-  length: Scalar<number>;
-  loc?: string;
-};
-
-export type StringMinLengthRule = {
-  kind: 'ValidationRule';
-  id: 'string-min-length';
-  length: Scalar<number>;
-  loc?: string;
-};
-
-export type StringPatternRule = {
-  kind: 'ValidationRule';
-  id: 'string-pattern';
-  pattern: Scalar<string>;
+  id: 'StringEnum';
+  values: StringLiteral[];
   loc?: string;
 };
 
 export type StringFormatRule = {
   kind: 'ValidationRule';
-  id: 'string-format';
-  format: Scalar<string>;
+  id: 'StringFormat';
+  format: NonEmptyStringLiteral;
   loc?: string;
 };
 
-export type StringEnumRule = {
+/**
+ * A string literal
+ */
+export type StringLiteral = {
+  kind: 'StringLiteral';
+  value: string;
+
+  /**
+   * The location of this in the doc.
+   */
+  loc?: string;
+};
+
+export type StringMaxLengthRule = {
   kind: 'ValidationRule';
-  id: 'string-enum';
-  values: Scalar<string>[];
+  id: 'StringMaxLength';
+  length: NonNegativeIntegerLiteral;
   loc?: string;
 };
 
-export type NumberMultipleOfRule = {
+export type StringMinLengthRule = {
   kind: 'ValidationRule';
-  id: 'number-multiple-of';
-  value: Scalar<number>;
+  id: 'StringMinLength';
+  length: NonNegativeIntegerLiteral;
   loc?: string;
 };
 
-export type NumberGtRule = {
+export type StringPatternRule = {
   kind: 'ValidationRule';
-  id: 'number-gt';
-  value: Scalar<number>;
+  id: 'StringPattern';
+  pattern: NonEmptyStringLiteral;
   loc?: string;
 };
 
-export type NumberGteRule = {
-  kind: 'ValidationRule';
-  id: 'number-gte';
-  value: Scalar<number>;
+/**
+ * A boolean literal whose value is always true
+ */
+export type TrueLiteral = {
+  kind: 'TrueLiteral';
+  value: true;
   loc?: string;
 };
 
-export type NumberLtRule = {
-  kind: 'ValidationRule';
-  id: 'number-lt';
-  value: Scalar<number>;
+export type Type = {
+  kind: 'Type';
+  name: StringLiteral;
+  description?: StringLiteral[];
+  deprecated?: TrueLiteral;
+  properties: Property[];
+  rules: ObjectValidationRule[];
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type UntypedLiteral = {
+  value: any;
   loc?: string;
 };
 
-export type NumberLteRule = {
-  kind: 'ValidationRule';
-  id: 'number-lte';
-  value: Scalar<number>;
-  loc?: string;
-};
+export type ConstantRuleValue = StringLiteral | NumberLiteral | BooleanLiteral;
 
-export type ArrayMaxItemsRule = {
-  kind: 'ValidationRule';
-  id: 'array-max-items';
-  max: Scalar<number>;
-  loc?: string;
-};
+export type MemberValue = PrimitiveValue | ComplexValue;
 
-export type ArrayMinItemsRule = {
-  kind: 'ValidationRule';
-  id: 'array-min-items';
-  min: Scalar<number>;
-  loc?: string;
-};
+export function isPrimitiveValue(obj: MemberValue): obj is PrimitiveValue {
+  return obj.kind === 'PrimitiveValue';
+}
 
-export type ArrayUniqueItemsRule = {
-  kind: 'ValidationRule';
-  id: 'array-unique-items';
-  required: boolean;
-  loc?: string;
-};
+export function isComplexValue(obj: MemberValue): obj is ComplexValue {
+  return obj.kind === 'ComplexValue';
+}
 
-export type ObjectMinPropertiesRule = {
-  kind: 'ObjectValidationRule';
-  id: 'object-min-properties';
-  min: Scalar<number>;
-  loc?: string;
-};
+export type Oauth2Flow =
+  | Oauth2ImplicitFlow
+  | Oauth2PasswordFlow
+  | Oauth2ClientCredentialsFlow
+  | Oauth2AuthorizationCodeFlow;
 
-export type ObjectMaxPropertiesRule = {
-  kind: 'ObjectValidationRule';
-  id: 'object-max-properties';
-  max: Scalar<number>;
-  loc?: string;
-};
+export function isOauth2ImplicitFlow(
+  obj: Oauth2Flow,
+): obj is Oauth2ImplicitFlow {
+  return obj.kind === 'OAuth2ImplicitFlow';
+}
 
-export type ObjectAdditionalPropertiesRule = {
-  kind: 'ObjectValidationRule';
-  id: 'object-additional-properties';
-  forbidden: true;
-  loc?: string;
-};
+export function isOauth2PasswordFlow(
+  obj: Oauth2Flow,
+): obj is Oauth2PasswordFlow {
+  return obj.kind === 'OAuth2PasswordFlow';
+}
+
+export function isOauth2ClientCredentialsFlow(
+  obj: Oauth2Flow,
+): obj is Oauth2ClientCredentialsFlow {
+  return obj.kind === 'OAuth2ClientCredentialsFlow';
+}
+
+export function isOauth2AuthorizationCodeFlow(
+  obj: Oauth2Flow,
+): obj is Oauth2AuthorizationCodeFlow {
+  return obj.kind === 'OAuth2AuthorizationCodeFlow';
+}
+
+export type ObjectValidationRule =
+  | ObjectMinPropertiesRule
+  | ObjectMaxPropertiesRule
+  | ObjectAdditionalPropertiesRule;
+
+export function isObjectMinPropertiesRule(
+  obj: ObjectValidationRule,
+): obj is ObjectMinPropertiesRule {
+  return obj.id === 'ObjectMinProperties';
+}
+
+export function isObjectMaxPropertiesRule(
+  obj: ObjectValidationRule,
+): obj is ObjectMaxPropertiesRule {
+  return obj.id === 'ObjectMaxProperties';
+}
+
+export function isObjectAdditionalPropertiesRule(
+  obj: ObjectValidationRule,
+): obj is ObjectAdditionalPropertiesRule {
+  return obj.id === 'ObjectAdditionalProperties';
+}
+
+export type PrimitiveValueConstant =
+  | StringLiteral
+  | NumberLiteral
+  | BooleanLiteral;
+
+export type PrimitiveValueDefault =
+  | StringLiteral
+  | NumberLiteral
+  | BooleanLiteral;
+
+export type SecurityScheme = BasicScheme | ApiKeyScheme | OAuth2Scheme;
+
+export function isBasicScheme(obj: SecurityScheme): obj is BasicScheme {
+  return obj.kind === 'BasicScheme';
+}
+
+export function isApiKeyScheme(obj: SecurityScheme): obj is ApiKeyScheme {
+  return obj.kind === 'ApiKeyScheme';
+}
+
+export function isOAuth2Scheme(obj: SecurityScheme): obj is OAuth2Scheme {
+  return obj.kind === 'OAuth2Scheme';
+}
+
+export type Union = PrimitiveUnion | ComplexUnion | DiscriminatedUnion;
+
+export function isPrimitiveUnion(obj: Union): obj is PrimitiveUnion {
+  return obj.kind === 'PrimitiveUnion';
+}
+
+export function isComplexUnion(obj: Union): obj is ComplexUnion {
+  return obj.kind === 'ComplexUnion';
+}
+
+export function isDiscriminatedUnion(obj: Union): obj is DiscriminatedUnion {
+  return obj.kind === 'DiscriminatedUnion';
+}
 
 export type ValidationRule =
   | RequiredRule
@@ -427,7 +700,78 @@ export type ValidationRule =
   | ArrayMinItemsRule
   | ArrayUniqueItemsRule;
 
-export type ObjectValidationRule =
-  | ObjectMinPropertiesRule
-  | ObjectMaxPropertiesRule
-  | ObjectAdditionalPropertiesRule;
+export function isRequiredRule(obj: ValidationRule): obj is RequiredRule {
+  return obj.id === 'Required';
+}
+
+export function isConstantRule(obj: ValidationRule): obj is ConstantRule {
+  return obj.id === 'Constant';
+}
+
+export function isStringMaxLengthRule(
+  obj: ValidationRule,
+): obj is StringMaxLengthRule {
+  return obj.id === 'StringMaxLength';
+}
+
+export function isStringMinLengthRule(
+  obj: ValidationRule,
+): obj is StringMinLengthRule {
+  return obj.id === 'StringMinLength';
+}
+
+export function isStringPatternRule(
+  obj: ValidationRule,
+): obj is StringPatternRule {
+  return obj.id === 'StringPattern';
+}
+
+export function isStringFormatRule(
+  obj: ValidationRule,
+): obj is StringFormatRule {
+  return obj.id === 'StringFormat';
+}
+
+export function isStringEnumRule(obj: ValidationRule): obj is StringEnumRule {
+  return obj.id === 'StringEnum';
+}
+
+export function isNumberMultipleOfRule(
+  obj: ValidationRule,
+): obj is NumberMultipleOfRule {
+  return obj.id === 'NumberMultipleOf';
+}
+
+export function isNumberGtRule(obj: ValidationRule): obj is NumberGtRule {
+  return obj.id === 'NumberGT';
+}
+
+export function isNumberGteRule(obj: ValidationRule): obj is NumberGteRule {
+  return obj.id === 'NumberGTE';
+}
+
+export function isNumberLtRule(obj: ValidationRule): obj is NumberLtRule {
+  return obj.id === 'NumberLT';
+}
+
+export function isNumberLteRule(obj: ValidationRule): obj is NumberLteRule {
+  return obj.id === 'NumberLTE';
+}
+
+export function isArrayMaxItemsRule(
+  obj: ValidationRule,
+): obj is ArrayMaxItemsRule {
+  return obj.id === 'ArrayMaxItems';
+}
+
+export function isArrayMinItemsRule(
+  obj: ValidationRule,
+): obj is ArrayMinItemsRule {
+  return obj.id === 'ArrayMinItems';
+}
+
+export function isArrayUniqueItemsRule(
+  obj: ValidationRule,
+): obj is ArrayUniqueItemsRule {
+  return obj.id === 'ArrayUniqueItems';
+}

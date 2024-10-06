@@ -2,11 +2,15 @@ import { InterfaceScope, MethodChangeInfo, ReturnTypeChangeInfo } from '.';
 import { Method } from '../ir';
 import { methods } from './methods';
 import {
+  buildComplexValue,
   buildInterface,
   buildMethod,
-  buildReturnType,
-  buildScalar,
+  buildPrimitiveValue,
+  buildReturnValue,
   buildService,
+  primitiveLiteral,
+  stringLiteral,
+  trueLiteral,
 } from './test-utils';
 
 const title = 'service title';
@@ -20,19 +24,19 @@ function setup(
   const b_methods = b ? [b] : [];
 
   const a_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: a_methods,
   });
   const b_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: b_methods,
   });
   const a_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [a_int],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [b_int],
   });
 
@@ -46,8 +50,8 @@ describe(methods, () => {
   it('identifies two identical methods', () => {
     // ARRANGE
     const [a, b] = setup(
-      buildMethod({ name: { value: methodName } }),
-      buildMethod({ name: { value: methodName } }),
+      buildMethod({ name: stringLiteral(methodName) }),
+      buildMethod({ name: stringLiteral(methodName) }),
     );
 
     // ACT
@@ -61,7 +65,7 @@ describe(methods, () => {
     // ARRANGE
     const [a, b] = setup(
       undefined,
-      buildMethod({ name: { value: methodName } }),
+      buildMethod({ name: stringLiteral(methodName) }),
     );
 
     // ACT
@@ -89,7 +93,7 @@ describe(methods, () => {
   it('identifies a removed method', () => {
     // ARRANGE
     const [a, b] = setup(
-      buildMethod({ name: { value: methodName } }),
+      buildMethod({ name: stringLiteral(methodName) }),
       undefined,
     );
 
@@ -120,8 +124,8 @@ describe(methods, () => {
     const originalName = 'SOME_NAME';
     const newName = 'someName';
     const [a, b] = setup(
-      buildMethod({ name: { value: originalName } }),
-      buildMethod({ name: { value: newName } }),
+      buildMethod({ name: stringLiteral(originalName) }),
+      buildMethod({ name: stringLiteral(newName) }),
     );
 
     // ACT
@@ -159,10 +163,10 @@ describe(methods, () => {
     // ARRANGE
     const description = 'some description';
     const [a, b] = setup(
-      buildMethod({ name: { value: methodName } }),
+      buildMethod({ name: stringLiteral(methodName) }),
       buildMethod({
-        name: { value: methodName },
-        description: { value: description },
+        name: stringLiteral(methodName),
+        description: [stringLiteral(description)],
       }),
     );
 
@@ -182,7 +186,7 @@ describe(methods, () => {
             interface: interfaceName,
             method: methodName,
           },
-          value: description,
+          value: [description],
         },
       },
     ]);
@@ -193,10 +197,10 @@ describe(methods, () => {
     const description = 'some description';
     const [a, b] = setup(
       buildMethod({
-        name: { value: methodName },
-        description: { value: description },
+        name: stringLiteral(methodName),
+        description: [stringLiteral(description)],
       }),
-      buildMethod({ name: { value: methodName } }),
+      buildMethod({ name: stringLiteral(methodName) }),
     );
 
     // ACT
@@ -215,7 +219,7 @@ describe(methods, () => {
             interface: interfaceName,
             method: methodName,
           },
-          value: description,
+          value: [description],
         },
       },
     ]);
@@ -227,12 +231,12 @@ describe(methods, () => {
     const newDescription = 'different description';
     const [a, b] = setup(
       buildMethod({
-        name: { value: methodName },
-        description: { value: originalDescription },
+        name: stringLiteral(methodName),
+        description: [stringLiteral(originalDescription)],
       }),
       buildMethod({
-        name: { value: methodName },
-        description: { value: newDescription },
+        name: stringLiteral(methodName),
+        description: [stringLiteral(newDescription)],
       }),
     );
 
@@ -252,7 +256,7 @@ describe(methods, () => {
             interface: interfaceName,
             method: methodName,
           },
-          value: originalDescription,
+          value: [originalDescription],
         },
         b: {
           context: {
@@ -261,7 +265,7 @@ describe(methods, () => {
             interface: interfaceName,
             method: methodName,
           },
-          value: newDescription,
+          value: [newDescription],
         },
       },
     ]);
@@ -271,11 +275,11 @@ describe(methods, () => {
     // ARRANGE
     const [a, b] = setup(
       buildMethod({
-        name: buildScalar(methodName),
+        name: stringLiteral(methodName),
       }),
       buildMethod({
-        name: buildScalar(methodName),
-        deprecated: buildScalar(true),
+        name: stringLiteral(methodName),
+        deprecated: trueLiteral(),
       }),
     );
 
@@ -305,11 +309,11 @@ describe(methods, () => {
     // ARRANGE
     const [a, b] = setup(
       buildMethod({
-        name: buildScalar(methodName),
-        deprecated: buildScalar(true),
+        name: stringLiteral(methodName),
+        deprecated: trueLiteral(),
       }),
       buildMethod({
-        name: buildScalar(methodName),
+        name: stringLiteral(methodName),
       }),
     );
 
@@ -339,12 +343,16 @@ describe(methods, () => {
     // ARRANGE
     const [a, b] = setup(
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({ typeName: { value: 'string' } }),
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({ typeName: primitiveLiteral('string') }),
+        }),
       }),
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({ typeName: { value: 'string' } }),
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({ typeName: primitiveLiteral('string') }),
+        }),
       }),
     );
 
@@ -358,10 +366,12 @@ describe(methods, () => {
   it('identifies an added method return type', () => {
     // ARRANGE
     const [a, b] = setup(
-      buildMethod({ name: { value: methodName } }),
+      buildMethod({ name: stringLiteral(methodName) }),
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({ typeName: { value: 'string' } }),
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({ typeName: primitiveLiteral('string') }),
+        }),
       }),
     );
 
@@ -372,15 +382,15 @@ describe(methods, () => {
     expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'added',
-        target: 'return-type',
+        target: 'returns',
         category: 'major',
         b: {
           context: {
-            scope: 'return-type',
+            scope: 'returns',
             service: title,
             interface: interfaceName,
             method: methodName,
-            returnType: 'string',
+            returns: 'string',
           },
           value: 'string',
         },
@@ -392,10 +402,12 @@ describe(methods, () => {
     // ARRANGE
     const [a, b] = setup(
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({ typeName: { value: 'string' } }),
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({ typeName: primitiveLiteral('string') }),
+        }),
       }),
-      buildMethod({ name: { value: methodName } }),
+      buildMethod({ name: stringLiteral(methodName) }),
     );
 
     // ACT
@@ -405,15 +417,15 @@ describe(methods, () => {
     expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'removed',
-        target: 'return-type',
+        target: 'returns',
         category: 'major',
         a: {
           context: {
-            scope: 'return-type',
+            scope: 'returns',
             service: title,
             interface: interfaceName,
             method: methodName,
-            returnType: 'string',
+            returns: 'string',
           },
           value: 'string',
         },
@@ -425,12 +437,16 @@ describe(methods, () => {
     // ARRANGE
     const [a, b] = setup(
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({ typeName: { value: 'number' } }),
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({ typeName: primitiveLiteral('number') }),
+        }),
       }),
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({ typeName: { value: 'string' } }),
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({ typeName: primitiveLiteral('string') }),
+        }),
       }),
     );
 
@@ -441,25 +457,25 @@ describe(methods, () => {
     expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'changed',
-        target: 'return-type',
+        target: 'returns',
         category: 'major',
         a: {
           context: {
-            scope: 'return-type',
+            scope: 'returns',
             service: title,
             interface: interfaceName,
             method: methodName,
-            returnType: 'number',
+            returns: 'number',
           },
           value: 'number',
         },
         b: {
           context: {
-            scope: 'return-type',
+            scope: 'returns',
             service: title,
             interface: interfaceName,
             method: methodName,
-            returnType: 'string',
+            returns: 'string',
           },
           value: 'string',
         },
@@ -471,17 +487,20 @@ describe(methods, () => {
     // ARRANGE
     const [a, b] = setup(
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({
-          typeName: { value: 'string' },
-          isArray: true,
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+            isArray: trueLiteral(),
+          }),
         }),
       }),
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({
-          typeName: { value: 'string' },
-          isArray: false,
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+          }),
         }),
       }),
     );
@@ -493,25 +512,25 @@ describe(methods, () => {
     expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'changed',
-        target: 'return-type-array',
+        target: 'returns-array',
         category: 'major',
         a: {
           context: {
-            scope: 'return-type',
+            scope: 'returns',
             service: title,
             interface: interfaceName,
             method: methodName,
-            returnType: 'string',
+            returns: 'string',
           },
           value: true,
         },
         b: {
           context: {
-            scope: 'return-type',
+            scope: 'returns',
             service: title,
             interface: interfaceName,
             method: methodName,
-            returnType: 'string',
+            returns: 'string',
           },
           value: false,
         },
@@ -523,17 +542,19 @@ describe(methods, () => {
     // ARRANGE
     const [a, b] = setup(
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({
-          typeName: { value: 'string' },
-          isPrimitive: true,
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+          }),
         }),
       }),
       buildMethod({
-        name: { value: methodName },
-        returnType: buildReturnType({
-          typeName: { value: 'string' },
-          isPrimitive: false,
+        name: stringLiteral(methodName),
+        returns: buildReturnValue({
+          value: buildComplexValue({
+            typeName: stringLiteral('string'),
+          }),
         }),
       }),
     );
@@ -545,25 +566,25 @@ describe(methods, () => {
     expect(Array.from(result)).toEqual<ReturnTypeChangeInfo[]>([
       {
         kind: 'changed',
-        target: 'return-type-primitive',
+        target: 'returns-primitive',
         category: 'major',
         a: {
           context: {
-            scope: 'return-type',
+            scope: 'returns',
             service: title,
             interface: interfaceName,
             method: methodName,
-            returnType: 'string',
+            returns: 'string',
           },
           value: true,
         },
         b: {
           context: {
-            scope: 'return-type',
+            scope: 'returns',
             service: title,
             interface: interfaceName,
             method: methodName,
-            returnType: 'string',
+            returns: 'string',
           },
           value: false,
         },

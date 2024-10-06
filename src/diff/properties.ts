@@ -17,7 +17,7 @@ function buildContext(
     service: scope.service.title.value,
     type: scope.type.name.value,
     property: property.name.value,
-    required: isRequired(property),
+    required: isRequired(property.value),
   };
 }
 
@@ -85,45 +85,45 @@ export function* properties(
       }
 
       // Type
-      if (!eq(a_prop.typeName, b_prop.typeName)) {
+      if (!eq(a_prop.value.typeName, b_prop.value.typeName)) {
         yield {
           kind: 'changed',
           target: `${mode}-property-type`,
           category: 'major',
-          a: { context: a_context, ...asValue(a_prop.typeName) },
-          b: { context: b_context, ...asValue(b_prop.typeName) },
+          a: { context: a_context, ...asValue(a_prop.value.typeName) },
+          b: { context: b_context, ...asValue(b_prop.value.typeName) },
         };
       }
-      if (!eq(a_prop.isPrimitive, b_prop.isPrimitive)) {
+      if (!eq(a_prop.value.kind, b_prop.value.kind)) {
         yield {
           kind: 'changed',
           target: `${mode}-property-type-primitive`,
           category: 'major',
           a: {
             context: a_context,
-            value: a_prop.isPrimitive,
+            value: a_prop.value.kind === 'PrimitiveValue',
             loc: a_prop.loc,
           },
           b: {
             context: b_context,
-            value: b_prop.isPrimitive,
+            value: b_prop.value.kind === 'PrimitiveValue',
             loc: b_prop.loc,
           },
         };
       }
-      if (!eq(a_prop.isArray, b_prop.isArray)) {
+      if (!eq(a_prop.value.isArray, b_prop.value.isArray)) {
         yield {
           kind: 'changed',
           target: `${mode}-property-type-array`,
           category: 'major',
           a: {
             context: a_context,
-            value: a_prop.isArray,
+            value: a_prop.value.isArray?.value ?? false,
             loc: a_prop.loc,
           },
           b: {
             context: b_context,
-            value: b_prop.isArray,
+            value: b_prop.value.isArray?.value ?? false,
             loc: b_prop.loc,
           },
         };
@@ -138,7 +138,7 @@ export function* properties(
       yield {
         kind: 'removed',
         target: `${mode}-property`,
-        category: isRequired(a_prop)
+        category: isRequired(a_prop.value)
           ? 'major'
           : mode === 'input'
           ? 'major'
@@ -156,7 +156,7 @@ export function* properties(
       yield {
         kind: 'added',
         target: `${mode}-property`,
-        category: isRequired(b_prop) ? 'major' : 'minor',
+        category: isRequired(b_prop.value) ? 'major' : 'minor',
         b: { context: b_context, value: b_prop.name.value, loc: b_prop.loc },
       };
     }
