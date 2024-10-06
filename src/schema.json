@@ -396,6 +396,16 @@
         "trace"
       ]
     },
+    "httpStatusCodeLiteral": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "HttpStatusCodeLiteral" },
+        "value": { "type": "integer", "minimum": 100, "maximum": 599 },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
     "httpVerbLiteral": {
       "type": "object",
       "required": ["kind", "value"],
@@ -467,18 +477,7 @@
           "type": "array",
           "items": { "$ref": "#/definitions/httpParameter" }
         },
-        "successCode": {
-          "type": "object",
-          "required": ["value"],
-          "properties": {
-            "value": {
-              "type": "integer",
-              "minimum": 100
-            },
-            "loc": { "$ref": "#/definitions/range" }
-          },
-          "additionalProperties": false
-        },
+        "successCode": { "$ref": "#/definitions/httpStatusCodeLiteral" },
         "requestMediaTypes": {
           "type": "array",
           "items": { "$ref": "#/definitions/string" }

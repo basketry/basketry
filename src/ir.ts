@@ -170,14 +170,9 @@ export type HttpMethod = {
   name: StringLiteral;
   verb: HttpVerbLiteral;
   parameters: HttpParameter[];
-  successCode: HttpMethodSuccessCode;
+  successCode: HttpStatusCodeLiteral;
   requestMediaTypes: StringLiteral[];
   responseMediaTypes: StringLiteral[];
-  loc?: string;
-};
-
-export type HttpMethodSuccessCode = {
-  value: number;
   loc?: string;
 };
 
@@ -193,6 +188,12 @@ export type HttpRoute = {
   kind: 'HttpRoute';
   pattern: StringLiteral;
   methods: HttpMethod[];
+  loc?: string;
+};
+
+export type HttpStatusCodeLiteral = {
+  kind: 'HttpStatusCodeLiteral';
+  value: number;
   loc?: string;
 };
 
