@@ -15,6 +15,7 @@
     "unions"
   ],
   "properties": {
+    "$schema": { "type": "string" },
     "kind": { "type": "string", "const": "Service" },
     "basketry": { "type": "string", "const": "0.2" },
     "title": { "$ref": "#/definitions/string" },
