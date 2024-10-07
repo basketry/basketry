@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
   "title": "Service",
-  "description": "Intermediate Representation (IR) of a service",
+  "description": "Intermediate Representation (IR) of a service. The Basketry Intermediate Representation (IR) defines a structured, machine-oriented format that abstracts over various Interface Definition Languages (IDLs) and Service Description Languages (SDLs). This standardized, language-agnostic schema allows tooling to consistently interpret the core attributes and behaviors of a service, independent of its underlying definition format.\n\nBasketry IR is optimized for automated workflows, enabling code generation, documentation, validation, and custom analysis through reusable components without requiring developers to manually interact with the raw representation. While a typical Basketry pipeline translates human-friendly specifications (such as OpenAPI) into this intermediate format, the IR serves as a foundational layer for building new generators, rules, and other automation tools.",
   "required": [
     "kind",
     "basketry",
@@ -17,26 +17,43 @@
   "properties": {
     "$schema": { "type": "string" },
     "kind": { "type": "string", "const": "Service" },
-    "basketry": { "type": "string", "const": "0.2" },
-    "title": { "$ref": "#/definitions/string" },
-    "majorVersion": { "$ref": "#/definitions/integer" },
+    "basketry": {
+      "description": "This string MUST be the version number of the Basketry Specification that the Intermediate Representation uses. The `basketry` field SHOULD be used by tooling to interpret the IR document. This is not related to the Service `majorVersion` string.",
+      "type": "string",
+      "const": "0.2"
+    },
+    "title": {
+      "description": "The title of the service",
+      "$ref": "#/definitions/string"
+    },
+
+    "majorVersion": {
+      "description": "The major version of the Service (which is distinct from the Basketry Specification version).",
+      "$ref": "#/definitions/integer"
+    },
     "sourcePath": {
       "type": "string",
       "description": "The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document."
     },
     "interfaces": {
+      "description": "An array of Interfaces defined in this Service.",
       "type": "array",
-      "items": { "$ref": "#/definitions/interface" }
+      "items": {
+        "$ref": "#/definitions/interface"
+      }
     },
     "types": {
+      "description": "An array of Types defined in this Service.",
       "type": "array",
       "items": { "$ref": "#/definitions/type" }
     },
     "enums": {
+      "description": "An array of Enums defined in this Service.",
       "type": "array",
       "items": { "$ref": "#/definitions/enum" }
     },
     "unions": {
+      "description": "An array of Unions defined in this Service.",
       "type": "array",
       "items": { "$ref": "#/definitions/union" }
     },
@@ -232,6 +249,7 @@
       "discriminator": {
         "propertyName": "kind"
       },
+      "description": "A Union is a type that can be one of several different types. The `members` array contains the possible types that the Union can be.",
       "oneOf": [
         { "$ref": "#/definitions/primitiveUnion" },
         { "$ref": "#/definitions/complexUnion" },
@@ -245,11 +263,16 @@
       "properties": {
         "kind": { "type": "string", "const": "PrimitiveUnion" },
         "name": { "$ref": "#/definitions/string" },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
         "members": {
           "type": "array",
           "items": { "$ref": "#/definitions/primitiveValue" },
           "minItems": 1
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
@@ -262,11 +285,16 @@
       "properties": {
         "kind": { "type": "string", "const": "ComplexUnion" },
         "name": { "$ref": "#/definitions/string" },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
         "members": {
           "type": "array",
           "items": { "$ref": "#/definitions/complexValue" },
           "minItems": 1
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
@@ -279,12 +307,17 @@
       "properties": {
         "kind": { "type": "string", "const": "DiscriminatedUnion" },
         "name": { "$ref": "#/definitions/string" },
+        "description": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
         "discriminator": { "$ref": "#/definitions/string" },
         "members": {
           "type": "array",
           "items": { "$ref": "#/definitions/complexValue" },
           "minItems": 1
         },
+        "deprecated": { "$ref": "#/definitions/deprecated" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
@@ -433,6 +466,7 @@
     },
     "httpArrayFormat": {
       "type": "string",
+      "description": "The format of an array in an HTTP request or response.",
       "enum": ["csv", "ssv", "tsv", "pipes", "multi"]
     },
     "httpArrayFormatLiteral": {
@@ -860,13 +894,16 @@
       "$ref": "#/definitions/true"
     },
     "range": {
-      "type": "string"
+      "description": "A range in the source document encoded as a string. This string is a semicolon-separated list of numbers and MUST be in one of the following formats:\n- Single point: `<row>;<col>;<offset>` (eg. `\"4;12;88\"`)\n- Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `\"4;12;21;88;97\"`)\n- Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg. `\"4;12;6;3;88;164\"`)\n\nBoth the `row` and `column` values are 1-based. The `offset` values are 0-based.",
+      "type": "string",
+      "pattern": "^(\\d+;){2}(\\d+)$|^(\\d+;){4}(\\d+)$|^(\\d+;){5}(\\d+)$"
     },
 
     "validationRule": {
       "discriminator": {
         "propertyName": "id"
       },
+      "description": "A validation rule.",
       "oneOf": [
         { "$ref": "#/definitions/requiredRule" },
         { "$ref": "#/definitions/constantRule" },

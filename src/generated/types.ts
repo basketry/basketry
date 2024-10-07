@@ -14,6 +14,7 @@
 
 export type ApiKeySchemeInValue = 'header' | 'query' | 'cookie';
 
+/** The format of an array in an HTTP request or response. */
 export type HttpArrayFormat = 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
 
 export type HttpLocation = 'header' | 'query' | 'path' | 'formData' | 'body';
@@ -28,6 +29,7 @@ export type HttpVerb =
   | 'options'
   | 'trace';
 
+/** The name of a primitive type. */
 export type Primitive =
   | 'string'
   | 'number'
@@ -49,17 +51,50 @@ export type ApiKeyScheme = {
   description?: StringLiteral[];
   parameter: StringLiteral;
   in: ApiKeySchemeIn;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
 
 export type ApiKeySchemeIn = {
   value: ApiKeySchemeInValue;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
 export type ApiKeySchemeType = {
   value: 'apiKey';
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -67,6 +102,17 @@ export type ArrayMaxItemsRule = {
   kind: 'ValidationRule';
   id: 'ArrayMaxItems';
   max: NonNegativeNumberLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -74,6 +120,17 @@ export type ArrayMinItemsRule = {
   kind: 'ValidationRule';
   id: 'ArrayMinItems';
   min: NonNegativeNumberLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -81,6 +138,17 @@ export type ArrayUniqueItemsRule = {
   kind: 'ValidationRule';
   id: 'ArrayUniqueItems';
   required: boolean;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -90,31 +158,73 @@ export type BasicScheme = {
   deprecated?: TrueLiteral;
   name: StringLiteral;
   description?: StringLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
 
 export type BasicSchemeType = {
   value: 'basic';
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
-/**
- * A boolean literal
- */
+/** A boolean literal */
 export type BooleanLiteral = {
   kind: 'BooleanLiteral';
   value: boolean;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
-/**
- * TODO: don't allow arrays, enums, or other unions in complex unions
- */
+/** TODO: don't allow arrays, enums, or other unions in complex unions */
 export type ComplexUnion = {
   kind: 'ComplexUnion';
   name: StringLiteral;
+  description?: StringLiteral[];
   members: ComplexValue[];
+  deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -122,9 +232,7 @@ export type ComplexUnion = {
 export type ComplexValue = {
   kind: 'ComplexValue';
 
-  /**
-   * The name of a type, enum, or union defined in this Service.
-   */
+  /** The name of a type, enum, or union defined in this Service. */
   typeName: StringLiteral;
   isArray?: TrueLiteral;
   rules: ValidationRule[];
@@ -136,14 +244,25 @@ export type ConstantRule = {
   value: ConstantRuleValue;
 };
 
-/**
- * TODO: don't allow arrays, enums, or other unions in discriminated unions
- */
+/** TODO: don't allow arrays, enums, or other unions in discriminated unions */
 export type DiscriminatedUnion = {
   kind: 'DiscriminatedUnion';
   name: StringLiteral;
+  description?: StringLiteral[];
   discriminator: StringLiteral;
   members: ComplexValue[];
+  deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -154,6 +273,17 @@ export type Enum = {
   description?: StringLiteral[];
   members: EnumMember[];
   deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -163,6 +293,17 @@ export type EnumMember = {
   content: StringLiteral;
   description?: StringLiteral[];
   deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -170,12 +311,34 @@ export type EnumMember = {
 export type HttpArrayFormatLiteral = {
   kind: 'HttpArrayFormatLiteral';
   value: HttpArrayFormat;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
 export type HttpLocationLiteral = {
   kind: 'HttpLocationLiteral';
   value: HttpLocation;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -187,6 +350,17 @@ export type HttpMethod = {
   successCode: HttpStatusCodeLiteral;
   requestMediaTypes: StringLiteral[];
   responseMediaTypes: StringLiteral[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -195,6 +369,17 @@ export type HttpParameter = {
   name: StringLiteral;
   location: HttpLocationLiteral;
   arrayFormat?: HttpArrayFormatLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -202,27 +387,69 @@ export type HttpRoute = {
   kind: 'HttpRoute';
   pattern: StringLiteral;
   methods: HttpMethod[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
 export type HttpStatusCodeLiteral = {
   kind: 'HttpStatusCodeLiteral';
   value: number;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
 export type HttpVerbLiteral = {
   kind: 'HttpVerbLiteral';
   value: HttpVerb;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
-/**
- * An integer literal
- */
+/** An integer literal */
 export type IntegerLiteral = {
   kind: 'IntegerLiteral';
   value: number;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -250,32 +477,61 @@ export type Method = {
   parameters: Parameter[];
   returns?: ReturnValue;
   deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
 
-/**
- * A string literal
- */
+/** A string literal */
 export type NonEmptyStringLiteral = {
   kind: 'NonEmptyStringLiteral';
   value: string;
 
-  /**
-   * The location of this in the doc.
-   */
+  /** The location of this in the doc. */
   loc?: string;
 };
 
 export type NonNegativeIntegerLiteral = {
   kind: 'NonNegativeIntegerLiteral';
   value: number;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
 export type NonNegativeNumberLiteral = {
   kind: 'NonNegativeNumberLiteral';
   value: number;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -283,6 +539,17 @@ export type NumberGteRule = {
   kind: 'ValidationRule';
   id: 'NumberGTE';
   value: NumberLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -290,15 +557,35 @@ export type NumberGtRule = {
   kind: 'ValidationRule';
   id: 'NumberGT';
   value: NumberLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
-/**
- * A number literal
- */
+/** A number literal */
 export type NumberLiteral = {
   kind: 'NumberLiteral';
   value: number;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -306,6 +593,17 @@ export type NumberLteRule = {
   kind: 'ValidationRule';
   id: 'NumberLTE';
   value: NumberLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -313,6 +611,17 @@ export type NumberLtRule = {
   kind: 'ValidationRule';
   id: 'NumberLT';
   value: NumberLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -320,6 +629,17 @@ export type NumberMultipleOfRule = {
   kind: 'ValidationRule';
   id: 'NumberMultipleOf';
   value: NonNegativeNumberLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -331,12 +651,34 @@ export type OAuth2AuthorizationCodeFlow = {
   tokenUrl: StringLiteral;
   refreshUrl?: StringLiteral;
   scopes: OAuth2Scope[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
 
 export type OAuth2AuthorizationCodeFlowType = {
   value: 'authorizationCode';
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -347,12 +689,34 @@ export type OAuth2ClientCredentialsFlow = {
   tokenUrl: StringLiteral;
   refreshUrl?: StringLiteral;
   scopes: OAuth2Scope[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
 
 export type OAuth2ClientCredentialsFlowType = {
   value: 'clientCredentials';
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -363,12 +727,34 @@ export type OAuth2ImplicitFlow = {
   authorizationUrl: StringLiteral;
   refreshUrl?: StringLiteral;
   scopes: OAuth2Scope[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
 
 export type OAuth2ImplicitFlowType = {
   value: 'implicit';
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -379,12 +765,34 @@ export type OAuth2PasswordFlow = {
   tokenUrl: StringLiteral;
   refreshUrl?: StringLiteral;
   scopes: OAuth2Scope[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
 
 export type OAuth2PasswordFlowType = {
   value: 'password';
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -395,12 +803,34 @@ export type OAuth2Scheme = {
   name: StringLiteral;
   description?: StringLiteral[];
   flows: OAuth2Flow[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
 
 export type OAuth2SchemeType = {
   value: 'oauth2';
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -409,6 +839,17 @@ export type OAuth2Scope = {
   name: StringLiteral;
   description: StringLiteral[];
   deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -417,6 +858,17 @@ export type ObjectAdditionalPropertiesRule = {
   kind: 'ObjectValidationRule';
   id: 'ObjectAdditionalProperties';
   forbidden: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -424,6 +876,17 @@ export type ObjectMaxPropertiesRule = {
   kind: 'ObjectValidationRule';
   id: 'ObjectMaxProperties';
   max: NonNegativeIntegerLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -431,6 +894,17 @@ export type ObjectMinPropertiesRule = {
   kind: 'ObjectValidationRule';
   id: 'ObjectMinProperties';
   min: NonNegativeIntegerLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -440,6 +914,17 @@ export type Parameter = {
   description?: StringLiteral[];
   value: MemberValue;
   deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -447,16 +932,38 @@ export type Parameter = {
 export type PrimitiveLiteral = {
   kind: 'PrimitiveLiteral';
   value: Primitive;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
-/**
- * TODO: don't allow arrays in primitive unions
- */
+/** TODO: don't allow arrays in primitive unions */
 export type PrimitiveUnion = {
   kind: 'PrimitiveUnion';
   name: StringLiteral;
+  description?: StringLiteral[];
   members: PrimitiveValue[];
+  deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -467,9 +974,7 @@ export type PrimitiveValue = {
   isArray?: TrueLiteral;
   constant?: PrimitiveValueConstant;
 
-  /**
-   * TODO: add null literal
-   */
+  /** TODO: add null literal */
   default?: PrimitiveValueDefault;
   rules: ValidationRule[];
 };
@@ -480,6 +985,17 @@ export type Property = {
   description?: StringLiteral[];
   value: MemberValue;
   deprecated?: TrueLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -496,6 +1012,17 @@ export type RequiredRule = {
 
 export type ReturnValue = {
   kind: 'ReturnValue';
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
   value: MemberValue;
@@ -504,26 +1031,80 @@ export type ReturnValue = {
 export type SecurityOption = {
   kind: 'SecurityOption';
   schemes: SecurityScheme[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
 /**
- * Intermediate Representation (IR) of a service
+ * Intermediate Representation (IR) of a service. The Basketry Intermediate
+ * Representation (IR) defines a structured, machine-oriented format that abstracts
+ * over various Interface Definition Languages (IDLs) and Service Description
+ * Languages (SDLs). This standardized, language-agnostic schema allows tooling to
+ * consistently interpret the core attributes and behaviors of a service,
+ * independent of its underlying definition format.
+ *
+ * Basketry IR is optimized for automated workflows, enabling code generation,
+ * documentation, validation, and custom analysis through reusable components
+ * without requiring developers to manually interact with the raw representation.
+ * While a typical Basketry pipeline translates human-friendly specifications (such
+ * as OpenAPI) into this intermediate format, the IR serves as a foundational layer
+ * for building new generators, rules, and other automation tools.
  */
 export type Service = {
   kind: 'Service';
+
+  /**
+   * This string MUST be the version number of the Basketry Specification that the
+   * Intermediate Representation uses. The `basketry` field SHOULD be used by tooling
+   * to interpret the IR document. This is not related to the Service `majorVersion`
+   * string.
+   */
   basketry: '0.2';
+
+  /** The title of the service */
   title: StringLiteral;
+
+  /** The major version of the Service (which is distinct from the Basketry Specification version). */
   majorVersion: IntegerLiteral;
 
   /**
-   * The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document.
+   * The path to the original source document for this service. All locations in the
+   * Intermediate Representation refer to ranges within this source document.
    */
   sourcePath: string;
+
+  /** An array of Interfaces defined in this Service. */
   interfaces: Interface[];
+
+  /** An array of Types defined in this Service. */
   types: Type[];
+
+  /** An array of Enums defined in this Service. */
   enums: Enum[];
+
+  /** An array of Unions defined in this Service. */
   unions: Union[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -532,6 +1113,17 @@ export type StringEnumRule = {
   kind: 'ValidationRule';
   id: 'StringEnum';
   values: StringLiteral[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -539,19 +1131,26 @@ export type StringFormatRule = {
   kind: 'ValidationRule';
   id: 'StringFormat';
   format: NonEmptyStringLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
-/**
- * A string literal
- */
+/** A string literal */
 export type StringLiteral = {
   kind: 'StringLiteral';
   value: string;
 
-  /**
-   * The location of this in the doc.
-   */
+  /** The location of this in the doc. */
   loc?: string;
 };
 
@@ -559,6 +1158,17 @@ export type StringMaxLengthRule = {
   kind: 'ValidationRule';
   id: 'StringMaxLength';
   length: NonNegativeIntegerLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -566,6 +1176,17 @@ export type StringMinLengthRule = {
   kind: 'ValidationRule';
   id: 'StringMinLength';
   length: NonNegativeIntegerLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -573,15 +1194,35 @@ export type StringPatternRule = {
   kind: 'ValidationRule';
   id: 'StringPattern';
   pattern: NonEmptyStringLiteral;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
-/**
- * A boolean literal whose value is always true
- */
+/** A boolean literal whose value is always true */
 export type TrueLiteral = {
   kind: 'TrueLiteral';
   value: true;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
 };
 
@@ -592,6 +1233,17 @@ export type Type = {
   deprecated?: TrueLiteral;
   properties: Property[];
   rules: ObjectValidationRule[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
   loc?: string;
   meta?: MetaValue[];
 };
@@ -672,6 +1324,7 @@ export type PrimitiveValueConstant =
   | NumberLiteral
   | BooleanLiteral;
 
+/** TODO: add null literal */
 export type PrimitiveValueDefault =
   | StringLiteral
   | NumberLiteral
@@ -691,6 +1344,10 @@ export function isOAuth2Scheme(obj: SecurityScheme): obj is OAuth2Scheme {
   return obj.kind === 'OAuth2Scheme';
 }
 
+/**
+ * A Union is a type that can be one of several different types. The `members` array
+ * contains the possible types that the Union can be.
+ */
 export type Union = PrimitiveUnion | ComplexUnion | DiscriminatedUnion;
 
 export function isPrimitiveUnion(obj: Union): obj is PrimitiveUnion {
@@ -705,6 +1362,7 @@ export function isDiscriminatedUnion(obj: Union): obj is DiscriminatedUnion {
   return obj.kind === 'DiscriminatedUnion';
 }
 
+/** A validation rule. */
 export type ValidationRule =
   | RequiredRule
   | ConstantRule
