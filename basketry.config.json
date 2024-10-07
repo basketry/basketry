@@ -1,0 +1,11 @@
+{
+  "source": "src/schema.json",
+  "parser": "@basketry/json-schema",
+  "generators": ["@basketry/typescript"],
+  "output": "src/generated",
+  "options": {
+    "typescript": {
+      "includeVersion": false
+    }
+  }
+}
