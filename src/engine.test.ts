@@ -1,4 +1,4 @@
-import { run } from './engine';
+import { Engine, run } from './engine';
 import { File, Output } from './types';
 
 import { setParser } from './test-modules/parser';
@@ -14,7 +14,7 @@ describe('engine', () => {
         basketry: '0.2',
         title: { kind: 'StringLiteral', value: 'test' },
         majorVersion: { kind: 'IntegerLiteral', value: 1 },
-        sourcePath: 'overwritten.ext',
+        sourcePaths: ['overwritten.ext'],
         interfaces: [],
         types: [],
         enums: [],

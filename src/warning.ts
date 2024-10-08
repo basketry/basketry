@@ -17,7 +17,7 @@ export function* warning(
   yield 'the code is regenerated.';
   yield '';
   yield 'To make changes to the contents of this file:';
-  yield `1. Edit ${relative(process.cwd(), service.sourcePath)}`;
+  yield `1. Edit ${relative(process.cwd(), service.sourcePaths[0])}`;
   if (options?.basketry?.command) {
     yield `2. Run \`${options.basketry.command}\``;
   } else {

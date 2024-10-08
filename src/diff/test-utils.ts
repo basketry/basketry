@@ -62,7 +62,7 @@ export function buildService(service?: Partial<Service>): Service {
   return {
     kind: 'Service',
     basketry: '0.2',
-    sourcePath: 'path/file.ext',
+    sourcePaths: ['path/file.ext'],
     title: stringLiteral('my service'),
     majorVersion: integerLiteral(1),
     interfaces: [],

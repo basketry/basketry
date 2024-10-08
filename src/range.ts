@@ -1,78 +1,107 @@
 import { Range } from './types';
 
-export function encodeRange<T extends Range | null | undefined>(
-  range: T,
-): typeof range extends null | undefined ? undefined : string {
-  return innerEncodeRange(range) as any;
-}
-
-function innerEncodeRange(range: Range | null | undefined): string | undefined {
+// eslint-disable-next-line no-redeclare
+export function encodeRange(sourceIndex: number, range: Range): string;
+// eslint-disable-next-line no-redeclare
+export function encodeRange(
+  sourceIndex: number,
+  range: Range | null | undefined,
+): string | undefined;
+// eslint-disable-next-line no-redeclare
+export function encodeRange(
+  sourceIndex: number,
+  range: Range | null | undefined,
+): string | undefined {
   if (!range) return undefined;
+
+  function withDoc(...parts: number[]): string {
+    return `${Math.max(0, sourceIndex)}:${parts.join(';')}`;
+  }
+
   if (range.start.offset === range.end.offset) {
-    return [range.start.line, range.start.column, range.start.offset].join(';');
+    return withDoc(range.start.line, range.start.column, range.start.offset);
   } else if (range.start.line === range.end.line) {
-    return [
+    return withDoc(
       range.start.line,
       range.start.column,
       range.end.column,
       range.start.offset,
       range.end.offset,
-    ].join(';');
+    );
   } else {
-    return [
+    return withDoc(
       range.start.line,
       range.start.column,
       range.end.line,
       range.end.column,
       range.start.offset,
       range.end.offset,
-    ].join(';');
+    );
   }
 }
 
-export function decodeRange(range: string | null | undefined): Range {
-  if (!range) return decodeRange('1;1;0');
+export function decodeRange(range: string | null | undefined): {
+  range: Range;
+  sourceIndex: number;
+} {
+  if (!range) return decodeRange('0:1;1;0');
 
-  const parts = range.split(';').map((x) => Number(x));
+  const [a, b] = range.split(':');
+
+  const ixPart = Number(b ? a : '0');
+  const rangePart = b ? b : a;
+
+  const sourceIndex = Math.max(0, Number.isNaN(ixPart) ? 0 : ixPart);
+
+  const parts = rangePart.split(';').map((x) => Number(x));
 
   if (parts.length === 6) {
     return {
-      start: {
-        line: parts[0],
-        column: parts[1],
-        offset: parts[4],
+      range: {
+        start: {
+          line: parts[0],
+          column: parts[1],
+          offset: parts[4],
+        },
+        end: {
+          line: parts[2],
+          column: parts[3],
+          offset: parts[5],
+        },
       },
-      end: {
-        line: parts[2],
-        column: parts[3],
-        offset: parts[5],
-      },
+      sourceIndex,
     };
   } else if (parts.length === 5) {
     return {
-      start: {
-        line: parts[0],
-        column: parts[1],
-        offset: parts[3],
+      range: {
+        start: {
+          line: parts[0],
+          column: parts[1],
+          offset: parts[3],
+        },
+        end: {
+          line: parts[0],
+          column: parts[2],
+          offset: parts[4],
+        },
       },
-      end: {
-        line: parts[0],
-        column: parts[2],
-        offset: parts[4],
-      },
+      sourceIndex,
     };
   } else {
     return {
-      start: {
-        line: parts[0],
-        column: parts[1],
-        offset: parts[2],
+      range: {
+        start: {
+          line: parts[0],
+          column: parts[1],
+          offset: parts[2],
+        },
+        end: {
+          line: parts[0],
+          column: parts[1],
+          offset: parts[2],
+        },
       },
-      end: {
-        line: parts[0],
-        column: parts[1],
-        offset: parts[2],
-      },
+      sourceIndex,
     };
   }
 }

@@ -266,7 +266,9 @@ export class Engine {
 
   private pushViolations(...violations: Violation[]) {
     for (const violation of violations) {
-      const range = encodeRange(violation.range);
+      const sourceIndex =
+        this._service?.sourcePaths.indexOf(violation.sourcePath) ?? 0;
+      const range = encodeRange(sourceIndex, violation.range);
       if (!this._violationsByRange.has(range)) {
         this._violationsByRange.set(range, []);
       }
@@ -545,7 +547,9 @@ export class LegacyEngine {
 
   private pushViolations(...violations: Violation[]) {
     for (const violation of violations) {
-      const range = encodeRange(violation.range);
+      const sourceIndex =
+        this._service?.sourcePaths.indexOf(violation.sourcePath) ?? 0;
+      const range = encodeRange(sourceIndex, violation.range);
       if (!this._violationsByRange.has(range)) {
         this._violationsByRange.set(range, []);
       }
@@ -888,16 +892,17 @@ function runParser(options: {
     const result = fn(sourceContent, sourcePath);
     push(violations, result.violations);
 
-    const relativePath = relative(process.cwd(), sourcePath);
+    const relativePaths =
+      result.service.sourcePaths?.map((p) => relative(process.cwd(), p)) ?? [];
 
     const validation = validate({
       ...result.service,
-      sourcePath: relativePath,
+      sourcePaths: relativePaths,
     });
     push(errors, validation.errors);
 
     value = validation.service
-      ? { ...validation.service, sourcePath }
+      ? { ...validation.service, sourcePaths: relativePaths }
       : undefined;
   } catch (ex) {
     errors.push({
@@ -1248,7 +1253,7 @@ const nullParser: Parser = (_, sourcePath) => ({
   service: {
     basketry: '0.2',
     kind: 'Service',
-    sourcePath,
+    sourcePaths: [sourcePath],
     title: { kind: 'StringLiteral', value: 'null' },
     majorVersion: { kind: 'IntegerLiteral', value: 1 },
     interfaces: [],

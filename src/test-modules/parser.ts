@@ -1,18 +1,18 @@
 import { Parser } from '../types';
 
-let parser: Parser = () => {
+let parser: Parser = (_, sourcePath) => {
   return {
     service: {
       kind: 'Service',
       basketry: '0.2',
       title: { kind: 'StringLiteral', value: 'test' },
       majorVersion: { kind: 'IntegerLiteral', value: 1 },
-      sourcePath: 'overwritten.ext',
+      sourcePaths: [sourcePath],
       interfaces: [],
       types: [],
       enums: [],
       unions: [],
-      loc: '0;0;0',
+      loc: '0:0;0;0',
     },
     violations: [],
   };

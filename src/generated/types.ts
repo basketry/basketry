@@ -1081,7 +1081,7 @@ export type Service = {
    * The path to the original source document for this service. All locations in the
    * Intermediate Representation refer to ranges within this source document.
    */
-  sourcePath: string;
+  sourcePaths: string[];
 
   /** An array of Interfaces defined in this Service. */
   interfaces: Interface[];

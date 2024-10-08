@@ -8,7 +8,7 @@
     "basketry",
     "title",
     "majorVersion",
-    "sourcePath",
+    "sourcePaths",
     "interfaces",
     "types",
     "enums",
@@ -31,9 +31,10 @@
       "description": "The major version of the Service (which is distinct from the Basketry Specification version).",
       "$ref": "#/definitions/integer"
     },
-    "sourcePath": {
-      "type": "string",
-      "description": "The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document."
+    "sourcePaths": {
+      "type": "array",
+      "description": "The path to the original source document for this service. All locations in the Intermediate Representation refer to ranges within this source document.",
+      "items": { "type": "string" }
     },
     "interfaces": {
       "description": "An array of Interfaces defined in this Service.",
@@ -896,7 +897,7 @@
     "range": {
       "description": "A range in the source document encoded as a string. This string is a semicolon-separated list of numbers and MUST be in one of the following formats:\n- Single point: `<row>;<col>;<offset>` (eg. `\"4;12;88\"`)\n- Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `\"4;12;21;88;97\"`)\n- Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg. `\"4;12;6;3;88;164\"`)\n\nBoth the `row` and `column` values are 1-based. The `offset` values are 0-based.",
       "type": "string",
-      "pattern": "^(\\d+;){2}(\\d+)$|^(\\d+;){4}(\\d+)$|^(\\d+;){5}(\\d+)$"
+      "pattern": "^(\\d+:)((\\d+;){2}(\\d+)|(\\d+;){4}(\\d+)|(\\d+;){5}(\\d+))$"
     },
 
     "validationRule": {
