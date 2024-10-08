@@ -16,7 +16,7 @@
     "start": "node ./lib/index.js",
     "prebuild": "run-s -s clean codegen lint",
     "build": "run-s -s build:*",
-    "build:types": "ts-node ./src/cli.ts -c basketry.config.json",
+    "_build:types": "ts-node ./src/cli.ts -c basketry.config.json",
     "build:typescript": "tsc",
     "lint:eslint": "eslint src/**/*.*",
     "fix:eslint": "eslint --fix src/**/*.*",
