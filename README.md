@@ -119,10 +119,6 @@ Rules
 
 Path to the source SDL file. Basketry reads from `stdin` if this option is omitted and `source` is not defined in the config file. Note that if a source parameter is provided _and_ content is piped in via `stdin`, the content from `stdin` will be parsed, but any violations will include the file name supplied by `source`. This can be useful to a validate dirty version of a file prior to the file being saved and only then accessible by reading from the file system.
 
-#### `--validate`, `-v` (boolean)
-
-Only validates the source document without writing any files.
-
 #### `--watch`, `-w` (boolean)
 
 Recreates the output each time the input file changes. In watch mode, `source` must be specified (you can't pipe to `stdio`). Running in watch mode will immediately generate all output files and then update them on each subsequent change to the source SDL file.
