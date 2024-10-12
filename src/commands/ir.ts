@@ -1,7 +1,7 @@
 import { performance } from 'perf_hooks';
 
 import { BasketryError, PerfEvent } from '../types';
-import { LegacyEngine, getInput } from '../engine';
+import { Engine, getInput } from '../engine';
 import * as perf from '../performance';
 
 import { CommmonArgs } from './types';
@@ -48,11 +48,12 @@ export async function ir(args: GenerateArgs) {
       // TODO: fail if multiplexed with stdin (#24)
 
       for (const input of inputs.values) {
-        const pipeline = new LegacyEngine(input);
+        const {
+          engines: [pipeline],
+        } = await Engine.load(input);
 
         performance.mark('run-start');
 
-        pipeline.loadParser();
         await pipeline.runParser();
 
         performance.mark('run-end');
