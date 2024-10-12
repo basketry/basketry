@@ -78,11 +78,11 @@ export async function diff(args: DiffArgs) {
 
   const a = new LegacyEngine(a_inputs.values[0], { onError: console.error });
   a.loadParser();
-  a.runParser();
+  await a.runParser();
 
   const b = new LegacyEngine(b_inputs.values[0], { onError: console.error });
   b.loadParser();
-  b.runParser();
+  await b.runParser();
 
   if (a.service && b.service) {
     const changes = compare(a.service, b.service);

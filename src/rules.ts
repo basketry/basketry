@@ -223,7 +223,10 @@ export const allUnions: ContextIterator<UnionRuleContext> = (
 ) => service.unions.map((union) => ({ union, service, options }));
 
 export function combineRules(...rules: Rule[]): Rule {
-  return (service, options) => rules.flatMap((rule) => rule(service, options));
+  return (service: Service, options: any) =>
+    Promise.all(rules.map((rule) => rule(service, options))).then((results) =>
+      results.flatMap((x) => x),
+    );
 }
 
 export function parseSeverity(

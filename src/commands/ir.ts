@@ -53,7 +53,7 @@ export async function ir(args: GenerateArgs) {
         performance.mark('run-start');
 
         pipeline.loadParser();
-        pipeline.runParser();
+        await pipeline.runParser();
 
         performance.mark('run-end');
         performance.measure('run', 'run-start', 'run-end');

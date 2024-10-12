@@ -27,7 +27,7 @@ describe('engine', () => {
     setFiles([]);
   });
 
-  it('works on the happy path', () => {
+  it('works on the happy path', async () => {
     // ARRANGE
     const files: File[] = [
       { path: ['some', 'path'], contents: 'some content' },
@@ -36,7 +36,7 @@ describe('engine', () => {
     setFiles(files);
 
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -54,7 +54,7 @@ describe('engine', () => {
     });
   });
 
-  it('works when a generator is supplied with generator-specific options', () => {
+  it('works when a generator is supplied with generator-specific options', async () => {
     // ARRANGE
     const files: File[] = [
       { path: ['some', 'path'], contents: 'some content' },
@@ -63,7 +63,7 @@ describe('engine', () => {
     setFiles(files);
 
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -93,7 +93,7 @@ describe('engine', () => {
     });
   });
 
-  it('works when a generator is supplied with common options', () => {
+  it('works when a generator is supplied with common options', async () => {
     // ARRANGE
     const files: File[] = [
       { path: ['some', 'path'], contents: 'some content' },
@@ -102,7 +102,7 @@ describe('engine', () => {
     setFiles(files);
 
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -130,7 +130,7 @@ describe('engine', () => {
     });
   });
 
-  it('works when a generator is supplied with generator-specific options that override common options', () => {
+  it('works when a generator is supplied with generator-specific options that override common options', async () => {
     // ARRANGE
     const files: File[] = [
       { path: ['some', 'path'], contents: 'some content' },
@@ -139,7 +139,7 @@ describe('engine', () => {
     setFiles(files);
 
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -170,7 +170,7 @@ describe('engine', () => {
     });
   });
 
-  it('works when a generator is supplied with generator-specific options that extend common options', () => {
+  it('works when a generator is supplied with generator-specific options that extend common options', async () => {
     // ARRANGE
     const files: File[] = [
       { path: ['some', 'path'], contents: 'some content' },
@@ -179,7 +179,7 @@ describe('engine', () => {
     setFiles(files);
 
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -210,7 +210,7 @@ describe('engine', () => {
     });
   });
 
-  it('works when a rule is supplied with options', () => {
+  it('works when a rule is supplied with options', async () => {
     // ARRANGE
     const files: File[] = [
       { path: ['some', 'path'], contents: 'some content' },
@@ -219,7 +219,7 @@ describe('engine', () => {
     setFiles(files);
 
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -261,9 +261,9 @@ describe('engine', () => {
     });
   });
 
-  it('returns an error when the parser module throws', () => {
+  it('returns an error when the parser module throws', async () => {
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -288,9 +288,9 @@ describe('engine', () => {
     });
   });
 
-  it('returns an error when a generator module throws', () => {
+  it('returns an error when a generator module throws', async () => {
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -315,9 +315,9 @@ describe('engine', () => {
     });
   });
 
-  it('returns an error when a rule module throws', () => {
+  it('returns an error when a rule module throws', async () => {
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -342,9 +342,9 @@ describe('engine', () => {
     });
   });
 
-  it('returns an error when the parser function throws', () => {
+  it('returns an error when the parser function throws', async () => {
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -368,9 +368,9 @@ describe('engine', () => {
     });
   });
 
-  it('returns an error when a generator function throws', () => {
+  it('returns an error when a generator function throws', async () => {
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -393,9 +393,9 @@ describe('engine', () => {
     });
   });
 
-  it('returns an error when a rule function throws', () => {
+  it('returns an error when a rule function throws', async () => {
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -418,9 +418,9 @@ describe('engine', () => {
     });
   });
 
-  it('returns errors when the parser function returns an invalid service', () => {
+  it('returns errors when the parser function returns an invalid service', async () => {
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',
@@ -491,9 +491,9 @@ describe('engine', () => {
     });
   });
 
-  it('returns only unique rule violations', () => {
+  it('returns only unique rule violations', async () => {
     // ACT
-    const result = run({
+    const result = await run({
       sourcePath: 'some-file.ext',
       sourceContent: 'some content',
       configPath: 'some-config.ext',

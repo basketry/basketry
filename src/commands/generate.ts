@@ -94,9 +94,9 @@ export async function generate(args: GenerateArgs) {
 
         performance.mark('run-start');
 
-        pipeline.runParser();
-        pipeline.runRules();
-        if (!validate) pipeline.runGenerators();
+        await pipeline.runParser();
+        await pipeline.runRules();
+        if (!validate) await pipeline.runGenerators();
 
         performance.mark('run-end');
         performance.measure('run', 'run-start', 'run-end');

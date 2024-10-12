@@ -129,10 +129,10 @@ export class Engine {
   private rulesRun: boolean = false;
   private hasGeneratorsRun: boolean = false;
 
-  public runParser() {
+  public async runParser() {
     if (!this.hasParserRun) {
       try {
-        const { value, errors, violations } = runParser({
+        const { value, errors, violations } = await runParser({
           fn: this.input.parser,
           sourcePath: this.input.sourcePath,
           sourceContent: this.input.sourceContent,
@@ -147,10 +147,10 @@ export class Engine {
     }
   }
 
-  public runRules() {
+  public async runRules() {
     if (this._service && this.input.rules.length && !this.rulesRun) {
       try {
-        const { errors, violations } = runRules({
+        const { errors, violations } = await runRules({
           fns: this.input.rules,
           service: this._service,
         });
@@ -163,14 +163,14 @@ export class Engine {
     }
   }
 
-  public runGenerators() {
+  public async runGenerators() {
     if (
       this._service &&
       this.input.generators.length &&
       !this.hasGeneratorsRun
     ) {
       try {
-        const { files, errors, violations } = runGenerators({
+        const { files, errors, violations } = await runGenerators({
           fns: this.input.generators,
           service: this._service,
         });
@@ -414,10 +414,10 @@ export class LegacyEngine {
     }
   }
 
-  public runParser() {
+  public async runParser() {
     if (this.parser && !this.parserRun) {
       try {
-        const { value, errors, violations } = runParser({
+        const { value, errors, violations } = await runParser({
           fn: this.parser,
           sourcePath: this.input.sourcePath,
           sourceContent: this.input.sourceContent,
@@ -432,10 +432,10 @@ export class LegacyEngine {
     }
   }
 
-  public runRules() {
+  public async runRules() {
     if (this._service && this.rules.length && !this.rulesRun) {
       try {
-        const { errors, violations } = runRules({
+        const { errors, violations } = await runRules({
           fns: this.rules,
           service: this._service,
         });
@@ -448,10 +448,10 @@ export class LegacyEngine {
     }
   }
 
-  public runGenerators() {
+  public async runGenerators() {
     if (this._service && this.generators.length && !this.generatorsRun) {
       try {
-        const { files, errors, violations } = runGenerators({
+        const { files, errors, violations } = await runGenerators({
           fns: this.generators,
           service: this._service,
         });
@@ -716,7 +716,7 @@ export async function getInput(
 }
 
 /** @deprecated Use the Engine class instead */
-export function run(input: LegacyInput): Output {
+export async function run(input: LegacyInput): Promise<Output> {
   const runner = new LegacyEngine(input);
 
   performance.mark('run-start');
@@ -724,9 +724,9 @@ export function run(input: LegacyInput): Output {
   runner.loadParser();
   runner.loadRules();
   runner.loadGenerators();
-  runner.runParser();
-  runner.runRules();
-  runner.runGenerators();
+  await runner.runParser();
+  await runner.runRules();
+  await runner.runGenerators();
 
   performance.mark('run-end');
   performance.measure('run', 'run-start', 'run-end');
@@ -871,15 +871,15 @@ function areEquivalent(previous: string | null, next: string): boolean {
   }
 }
 
-function runParser(options: {
+async function runParser(options: {
   fn: Parser | undefined;
   sourceContent: string;
   sourcePath: string;
-}): {
+}): Promise<{
   value: Service | undefined;
   errors: BasketryError[];
   violations: Violation[];
-} {
+}> {
   const { fn, sourcePath, sourceContent } = options;
   const errors: BasketryError[] = [];
   const violations: Violation[] = [];
@@ -889,7 +889,7 @@ function runParser(options: {
 
   try {
     performance.mark('parser-start');
-    const result = fn(sourceContent, sourcePath);
+    const result = await fn(sourceContent, sourcePath);
     push(violations, result.violations);
 
     const relativePaths =
@@ -922,10 +922,10 @@ function runParser(options: {
   return { value, errors, violations };
 }
 
-function runRules(options: { fns: Rule[]; service: Service }): {
+async function runRules(options: { fns: Rule[]; service: Service }): Promise<{
   errors: BasketryError[];
   violations: Violation[];
-} {
+}> {
   const { fns, service } = options;
   const errors: BasketryError[] = [];
   const violations: Violation[] = [];
@@ -934,7 +934,7 @@ function runRules(options: { fns: Rule[]; service: Service }): {
   for (const fn of fns) {
     try {
       performance.mark('rule-start');
-      push(violations, fn(service));
+      push(violations, await fn(service));
     } catch (ex) {
       errors.push({
         code: 'RULE_ERROR',
@@ -955,11 +955,14 @@ function runRules(options: { fns: Rule[]; service: Service }): {
   return { errors, violations };
 }
 
-function runGenerators(options: { fns: Generator[]; service: Service }): {
+async function runGenerators(options: {
+  fns: Generator[];
+  service: Service;
+}): Promise<{
   files: File[];
   errors: BasketryError[];
   violations: Violation[];
-} {
+}> {
   const { fns, service } = options;
   const files: File[] = [];
   const errors: BasketryError[] = [];
@@ -969,7 +972,7 @@ function runGenerators(options: { fns: Generator[]; service: Service }): {
   for (const fn of fns) {
     try {
       performance.mark('generator-start');
-      push(files, fn(service));
+      push(files, await fn(service));
     } catch (ex) {
       errors.push({
         code: 'GENERATOR_ERROR',
@@ -1115,14 +1118,14 @@ function getGenerators(
         );
 
         const gen: Generator | undefined = fn
-          ? (service, localOptions) => {
+          ? async (service, localOptions) => {
               const options: NamespacedBasketryOptions = merge(
                 commonOptions,
                 generatorOptions,
                 localOptions,
               );
 
-              const files = fn(service, options);
+              const files = await fn(service, options);
 
               return files.map((file) => ({
                 ...file,

@@ -60,7 +60,9 @@ export type Parser = (
    * generating Violations that point to a specific range within the SDL file.
    */
   sourcePath: string,
-) => {
+) => ParserOutput | Promise<ParserOutput>;
+
+export type ParserOutput = {
   /** The Intermediate Representation (IR) of the source SDL */
   service: Service;
   /**
@@ -81,9 +83,16 @@ export type Rule = (
   /** The Intermediate Representation (IR) of the service */
   service: Service,
   options?: any,
-) => Violation[];
+) => RuleOutput;
 
-export type Generator = (service: Service, options?: any) => File[];
+export type RuleOutput = Violation[] | Promise<Violation[]>;
+
+export type Generator = (
+  service: Service,
+  options?: any,
+) => GeneratorOutput | Promise<GeneratorOutput>;
+
+export type GeneratorOutput = File[];
 
 export type FileStatus =
   | 'added'

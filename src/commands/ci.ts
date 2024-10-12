@@ -74,9 +74,9 @@ export async function ci(args: CiArgs) {
       for (const pipeline of pipelines) {
         if (!json) console.log(info(`Parsing ${pipeline.sourcePath}`));
 
-        pipeline.runParser();
-        pipeline.runRules();
-        pipeline.runGenerators();
+        await pipeline.runParser();
+        await pipeline.runRules();
+        await pipeline.runGenerators();
 
         await pipeline.compareFiles();
 
