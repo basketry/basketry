@@ -357,7 +357,7 @@ export async function getInput(
   const errors: BasketryError[] = [];
 
   const configs = await getConfigs(configPath);
-  push(errors, configs.errors);
+  errors.push(...configs.errors);
 
   if (!configPath) {
     const input: LegacyInput = {
@@ -384,7 +384,7 @@ export async function getInput(
     const sourcePath = overrides?.sourcePath || config.source;
 
     const source = await getSource(sourcePath);
-    push(errors, source.errors);
+    errors.push(...source.errors);
 
     const sourceContent = overrides?.sourceContent || source.content;
     const parser = overrides?.parser || config.parser;
@@ -524,7 +524,7 @@ async function runParser(options: {
       ...result.service,
       sourcePaths: relativePaths,
     });
-    push(errors, validation.errors);
+    errors.push(...validation.errors);
 
     value = validation.service
       ? { ...validation.service, sourcePaths: relativePaths }
@@ -559,7 +559,7 @@ async function runRules(options: { fns: Rule[]; service: Service }): Promise<{
   for (const fn of fns) {
     try {
       performance.mark('rule-start');
-      push(violations, await fn(service));
+      violations.push(...(await fn(service)));
     } catch (ex) {
       errors.push({
         code: 'RULE_ERROR',
@@ -597,7 +597,7 @@ async function runGenerators(options: {
   for (const fn of fns) {
     try {
       performance.mark('generator-start');
-      push(files, await fn(service));
+      files.push(...(await fn(service)));
     } catch (ex) {
       errors.push({
         code: 'GENERATOR_ERROR',
@@ -794,13 +794,6 @@ function getGenerators(
   }
 }
 
-function push<T>(a: T[], b: T[]): T[] {
-  for (const item of b) {
-    a.push(item);
-  }
-  return a;
-}
-
 function fatal(ex: any): BasketryError {
   try {
     return {
@@ -868,11 +861,11 @@ function merge<T extends object>(
   return input.length ? webpackMerge(input) : undefined;
 }
 
-const nullParser: Parser = (_, sourcePath) => ({
+const nullParser: Parser = (): ParserOutput => ({
   service: {
     basketry: '0.2',
     kind: 'Service',
-    sourcePaths: [sourcePath],
+    sourcePaths: ['#'],
     title: { kind: 'StringLiteral', value: 'null' },
     majorVersion: { kind: 'IntegerLiteral', value: 1 },
     interfaces: [],
