@@ -20,6 +20,7 @@ import {
   Output,
   Overrides,
   Parser,
+  ParserOutput,
   Rule,
   RuleOptions,
   Violation,
@@ -507,15 +508,16 @@ async function runParser(options: {
 }> {
   const { fn, sourcePath, sourceContent } = options;
   const errors: BasketryError[] = [];
-  const violations: Violation[] = [];
+  const unmappedViolations: Violation[] = [];
   let value: Service | undefined = undefined;
 
-  if (!fn) return { value, errors, violations };
+  if (!fn) return { value, errors, violations: unmappedViolations };
 
   try {
     performance.mark('parser-start');
-    const result = await fn(sourceContent, sourcePath);
-    push(violations, result.violations);
+    const result = await fn(sourceContent);
+    /** Violations that contain unmapped source file paths (eg. '#') */
+    unmappedViolations.push(...result.violations);
 
     const relativePaths =
       result.service.sourcePaths?.map((p) => relative(process.cwd(), p)) ?? [];
@@ -544,7 +546,24 @@ async function runParser(options: {
     });
   }
 
-  return { value, errors, violations };
+  /** Violations that contain the mapped source path (eg. sourcePath instead of '#') */
+  const mappedViolations = unmappedViolations.map((violation) => ({
+    ...violation,
+    sourcePath:
+      violation.sourcePath === '#' ? sourcePath : violation.sourcePath,
+  }));
+
+  // Update sourcePaths to be relative to the current working directory
+  // If the sourcePath is '#', then it should be replaced with the actual sourcePath
+  if (value) {
+    for (let i = 0; i < value.sourcePaths.length; i++) {
+      const localSourcePath =
+        value.sourcePaths[i] === '#' ? sourcePath : value.sourcePaths[i];
+      value.sourcePaths[i] = relative(process.cwd(), localSourcePath);
+    }
+  }
+
+  return { value, errors, violations: mappedViolations };
 }
 
 async function runRules(options: { fns: Rule[]; service: Service }): Promise<{

@@ -55,11 +55,6 @@ export type GeneratorOptions = {
 export type Parser = (
   /** The content of the source SDL as text */
   sourceContent: string,
-  /**
-   * The path to the source SDL on the file system. This path is used for
-   * generating Violations that point to a specific range within the SDL file.
-   */
-  sourcePath: string,
 ) => ParserOutput | Promise<ParserOutput>;
 
 export type ParserOutput = {
