@@ -30,8 +30,8 @@ export function hasOnlyOptionalParameters(method: Method): boolean {
   return !hasRequiredParameters(method) && hasOptionalParameters(method);
 }
 
-export function isRequired(obj: { rules: ValidationRule[] }): boolean {
-  return obj.rules.some((r) => r.id === 'Required');
+export function isRequired(obj: { rules?: ValidationRule[] }): boolean {
+  return !!obj.rules?.some((r) => r.id === 'Required');
 }
 
 export function isEnum(obj: { rules: ValidationRule[] }): boolean {
