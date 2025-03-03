@@ -360,7 +360,7 @@ describe('engine', () => {
       errors: [
         {
           code: 'PARSER_ERROR',
-          message: 'Unhandled exception running parser',
+          message: 'Test error',
           filepath: 'some-file.ext',
         },
       ],
@@ -386,7 +386,7 @@ describe('engine', () => {
       errors: [
         {
           code: 'GENERATOR_ERROR',
-          message: 'Unhandled exception running generator',
+          message: 'Test error',
         },
       ],
       files: [],
@@ -411,7 +411,7 @@ describe('engine', () => {
       errors: [
         {
           code: 'RULE_ERROR',
-          message: 'Unhandled exception running rule',
+          message: 'Test error',
         },
       ],
       files: [],

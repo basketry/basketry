@@ -869,7 +869,7 @@ function runParser(options: {
   } catch (ex) {
     errors.push({
       code: 'PARSER_ERROR',
-      message: 'Unhandled exception running parser', // TODO: Use ex (#25)
+      message: getErrorMessage(ex, 'Unhandled exception running parser'),
       filepath: sourcePath,
     });
   } finally {
@@ -900,7 +900,7 @@ function runRules(options: { fns: Rule[]; service: Service }): {
     } catch (ex) {
       errors.push({
         code: 'RULE_ERROR',
-        message: 'Unhandled exception running rule', // TODO: Use ex (#25)
+        message: getErrorMessage(ex, 'Unhandled exception running rule'),
       });
     } finally {
       performance.mark('rule-end');
@@ -935,7 +935,7 @@ function runGenerators(options: { fns: Generator[]; service: Service }): {
     } catch (ex) {
       errors.push({
         code: 'GENERATOR_ERROR',
-        message: 'Unhandled exception running generator', // TODO: Use ex (#25)
+        message: getErrorMessage(ex, 'Unhandled exception running generator'),
       });
     } finally {
       performance.mark('generator-end');
@@ -1225,3 +1225,7 @@ const nullParser: Parser = (_, sourcePath) => ({
   },
   violations: [],
 });
+
+function getErrorMessage(err: any, fallback: string): string {
+  return err instanceof Error ? err.message : fallback;
+}
