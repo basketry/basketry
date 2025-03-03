@@ -35,7 +35,7 @@ export async function resolveConfig(
     // TOOD: look for SyntaxError
     errors.push({
       code: 'CONFIG_ERROR',
-      message: 'Unhandled exception resolving config', // TODO: Use ex (#25)
+      message: getErrorMessage(ex, 'Unhandled exception resolving config'),
       filepath: path,
     });
   }
@@ -73,7 +73,7 @@ export async function getConfigs(
     // TOOD: look for SyntaxError
     errors.push({
       code: 'CONFIG_ERROR',
-      message: 'Unhandled exception loading configs', // TODO: Use ex (#25)
+      message: getErrorMessage(ex, 'Unhandled exception loading configs'),
       filepath: configPath,
     });
   }
@@ -91,4 +91,8 @@ export function isGlobalConfig(
   config: LocalConfig | GlobalConfig | undefined,
 ): config is LocalConfig {
   return config?.['configs'] !== undefined;
+}
+
+function getErrorMessage(err: any, fallback: string): string {
+  return err instanceof Error ? err.message : fallback;
 }

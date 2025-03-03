@@ -430,7 +430,7 @@ describe('engine', () => {
     expect(engine.errors).toEqual([
       {
         code: 'PARSER_ERROR',
-        message: 'Unhandled exception running parser',
+        message: 'Test error',
         filepath: 'some-file.ext',
       },
     ]);
@@ -463,7 +463,7 @@ describe('engine', () => {
     expect(engine.errors).toEqual([
       {
         code: 'GENERATOR_ERROR',
-        message: 'Unhandled exception running generator',
+        message: 'Test error',
       },
     ]);
     expect(engine.files).toEqual([]);
@@ -495,7 +495,7 @@ describe('engine', () => {
     expect(engine.errors).toEqual([
       {
         code: 'RULE_ERROR',
-        message: 'Unhandled exception running rule',
+        message: 'Test error',
       },
     ]);
     expect(engine.files).toEqual([]);
