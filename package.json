@@ -36,7 +36,7 @@
   "bugs": {
     "url": "https://github.com/basketry/basketry/issues"
   },
-  "homepage": "https://github.com/basketry/basketry/wiki",
+  "homepage": "https://basketry.io",
   "funding": "https://github.com/basketry/basketry?sponsor=1",
   "devDependencies": {
     "@types/jest": "^27.4.0",
