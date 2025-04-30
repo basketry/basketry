@@ -47,6 +47,7 @@ export type Type = {
   description?: Scalar<string> | Scalar<string>[];
   deprecated?: Scalar<true>;
   properties: Property[];
+  mapProperties?: MapProperties;
   rules: ObjectValidationRule[];
   loc?: string;
   meta?: Meta;
@@ -115,6 +116,15 @@ export type Property = {
   meta?: Meta;
 } & TypedValue;
 
+export type MapProperties = {
+  kind: 'MapProperties';
+  key: MapKey;
+  requiredKeys: Scalar<string>[];
+  value: MapValue;
+  loc?: string;
+  meta?: Meta;
+};
+
 export type Interface = {
   kind: 'Interface';
   name: Scalar<string>;
@@ -126,6 +136,18 @@ export type Interface = {
   };
   meta?: Meta;
 };
+
+export type MapKey = {
+  kind: 'MapKey';
+  loc?: string;
+  meta?: Meta;
+} & TypedValue;
+
+export type MapValue = {
+  kind: 'MapValue';
+  loc?: string;
+  meta?: Meta;
+} & TypedValue;
 
 export type HttpPath = {
   kind: 'HttpPath';
