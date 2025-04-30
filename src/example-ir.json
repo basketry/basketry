@@ -1572,6 +1572,76 @@
           }
         ]
       }
+    },
+    {
+      "kind": "Interface",
+      "name": { "value": "mapDemo" },
+      "methods": [
+        {
+          "kind": "Method",
+          "name": { "value": "returnMaps" },
+          "security": [],
+          "parameters": [],
+          "returnType": {
+            "kind": "ReturnType",
+            "typeName": { "value": "allMaps" },
+            "isPrimitive": false,
+            "isArray": false,
+            "rules": []
+          }
+        },
+        {
+          "kind": "Method",
+          "name": { "value": "sendMaps" },
+          "security": [],
+          "parameters": [
+            {
+              "kind": "Parameter",
+              "name": { "value": "allMaps" },
+              "typeName": { "value": "allMaps" },
+              "isPrimitive": false,
+              "isArray": false,
+              "rules": []
+            }
+          ]
+        }
+      ],
+      "protocols": {
+        "http": [
+          {
+            "kind": "HttpPath",
+            "path": { "value": "/mapDemo" },
+            "methods": [
+              {
+                "kind": "HttpMethod",
+                "name": { "value": "returnMaps" },
+                "verb": { "value": "get" },
+                "parameters": [],
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
+                "successCode": { "value": 200 }
+              },
+              {
+                "kind": "HttpMethod",
+                "name": { "value": "sendMaps" },
+                "verb": { "value": "post" },
+                "parameters": [
+                  {
+                    "kind": "HttpParameter",
+                    "name": {
+                      "value": "allMaps"
+                    },
+                    "in": { "value": "body" }
+                  }
+                ],
+                "requestMediaTypes": [{ "value": "application/json" }],
+                "responseMediaTypes": [{ "value": "application/json" }],
+                "successCode": { "value": 200 }
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "types": [
@@ -1622,7 +1692,94 @@
           ]
         }
       ],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": [
+            {
+              "kind": "ValidationRule",
+              "id": "string-max-length",
+              "length": { "value": 30 }
+            },
+            {
+              "kind": "ValidationRule",
+              "id": "string-pattern",
+              "pattern": {
+                "value": "[0-9a-fA-F]+"
+              }
+            }
+          ]
+        },
+        "requiredKeys": [],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "gizmoMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
       "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "gizmoMapValue" },
+      "properties": [
+        {
+          "kind": "Property",
+          "name": { "value": "foo" },
+          "typeName": { "value": "string" },
+          "isPrimitive": true,
+          "isArray": false,
+          "rules": [
+            {
+              "kind": "ValidationRule",
+              "id": "required"
+            },
+            {
+              "kind": "ValidationRule",
+              "id": "string-max-length",
+              "length": { "value": 30 }
+            }
+          ]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "bar" },
+          "typeName": { "value": "string" },
+          "isPrimitive": true,
+          "isArray": false,
+          "rules": [
+            {
+              "kind": "ValidationRule",
+              "id": "required"
+            },
+            {
+              "kind": "ValidationRule",
+              "id": "string-max-length",
+              "length": { "value": 30 }
+            },
+            {
+              "kind": "ValidationRule",
+              "id": "string-pattern",
+              "pattern": {
+                "value": "[0-9a-fA-F]+"
+              }
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "kind": "ObjectValidationRule",
+          "id": "object-additional-properties",
+          "forbidden": true
+        }
+      ]
     },
     {
       "kind": "Type",
@@ -1732,6 +1889,19 @@
               ]
             }
           ]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "data" },
+          "typeName": { "value": "widgetData" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [
+            {
+              "kind": "ValidationRule",
+              "id": "required"
+            }
+          ]
         }
       ],
       "rules": [
@@ -1741,6 +1911,43 @@
           "forbidden": true
         }
       ]
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "widgetData" },
+      "properties": [],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": [
+            {
+              "kind": "ValidationRule",
+              "id": "string-max-length",
+              "length": { "value": 30 }
+            },
+            {
+              "kind": "ValidationRule",
+              "id": "string-pattern",
+              "pattern": {
+                "value": "[0-9a-fA-F]+"
+              }
+            }
+          ]
+        },
+        "requiredKeys": [{ "value": "fizz" }, { "value": "buzz" }],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "gizmoMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": []
     },
     {
       "kind": "Type",
@@ -1837,6 +2044,410 @@
           ]
         }
       ],
+      "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "mixedMapA" },
+      "description": {
+        "value": "Has no required map keys"
+      },
+      "properties": [
+        {
+          "kind": "Property",
+          "name": { "value": "obj-id" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "obj-name" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        }
+      ],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "exampleMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "mixedMapB" },
+      "description": {
+        "value": "Has required map keys"
+      },
+      "properties": [
+        {
+          "kind": "Property",
+          "name": { "value": "obj-id" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "obj-name" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        }
+      ],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [{ "value": "obj-fizz" }, { "value": "obj-buzz" }],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "exampleMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "mixedMapC" },
+      "description": {
+        "value": "Has required map keys and max properties GREATER THAN the number of required props and keys"
+      },
+      "properties": [
+        {
+          "kind": "Property",
+          "name": { "value": "obj-id" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "obj-name" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        }
+      ],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [{ "value": "obj-fizz" }, { "value": "obj-buzz" }],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "exampleMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": [
+        {
+          "kind": "ObjectValidationRule",
+          "id": "object-max-properties",
+          "max": { "value": 5 }
+        }
+      ]
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "mixedMapD" },
+      "description": {
+        "value": "Has required map keys and max properties EQUAL TO the number of required props and keys"
+      },
+      "properties": [
+        {
+          "kind": "Property",
+          "name": { "value": "obj-id" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "obj-name" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        }
+      ],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [{ "value": "obj-fizz" }, { "value": "obj-buzz" }],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "exampleMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": [
+        {
+          "kind": "ObjectValidationRule",
+          "id": "object-max-properties",
+          "max": { "value": 4 }
+        }
+      ]
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "exampleMapValue" },
+      "properties": [
+        {
+          "kind": "Property",
+          "name": { "value": "foo" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "bar" },
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "created-at" },
+          "isPrimitive": true,
+          "typeName": { "value": "date-time" },
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        }
+      ],
+      "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "pureMapA" },
+      "description": {
+        "value": "Has no required map keys"
+      },
+      "properties": [],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "exampleMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "pureMapB" },
+      "description": {
+        "value": "Has required map keys"
+      },
+      "properties": [],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [{ "value": "obj-fizz" }, { "value": "obj-buzz" }],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "exampleMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "pureMapC" },
+      "description": {
+        "value": "Has required map keys and max properties GREATER THAN the number of required keys"
+      },
+      "properties": [],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [{ "value": "obj-fizz" }, { "value": "obj-buzz" }],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "exampleMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": [
+        {
+          "kind": "ObjectValidationRule",
+          "id": "object-max-properties",
+          "max": { "value": 3 }
+        }
+      ]
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "pureMapD" },
+      "description": {
+        "value": "Has required map keys and max properties EQUAL TO the number of required keys"
+      },
+      "properties": [],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [{ "value": "obj-fizz" }, { "value": "obj-buzz" }],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "exampleMapValue" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": [
+        {
+          "kind": "ObjectValidationRule",
+          "id": "object-max-properties",
+          "max": { "value": 2 }
+        }
+      ]
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "complexKeyMapA" },
+      "description": {
+        "value": "Has validation rules on the map key"
+      },
+      "properties": [],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "isPrimitive": true,
+          "typeName": { "value": "string" },
+          "isArray": false,
+          "rules": [
+            {
+              "kind": "ValidationRule",
+              "id": "string-min-length",
+              "length": { "value": 12 }
+            },
+            {
+              "kind": "ValidationRule",
+              "id": "string-max-length",
+              "length": { "value": 30 }
+            }
+          ]
+        },
+        "requiredKeys": [],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "string" },
+          "isPrimitive": true,
+          "isArray": false,
+          "rules": []
+        }
+      },
+      "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "complexKeyMapB" },
+      "description": {
+        "value": "Uses an enum as the map key"
+      },
+      "properties": [],
+      "mapProperties": {
+        "kind": "MapProperties",
+        "key": {
+          "kind": "MapKey",
+          "typeName": { "value": "keyEnum" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": []
+        },
+        "requiredKeys": [],
+        "value": {
+          "kind": "MapValue",
+          "typeName": { "value": "string" },
+          "isPrimitive": true,
+          "isArray": false,
+          "rules": []
+        }
+      },
       "rules": []
     },
     {
@@ -1943,6 +2554,93 @@
         }
       ],
       "rules": []
+    },
+    {
+      "kind": "Type",
+      "name": { "value": "allMaps" },
+      "properties": [
+        {
+          "kind": "Property",
+          "name": { "value": "complexKeyMapA" },
+          "typeName": { "value": "complexKeyMapA" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "complexKeyMapB" },
+          "typeName": { "value": "complexKeyMapB" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "pureMapA" },
+          "typeName": { "value": "pureMapA" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "pureMapB" },
+          "typeName": { "value": "pureMapB" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "pureMapC" },
+          "typeName": { "value": "pureMapC" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "pureMapD" },
+          "typeName": { "value": "pureMapD" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "mixedMapA" },
+          "typeName": { "value": "mixedMapA" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "mixedMapB" },
+          "typeName": { "value": "mixedMapB" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "mixedMapC" },
+          "typeName": { "value": "mixedMapC" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        },
+        {
+          "kind": "Property",
+          "name": { "value": "mixedMapD" },
+          "typeName": { "value": "mixedMapD" },
+          "isPrimitive": false,
+          "isArray": false,
+          "rules": [{ "kind": "ValidationRule", "id": "required" }]
+        }
+      ],
+      "rules": []
     }
   ],
   "enums": [
@@ -2031,6 +2729,21 @@
           "content": { "value": "medium" }
         },
         { "kind": "EnumValue", "content": { "value": "large" } }
+      ]
+    },
+    {
+      "kind": "Enum",
+      "name": { "value": "keyEnum" },
+      "values": [
+        {
+          "kind": "EnumValue",
+          "content": { "value": "firstKey" }
+        },
+        {
+          "kind": "EnumValue",
+          "content": { "value": "secondKey" }
+        },
+        { "kind": "EnumValue", "content": { "value": "thirdKey" } }
       ]
     }
   ],
