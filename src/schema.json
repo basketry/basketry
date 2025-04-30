@@ -187,6 +187,7 @@
           "type": "array",
           "items": { "$ref": "#/definitions/property" }
         },
+        "mapProperties": { "$ref": "#/definitions/mapProperties" },
         "rules": {
           "type": "array",
           "items": { "$ref": "#/definitions/objectValidationRule" }
@@ -360,6 +361,51 @@
               ]
             },
             "deprecated": { "$ref": "#/definitions/deprecated" },
+            "loc": { "$ref": "#/definitions/range" },
+            "meta": { "$ref": "#/definitions/meta" }
+          }
+        },
+        { "$ref": "#/definitions/typedValue" }
+      ]
+    },
+    "mapProperties": {
+      "type": "object",
+      "required": ["kind", "key", "requiredKeys", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "MapProperties" },
+        "key": { "$ref": "#/definitions/mapKey" },
+        "requiredKeys": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "value": { "$ref": "#/definitions/mapValue" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      }
+    },
+    "mapKey": {
+      "type": "object",
+      "allOf": [
+        {
+          "type": "object",
+          "required": ["kind"],
+          "properties": {
+            "kind": { "type": "string", "const": "MapKey" },
+            "loc": { "$ref": "#/definitions/range" },
+            "meta": { "$ref": "#/definitions/meta" }
+          }
+        },
+        { "$ref": "#/definitions/typedValue" }
+      ]
+    },
+    "mapValue": {
+      "type": "object",
+      "allOf": [
+        {
+          "type": "object",
+          "required": ["kind"],
+          "properties": {
+            "kind": { "type": "string", "const": "MapValue" },
             "loc": { "$ref": "#/definitions/range" },
             "meta": { "$ref": "#/definitions/meta" }
           }
