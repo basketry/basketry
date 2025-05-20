@@ -39,7 +39,7 @@
     "url": "https://github.com/basketry/basketry/issues"
   },
   "homepage": "https://basketry.io",
-  "funding": "https://github.com/basketry/basketry?sponsor=1",
+  "funding": "https://github.com/sponsors/basketry",
   "devDependencies": {
     "@basketry/json-schema": "^0.2.0-alpha.1",
     "@basketry/typescript": "^0.2.0-alpha.1",
