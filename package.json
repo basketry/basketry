@@ -37,7 +37,7 @@
     "url": "https://github.com/basketry/basketry/issues"
   },
   "homepage": "https://basketry.io",
-  "funding": "https://github.com/basketry/basketry?sponsor=1",
+  "funding": "https://github.com/sponsors/basketry",
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "@types/node": "^17.0.10",
