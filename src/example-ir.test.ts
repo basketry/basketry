@@ -1,8 +1,8 @@
 import example from './example-ir.json';
 import { validate } from './validator';
 
-describe.skip('Example IR', () => {
-  it('is valid', () => {
+describe('Example IR', () => {
+  it.skip('is valid', () => {
     const result = validate(example);
 
     expect(result.errors).toEqual([]);
