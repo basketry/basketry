@@ -463,6 +463,62 @@ export type Interface = {
   meta?: MetaValue[];
 };
 
+export type MapKey = {
+  kind: 'MapKey';
+  value: MemberValue;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type MapProperties = {
+  kind: 'MapProperties';
+  key: MapKey;
+  requiredKeys: StringLiteral[];
+  value: MapValue;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+export type MapValue = {
+  kind: 'MapValue';
+  value: MemberValue;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
+  loc?: string;
+  meta?: MetaValue[];
+};
+
 export type MetaValue = {
   kind: 'MetaValue';
   key: StringLiteral;
@@ -1232,6 +1288,7 @@ export type Type = {
   description?: StringLiteral[];
   deprecated?: TrueLiteral;
   properties: Property[];
+  mapProperties?: MapProperties[];
   rules: ObjectValidationRule[];
 
   /**

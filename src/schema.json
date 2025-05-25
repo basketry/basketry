@@ -181,6 +181,10 @@
           "type": "array",
           "items": { "$ref": "#/definitions/property" }
         },
+        "mapProperties": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/mapProperties" }
+        },
         "rules": {
           "type": "array",
           "items": { "$ref": "#/definitions/objectValidationRule" }
@@ -202,6 +206,44 @@
         },
         "value": { "$ref": "#/definitions/memberValue" },
         "deprecated": { "$ref": "#/definitions/deprecated" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+    "mapProperties": {
+      "type": "object",
+      "required": ["kind", "key", "requiredKeys", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "MapProperties" },
+        "key": { "$ref": "#/definitions/mapKey" },
+        "requiredKeys": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/string" }
+        },
+        "value": { "$ref": "#/definitions/mapValue" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+    "mapKey": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "MapKey" },
+        "value": { "$ref": "#/definitions/memberValue" },
+        "loc": { "$ref": "#/definitions/range" },
+        "meta": { "$ref": "#/definitions/meta" }
+      },
+      "additionalProperties": false
+    },
+    "mapValue": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "type": "string", "const": "MapValue" },
+        "value": { "$ref": "#/definitions/memberValue" },
         "loc": { "$ref": "#/definitions/range" },
         "meta": { "$ref": "#/definitions/meta" }
       },
