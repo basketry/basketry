@@ -1,6 +1,6 @@
 {
   "name": "basketry",
-  "version": "0.2.0-alpha.8",
+  "version": "0.2.0-alpha.9",
   "description": "Generate service-oriented code from popular API definition languages",
   "main": "./lib/index.js",
   "bin": {
