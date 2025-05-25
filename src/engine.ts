@@ -862,7 +862,7 @@ function loadModule<T extends Function>(
   } catch {
     errors.push({
       code: 'MODULE_ERROR',
-      message: `Unhandle error loading module "${moduleName}"`,
+      message: `Unhandled error loading module "${moduleName}"`,
       filepath,
     });
   }
