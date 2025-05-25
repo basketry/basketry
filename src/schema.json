@@ -181,10 +181,7 @@
           "type": "array",
           "items": { "$ref": "#/definitions/property" }
         },
-        "mapProperties": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/mapProperties" }
-        },
+        "mapProperties": { "$ref": "#/definitions/mapProperties" },
         "rules": {
           "type": "array",
           "items": { "$ref": "#/definitions/objectValidationRule" }

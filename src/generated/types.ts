@@ -1288,7 +1288,7 @@ export type Type = {
   description?: StringLiteral[];
   deprecated?: TrueLiteral;
   properties: Property[];
-  mapProperties?: MapProperties[];
+  mapProperties?: MapProperties;
   rules: ObjectValidationRule[];
 
   /**
