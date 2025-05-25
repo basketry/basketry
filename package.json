@@ -41,7 +41,7 @@
   "homepage": "https://basketry.io",
   "funding": "https://github.com/sponsors/basketry",
   "devDependencies": {
-    "@basketry/json-schema": "^0.2.0-alpha.1",
+    "@basketry/json-schema": "^0.2.0-alpha.3",
     "@basketry/typescript": "^0.2.0-alpha.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^17.0.10",
