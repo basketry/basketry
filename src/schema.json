@@ -377,6 +377,7 @@
         "boolean",
         "date",
         "date-time",
+        "null",
         "binary",
         "untyped"
       ]

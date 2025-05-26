@@ -40,6 +40,7 @@ export type Primitive =
   | 'boolean'
   | 'date'
   | 'date-time'
+  | 'null'
   | 'binary'
   | 'untyped';
 
