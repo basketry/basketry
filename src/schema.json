@@ -380,15 +380,16 @@
           "oneOf": [
             { "$ref": "#/definitions/string" },
             { "$ref": "#/definitions/number" },
-            { "$ref": "#/definitions/boolean" }
+            { "$ref": "#/definitions/boolean" },
+            { "$ref": "#/definitions/null" }
           ]
         },
         "default": {
-          "description": "TODO: add null literal",
           "oneOf": [
             { "$ref": "#/definitions/string" },
             { "$ref": "#/definitions/number" },
-            { "$ref": "#/definitions/boolean" }
+            { "$ref": "#/definitions/boolean" },
+            { "$ref": "#/definitions/null" }
           ]
         },
         "rules": {
@@ -853,6 +854,18 @@
       "properties": {
         "kind": { "type": "string", "const": "BooleanLiteral" },
         "value": { "type": "boolean" },
+        "loc": { "$ref": "#/definitions/range" }
+      },
+      "additionalProperties": false
+    },
+    "null": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "title": "NullLiteral",
+      "description": "A null literal",
+      "properties": {
+        "kind": { "type": "string", "const": "NullLiteral" },
+        "value": { "type": "null" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false

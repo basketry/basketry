@@ -570,6 +570,24 @@ export type NonNegativeNumberLiteral = {
   loc?: string;
 };
 
+/** A null literal */
+export type NullLiteral = {
+  kind: 'NullLiteral';
+  value: any;
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
+  loc?: string;
+};
+
 export type NumberGteRule = {
   kind: 'ValidationRule';
   id: 'NumberGTE';
@@ -986,8 +1004,6 @@ export type PrimitiveValue = {
   typeName: PrimitiveLiteral;
   isArray?: TrueLiteral;
   constant?: PrimitiveValueConstant;
-
-  /** TODO: add null literal */
   default?: PrimitiveValueDefault;
   rules: ValidationRule[];
 };
@@ -1358,13 +1374,14 @@ export function isObjectAdditionalPropertiesRule(
 export type PrimitiveValueConstant =
   | StringLiteral
   | NumberLiteral
-  | BooleanLiteral;
+  | BooleanLiteral
+  | NullLiteral;
 
-/** TODO: add null literal */
 export type PrimitiveValueDefault =
   | StringLiteral
   | NumberLiteral
-  | BooleanLiteral;
+  | BooleanLiteral
+  | NullLiteral;
 
 export type SecurityScheme = BasicScheme | ApiKeyScheme | OAuth2Scheme;
 
