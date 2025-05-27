@@ -8,7 +8,7 @@
  * 1. Edit src/schema.json
  * 2. Run the Basketry CLI
  *
- * About Basketry: https://github.com/basketry/basketry/wiki
+ * About Basketry: https://basketry.io
  * About @basketry/typescript: https://github.com/basketry/typescript#readme
  */
 
@@ -206,28 +206,6 @@ export type BooleanLiteral = {
    * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
    */
   loc?: string;
-};
-
-/** TODO: don't allow arrays, enums, or other unions in complex unions */
-export type ComplexUnion = {
-  kind: 'ComplexUnion';
-  name: StringLiteral;
-  description?: StringLiteral[];
-  members: ComplexValue[];
-  deprecated?: TrueLiteral;
-
-  /**
-   * A range in the source document encoded as a string. This string is a
-   * semicolon-separated list of numbers and MUST be in one of the following formats:
-   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
-   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
-   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
-   * `"4;12;6;3;88;164"`)
-   *
-   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
-   */
-  loc?: string;
-  meta?: MetaValue[];
 };
 
 export type ComplexValue = {
@@ -1003,28 +981,6 @@ export type PrimitiveLiteral = {
   loc?: string;
 };
 
-/** TODO: don't allow arrays in primitive unions */
-export type PrimitiveUnion = {
-  kind: 'PrimitiveUnion';
-  name: StringLiteral;
-  description?: StringLiteral[];
-  members: PrimitiveValue[];
-  deprecated?: TrueLiteral;
-
-  /**
-   * A range in the source document encoded as a string. This string is a
-   * semicolon-separated list of numbers and MUST be in one of the following formats:
-   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
-   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
-   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
-   * `"4;12;6;3;88;164"`)
-   *
-   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
-   */
-  loc?: string;
-  meta?: MetaValue[];
-};
-
 export type PrimitiveValue = {
   kind: 'PrimitiveValue';
   typeName: PrimitiveLiteral;
@@ -1151,6 +1107,28 @@ export type Service = {
 
   /** An array of Unions defined in this Service. */
   unions: Union[];
+
+  /**
+   * A range in the source document encoded as a string. This string is a
+   * semicolon-separated list of numbers and MUST be in one of the following formats:
+   * - Single point: `<row>;<col>;<offset>` (eg. `"4;12;88"`)
+   * - Single row: `<row>;<col1>;<col2>;<offset1>;<offset2>` (eg. `"4;12;21;88;97"`)
+   * - Multi row: `<row1>;<col1>;<row2>;<col2>;<offset1>;<offset2>` (eg.
+   * `"4;12;6;3;88;164"`)
+   *
+   * Both the `row` and `column` values are 1-based. The `offset` values are 0-based.
+   */
+  loc?: string;
+  meta?: MetaValue[];
+};
+
+/** TODO: don't allow arrays in primitive unions */
+export type SimpleUnion = {
+  kind: 'SimpleUnion';
+  name: StringLiteral;
+  description?: StringLiteral[];
+  members: MemberValue[];
+  deprecated?: TrueLiteral;
 
   /**
    * A range in the source document encoded as a string. This string is a
@@ -1406,14 +1384,10 @@ export function isOAuth2Scheme(obj: SecurityScheme): obj is OAuth2Scheme {
  * A Union is a type that can be one of several different types. The `members` array
  * contains the possible types that the Union can be.
  */
-export type Union = PrimitiveUnion | ComplexUnion | DiscriminatedUnion;
+export type Union = SimpleUnion | DiscriminatedUnion;
 
-export function isPrimitiveUnion(obj: Union): obj is PrimitiveUnion {
-  return obj.kind === 'PrimitiveUnion';
-}
-
-export function isComplexUnion(obj: Union): obj is ComplexUnion {
-  return obj.kind === 'ComplexUnion';
+export function isSimpleUnion(obj: Union): obj is SimpleUnion {
+  return obj.kind === 'SimpleUnion';
 }
 
 export function isDiscriminatedUnion(obj: Union): obj is DiscriminatedUnion {

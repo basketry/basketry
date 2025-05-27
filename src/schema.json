@@ -291,17 +291,16 @@
       },
       "description": "A Union is a type that can be one of several different types. The `members` array contains the possible types that the Union can be.",
       "oneOf": [
-        { "$ref": "#/definitions/primitiveUnion" },
-        { "$ref": "#/definitions/complexUnion" },
+        { "$ref": "#/definitions/simpleUnion" },
         { "$ref": "#/definitions/discriminatedUnion" }
       ]
     },
-    "primitiveUnion": {
+    "simpleUnion": {
       "type": "object",
       "required": ["kind", "name", "members"],
       "description": "TODO: don't allow arrays in primitive unions",
       "properties": {
-        "kind": { "type": "string", "const": "PrimitiveUnion" },
+        "kind": { "type": "string", "const": "SimpleUnion" },
         "name": { "$ref": "#/definitions/string" },
         "description": {
           "type": "array",
@@ -309,29 +308,7 @@
         },
         "members": {
           "type": "array",
-          "items": { "$ref": "#/definitions/primitiveValue" },
-          "minItems": 1
-        },
-        "deprecated": { "$ref": "#/definitions/deprecated" },
-        "loc": { "$ref": "#/definitions/range" },
-        "meta": { "$ref": "#/definitions/meta" }
-      },
-      "additionalProperties": false
-    },
-    "complexUnion": {
-      "type": "object",
-      "required": ["kind", "name", "members"],
-      "description": "TODO: don't allow arrays, enums, or other unions in complex unions",
-      "properties": {
-        "kind": { "type": "string", "const": "ComplexUnion" },
-        "name": { "$ref": "#/definitions/string" },
-        "description": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/string" }
-        },
-        "members": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/complexValue" },
+          "items": { "$ref": "#/definitions/memberValue" },
           "minItems": 1
         },
         "deprecated": { "$ref": "#/definitions/deprecated" },
