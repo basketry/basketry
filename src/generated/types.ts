@@ -102,7 +102,7 @@ export type ApiKeySchemeType = {
 export type ArrayMaxItemsRule = {
   kind: 'ValidationRule';
   id: 'ArrayMaxItems';
-  max: NonNegativeNumberLiteral;
+  max: NonNegativeIntegerLiteral;
 
   /**
    * A range in the source document encoded as a string. This string is a
@@ -120,7 +120,7 @@ export type ArrayMaxItemsRule = {
 export type ArrayMinItemsRule = {
   kind: 'ValidationRule';
   id: 'ArrayMinItems';
-  min: NonNegativeNumberLiteral;
+  min: NonNegativeIntegerLiteral;
 
   /**
    * A range in the source document encoded as a string. This string is a

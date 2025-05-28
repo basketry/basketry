@@ -1150,7 +1150,7 @@
           "type": "string",
           "const": "ArrayMaxItems"
         },
-        "max": { "$ref": "#/definitions/nonNegativeNumber" },
+        "max": { "$ref": "#/definitions/nonNegativeInteger" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false
@@ -1165,7 +1165,7 @@
           "type": "string",
           "const": "ArrayMinItems"
         },
-        "min": { "$ref": "#/definitions/nonNegativeNumber" },
+        "min": { "$ref": "#/definitions/nonNegativeInteger" },
         "loc": { "$ref": "#/definitions/range" }
       },
       "additionalProperties": false

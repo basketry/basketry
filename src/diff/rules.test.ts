@@ -318,8 +318,8 @@ describe(rules, () => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, max: nonNegativeNumberLiteral(5) },
-          { kind: 'ValidationRule', id, max: nonNegativeNumberLiteral(5) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
         );
 
         // ACT
@@ -334,7 +334,7 @@ describe(rules, () => {
         const [a, b] = setup(undefined, {
           kind: 'ValidationRule',
           id,
-          max: nonNegativeNumberLiteral(5),
+          max: nonNegativeIntegerLiteral(5),
         });
 
         // ACT
@@ -354,7 +354,7 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, max: nonNegativeNumberLiteral(5) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
           undefined,
         );
 
@@ -375,8 +375,8 @@ describe(rules, () => {
       it('identifies an increased max', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, max: nonNegativeNumberLiteral(5) },
-          { kind: 'ValidationRule', id, max: nonNegativeNumberLiteral(7) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(7) },
         );
 
         // ACT
@@ -397,8 +397,8 @@ describe(rules, () => {
       it('identifies a decreased max', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, max: nonNegativeNumberLiteral(5) },
-          { kind: 'ValidationRule', id, max: nonNegativeNumberLiteral(3) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(3) },
         );
 
         // ACT
@@ -421,8 +421,8 @@ describe(rules, () => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, min: nonNegativeNumberLiteral(5) },
-          { kind: 'ValidationRule', id, min: nonNegativeNumberLiteral(5) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
         );
 
         // ACT
@@ -437,7 +437,7 @@ describe(rules, () => {
         const [a, b] = setup(undefined, {
           kind: 'ValidationRule',
           id,
-          min: nonNegativeNumberLiteral(5),
+          min: nonNegativeIntegerLiteral(5),
         });
 
         // ACT
@@ -457,7 +457,7 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, min: nonNegativeNumberLiteral(5) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
           undefined,
         );
 
@@ -478,8 +478,8 @@ describe(rules, () => {
       it('identifies an increased min', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, min: nonNegativeNumberLiteral(5) },
-          { kind: 'ValidationRule', id, min: nonNegativeNumberLiteral(7) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(7) },
         );
 
         // ACT
@@ -500,8 +500,8 @@ describe(rules, () => {
       it('identifies a decreased min', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, min: nonNegativeNumberLiteral(5) },
-          { kind: 'ValidationRule', id, min: nonNegativeNumberLiteral(3) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(3) },
         );
 
         // ACT
