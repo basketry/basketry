@@ -520,7 +520,11 @@ async function runParser(options: {
     unmappedViolations.push(...result.violations);
 
     const relativePaths =
-      result.service.sourcePaths?.map((p) => relative(process.cwd(), p)) ?? [];
+      result.service.sourcePaths?.map((p) => {
+        const from = process.cwd();
+        const to = p === '#' ? sourcePath : p;
+        return relative(from, to);
+      }) ?? [];
 
     const validation = validate({
       ...result.service,
