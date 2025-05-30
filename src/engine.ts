@@ -582,7 +582,14 @@ async function runRules(options: { fns: Rule[]; service: Service }): Promise<{
   for (const fn of fns) {
     try {
       performance.mark('rule-start');
-      violations.push(...(await fn(service)));
+      const vs: Violation[] = (await fn(service)).map((v) => ({
+        ...v,
+        sourcePath: v.sourcePath.startsWith('/')
+          ? v.sourcePath
+          : resolve(process.cwd(), v.sourcePath),
+      }));
+
+      violations.push(...vs);
     } catch (ex) {
       errors.push({
         code: 'RULE_ERROR',
