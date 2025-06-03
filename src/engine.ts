@@ -1,5 +1,4 @@
-import { readFileSync } from 'fs';
-import { mkdir, readFile, unlink, writeFile } from 'fs/promises';
+import * as fsPromises from 'fs/promises';
 import { EOL } from 'os';
 import { join, relative, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
@@ -17,7 +16,6 @@ import {
   Generator,
   GeneratorOptions,
   LegacyInput,
-  Output,
   Overrides,
   Parser,
   ParserOutput,
@@ -27,6 +25,7 @@ import {
 } from './types';
 import { getConfigs, isLocalConfig } from './utils';
 import { validate } from './validator';
+import { FileSystem } from './file-system';
 
 require('ts-node').register({
   transpileOnly: true,
@@ -34,25 +33,37 @@ require('ts-node').register({
 
 const componentNames = new WeakMap<Function, string>();
 
+export type EngineLoadInput = {
+  configPath?: string | undefined;
+} & Overrides &
+  EngineEvents;
+
 export class Engine {
   constructor(
     private readonly input: EngineInput,
+    private readonly fs: FileSystem,
     private readonly events?: {
       onError?: (error: BasketryError) => void;
       onViolation?: (violation: Violation, line: string) => void;
     },
-  ) {}
+  ) {
+    // TODO: ensure this is an absolute path (eg. an empty first segment)
+    this._projectDirectory = input.projectDirectory.split(sep);
+    this._outputPath = input.output ? input.output.split(sep) : [];
+  }
 
   static async load({
     configPath,
     onError,
     onViolation,
+
     ...overrides
-  }: {
-    configPath?: string | undefined;
-  } & Overrides &
-    EngineEvents): Promise<{ engines: Engine[]; errors: BasketryError[] }> {
-    const { values: inputs, errors } = await getInput(configPath, overrides);
+  }: EngineLoadInput): Promise<{ engines: Engine[]; errors: BasketryError[] }> {
+    const { values: inputs, errors } = await getInput(
+      configPath,
+      fsPromises,
+      overrides,
+    );
 
     const engines: Engine[] = [];
 
@@ -66,8 +77,20 @@ export class Engine {
         input.output,
       );
 
+      // Absolute path of this Engine's single-project config
+      // TODO: consider moving this logic to a better place
+      const projectDirectory = input.configPath
+        ? resolve(process.cwd(), input.configPath)
+            .split(sep)
+            .reverse()
+            .slice(1)
+            .reverse()
+            .join(sep)
+        : process.cwd();
+
       const engine = new Engine(
         {
+          projectDirectory,
           sourceContent: input.sourceContent,
           sourcePath: input.sourcePath,
           parser: parserInfo.fn ?? nullParser,
@@ -76,6 +99,7 @@ export class Engine {
           options: input.options,
           output: input.output,
         },
+        fsPromises,
         { onError, onViolation },
       );
 
@@ -90,6 +114,8 @@ export class Engine {
     return { engines, errors };
   }
 
+  private readonly _projectDirectory: string[];
+  private readonly _outputPath: string[];
   private readonly _files: File[] = [];
   private readonly _changes: Record<string, FileStatus> = {};
   private readonly _errors: BasketryError[] = [];
@@ -113,13 +139,6 @@ export class Engine {
   public get violations() {
     return this._violations;
   }
-  public get output(): Output {
-    return {
-      files: this._files,
-      errors: this._errors,
-      violations: this._violations,
-    };
-  }
   public get service(): Service | undefined {
     return this._service;
   }
@@ -140,7 +159,7 @@ export class Engine {
         });
         this._service = value;
         this.pushErrors(...errors);
-        this.pushViolations(...violations);
+        await this.pushViolations(...violations);
         this.hasParserRun = true;
       } catch (ex) {
         this.pushErrors(fatal(ex));
@@ -156,7 +175,7 @@ export class Engine {
           service: this._service,
         });
         this.pushErrors(...errors);
-        this.pushViolations(...violations);
+        await this.pushViolations(...violations);
         this.rulesRun = true;
       } catch (ex) {
         this.pushErrors(fatal(ex));
@@ -174,10 +193,11 @@ export class Engine {
         const { files, errors, violations } = await runGenerators({
           fns: this.input.generators,
           service: this._service,
+          outputPath: this._outputPath,
         });
-        this._files.push(...withGitattributes(files, this.input.output));
+        this._files.push(...withGitattributes(files, this._outputPath));
         this.pushErrors(...errors);
-        this.pushViolations(...violations);
+        await this.pushViolations(...violations);
         this.hasGeneratorsRun = true;
       } catch (ex) {
         this.pushErrors(fatal(ex));
@@ -187,7 +207,11 @@ export class Engine {
 
   public async compareFiles() {
     if (this.hasGeneratorsRun) {
-      const removed = await getRemoved(this.files);
+      const removed = await getRemoved(
+        this.files,
+        this._projectDirectory,
+        this.fs,
+      );
 
       for (const file of removed) {
         this._changes[file] = 'removed';
@@ -204,7 +228,9 @@ export class Engine {
 
   private async compare(file: File): Promise<FileStatus> {
     try {
-      const previous = (await readFile(join(...file.path))).toString();
+      const previous = (
+        await this.fs.readFile(this.absolute(file.path))
+      ).toString();
       return areEquivalent(previous, await file.contents)
         ? 'no-change'
         : 'modified';
@@ -214,39 +240,41 @@ export class Engine {
   }
 
   public async commitFiles() {
-    for (const filepath of Object.keys(this._changes)) {
-      const status = this._changes[filepath];
+    for (const relativePath of Object.keys(this._changes)) {
+      const absolutePath = this.absolute(relativePath);
+      const status = this._changes[relativePath];
 
       if (status === 'removed') {
         try {
-          await unlink(filepath);
+          await this.fs.unlink(absolutePath);
         } catch (ex) {
           this.pushErrors({
             code: 'WRITE_ERROR',
             message: `Unable to remove file. (${ex.message})`,
-            filepath: filepath,
+            filepath: relativePath,
           });
         }
       }
 
       if (status === 'added' || status === 'modified') {
-        const file = this._filesByFilepath.get(filepath);
+        const file = this._filesByFilepath.get(relativePath);
         if (file) {
           if (file.path.length > 1 && status === 'added') {
             // Create subfolder for added file with subfolder
             try {
-              await readFile(filepath);
+              await this.fs.readFile(absolutePath);
             } catch {
-              await mkdir(join(...file.path.slice(0, -1)), { recursive: true });
+              const dir = this.absolute(relativePath.split(sep).slice(0, -1));
+              await this.fs.mkdir(dir, { recursive: true });
             }
           }
 
           try {
-            await writeFile(filepath, await file.contents); // This seemingly unnecessary await accounts for an odd bug caused by generators using an older version (<=2) of prettier
+            await this.fs.writeFile(absolutePath, await file.contents); // This seemingly unnecessary await accounts for an odd bug caused by generators using an older version (<=2) of prettier
           } catch (ex) {
             this.pushErrors({
               code: 'WRITE_ERROR',
-              message: `Error writing ${filepath} (${ex.message})`,
+              message: `Error writing ${relativePath} (${ex.message})`,
             });
           }
         }
@@ -265,7 +293,7 @@ export class Engine {
     }
   }
 
-  private pushViolations(...violations: Violation[]) {
+  private async pushViolations(...violations: Violation[]): Promise<void> {
     for (const violation of violations) {
       const sourceIndex =
         this._service?.sourcePaths.indexOf(violation.sourcePath) ?? 0;
@@ -289,11 +317,12 @@ export class Engine {
 
         if (this.events?.onViolation) {
           try {
+            // TODO Cache lines (or at least the file) to avoid reading the file multiple times
             const line = this.getLine(
               violation.sourcePath,
               violation.range.start.line,
             );
-            this.events?.onViolation?.(violation, line);
+            this.events?.onViolation?.(violation, await line);
           } catch {}
         }
       }
@@ -302,31 +331,45 @@ export class Engine {
 
   private readonly _contentBySource = new Map<string, string[]>();
 
-  private getLine(sourcePath: string, lineNumber: number): string {
+  private async getLine(
+    sourcePath: string,
+    lineNumber: number,
+  ): Promise<string> {
     if (!this._contentBySource.has(sourcePath)) {
-      this._contentBySource.set(
-        sourcePath,
-        readFileSync(sourcePath).toString().split(EOL),
-      );
+      const buffer = await this.fs.readFile(sourcePath);
+      this._contentBySource.set(sourcePath, buffer.toString().split(EOL));
     }
     return this._contentBySource.get(sourcePath)![lineNumber - 1];
   }
+
+  private absolute(relativePath: string | string[]): string {
+    return absolute(this._projectDirectory, relativePath);
+  }
 }
 
-function withGitattributes(files: File[], output?: string): File[] {
+function absolute(
+  projectDirectory: string[],
+  relativePath: string | string[],
+): string {
+  return typeof relativePath === 'string'
+    ? sep + join(...projectDirectory, relativePath)
+    : sep + join(...projectDirectory, ...relativePath);
+}
+
+function withGitattributes(files: File[], outputPath: string[]): File[] {
   if (!files.length) return files;
   return [
     ...files,
     {
-      path: [output, '.gitattributes'].filter((x): x is string => !!x),
+      path: [...outputPath, '.gitattributes'].filter((x): x is string => !!x),
       contents:
         warning() +
         files
           .map(
             (file) =>
               `${
-                output
-                  ? relative(output, join(...file.path))
+                outputPath.length
+                  ? relative(join(...outputPath), join(...file.path))
                   : join(...file.path)
               } linguist-generated=true${EOL}`,
           )
@@ -349,6 +392,7 @@ const warning = () => `# This code was generated by ${
 
 export async function getInput(
   configPath: string | undefined,
+  fs: FileSystem,
   overrides?: Overrides,
 ): Promise<{
   values: LegacyInput[];
@@ -384,7 +428,7 @@ export async function getInput(
     let inputs: LegacyInput | undefined = undefined;
     const sourcePath = overrides?.sourcePath || config.source;
 
-    const source = await getSource(sourcePath);
+    const source = await getSource(sourcePath, fs);
     errors.push(...source.errors);
 
     const sourceContent = overrides?.sourceContent || source.content;
@@ -435,7 +479,11 @@ export async function getInput(
   return { values, errors };
 }
 
-async function getRemoved(created: File[]): Promise<string[]> {
+async function getRemoved(
+  created: File[],
+  projectDirectory: string[],
+  fs: FileSystem,
+): Promise<string[]> {
   try {
     // Find the path of the NEW .gitattributes file
     const gitattributesPath = created.find((file) =>
@@ -445,13 +493,15 @@ async function getRemoved(created: File[]): Promise<string[]> {
 
     // Read the contents of the PREVIOUS .gitattributes file from disk
     const gitattributes = (
-      await readFile(join(...gitattributesPath))
+      await fs.readFile(absolute(projectDirectory, gitattributesPath))
     ).toString();
 
     const [, ...outputPath] = [...gitattributesPath].reverse();
     outputPath.reverse();
 
-    const createdPaths = new Set(created.map((file) => join(...file.path)));
+    const createdPaths = new Set(
+      created.map((file) => absolute(projectDirectory, file.path)),
+    );
 
     return gitattributes
       .split('\n')
@@ -582,12 +632,7 @@ async function runRules(options: { fns: Rule[]; service: Service }): Promise<{
   for (const fn of fns) {
     try {
       performance.mark('rule-start');
-      const vs: Violation[] = (await fn(service)).map((v) => ({
-        ...v,
-        sourcePath: v.sourcePath.startsWith('/')
-          ? v.sourcePath
-          : resolve(process.cwd(), v.sourcePath),
-      }));
+      const vs: Violation[] = await fn(service);
 
       violations.push(...vs);
     } catch (ex) {
@@ -613,6 +658,7 @@ async function runRules(options: { fns: Rule[]; service: Service }): Promise<{
 async function runGenerators(options: {
   fns: Generator[];
   service: Service;
+  outputPath: string[];
 }): Promise<{
   files: File[];
   errors: BasketryError[];
@@ -627,7 +673,14 @@ async function runGenerators(options: {
   for (const fn of fns) {
     try {
       performance.mark('generator-start');
-      files.push(...(await fn(service)));
+
+      // Append the outputPath to each file's path
+      const mappedFiles = (await fn(service)).map((file) => ({
+        ...file,
+        path: [...options.outputPath, ...file.path],
+      }));
+
+      files.push(...mappedFiles);
     } catch (ex) {
       errors.push({
         code: 'GENERATOR_ERROR',
@@ -650,13 +703,14 @@ async function runGenerators(options: {
 
 async function getSource(
   sourcePath: string | undefined,
+  fs: FileSystem,
 ): Promise<{ content: string | undefined; errors: BasketryError[] }> {
   let content: string | undefined;
   const errors: BasketryError[] = [];
 
   if (sourcePath?.length) {
     try {
-      content = (await readFile(sourcePath)).toString();
+      content = (await fs.readFile(sourcePath)).toString();
     } catch (ex) {
       errors.push({
         code: 'SOURCE_ERROR',
@@ -784,11 +838,9 @@ function getGenerators(
 
               return files.map((file) => ({
                 ...file,
-                path: [
-                  output,
-                  options?.basketry?.subfolder,
-                  ...file.path,
-                ].filter((seg): seg is string => !!seg),
+                path: [options?.basketry?.subfolder, ...file.path].filter(
+                  (seg): seg is string => !!seg,
+                ),
               }));
             }
           : undefined;

@@ -102,6 +102,8 @@ export type EngineEvents = {
 };
 
 export type EngineInput = {
+  /** Absolute directory path of this Engine's single-project config */
+  projectDirectory: string;
   sourcePath: string;
   sourceContent: string;
   parser: Parser;

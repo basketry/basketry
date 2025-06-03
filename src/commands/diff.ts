@@ -1,4 +1,5 @@
 import { exec } from 'child_process';
+import * as fsPromises from 'fs/promises';
 
 import { BasketryError, Engine, getInput } from '..';
 import { CommmonArgs } from './types';
@@ -50,7 +51,7 @@ export async function diff(args: DiffArgs) {
     ? await readStreamToString(process.stdin)
     : undefined;
 
-  const b_inputs = await getInput(config, {
+  const b_inputs = await getInput(config, fsPromises, {
     parser,
     sourcePath: source,
   });
@@ -60,7 +61,7 @@ export async function diff(args: DiffArgs) {
     : sourceContent || (await readFromGit(b_inputs.values[0].sourcePath, ref));
 
   const [a_inputs] = await Promise.all([
-    getInput(config, {
+    getInput(config, fsPromises, {
       parser,
       sourceContent: a_sourceContent,
       sourcePath: previous || (sourceContent ? source : undefined),

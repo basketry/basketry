@@ -1,4 +1,5 @@
 import { performance } from 'perf_hooks';
+import * as fsPromises from 'fs/promises';
 
 import { BasketryError, PerfEvent } from '../types';
 import { Engine, getInput } from '../engine';
@@ -37,7 +38,7 @@ export async function ir(args: GenerateArgs) {
       : undefined;
 
     const go = async () => {
-      const inputs = await getInput(config, {
+      const inputs = await getInput(config, fsPromises, {
         validate: false,
         parser,
         sourceContent,
