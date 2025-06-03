@@ -775,6 +775,7 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
+      console.log(vol.toJSON());
       expect(Object.keys(vol.toJSON())).toEqual([
         osPath(`${projectDirectory}/${output}/generated/file.ext`),
         osPath(`${projectDirectory}/${output}/.gitattributes`),
@@ -812,6 +813,7 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
+      console.log(vol.toJSON());
       expect(Object.keys(vol.toJSON())).toEqual([
         osPath(`${projectDirectory}/${output}/generated/file.ext`),
         osPath(`${projectDirectory}/${output}/.gitattributes`),
@@ -851,6 +853,7 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
+      console.log(vol.toJSON());
       const actualFilepaths = Object.keys(vol.toJSON());
       const expectedFiles = [
         osPath(`${projectDirectory}/${output}/generated/file.ext`),
@@ -897,6 +900,7 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
+      console.log(vol.toJSON());
       expect(engine.errors).toEqual([
         {
           code: 'WRITE_ERROR',
@@ -945,6 +949,7 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
+      console.log(vol.toJSON());
       expect(engine.errors).toEqual([
         {
           code: 'WRITE_ERROR',
