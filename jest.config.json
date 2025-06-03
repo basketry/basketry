@@ -2,9 +2,13 @@
   "preset": "ts-jest",
   "testEnvironment": "node",
   "collectCoverage": true,
-  "testMatch": [
-    "**/__tests__/**/*.ts?(x)",
-    "**/?(*.)+(spec|test|tests).ts?(x)"
+  "collectCoverageFrom": [
+    "src/**/*.{ts,tsx}",
+    "!src/generated/**/*",
+    "!src/tools/**/*",
+    "!src/**/*.d.ts",
+    "!**/__tests__/**/*.ts?(x)",
+    "!**/?(*.)+(spec|test|tests).ts?(x)"
   ],
-  "passWithNoTests": true
+  "testMatch": ["**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test|tests).ts?(x)"]
 }
