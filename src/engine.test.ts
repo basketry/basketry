@@ -775,8 +775,7 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
-      console.log(vol.toJSON());
-      expect(Object.keys(vol.toJSON())).toEqual([
+      expect(Object.keys(vol.toJSON()).map(osPath)).toEqual([
         osPath(`${projectDirectory}/${output}/generated/file.ext`),
         osPath(`${projectDirectory}/${output}/.gitattributes`),
       ]);
@@ -813,8 +812,7 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
-      console.log(vol.toJSON());
-      expect(Object.keys(vol.toJSON())).toEqual([
+      expect(Object.keys(vol.toJSON()).map(osPath)).toEqual([
         osPath(`${projectDirectory}/${output}/generated/file.ext`),
         osPath(`${projectDirectory}/${output}/.gitattributes`),
       ]);
@@ -853,8 +851,7 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
-      console.log(vol.toJSON());
-      const actualFilepaths = Object.keys(vol.toJSON());
+      const actualFilepaths = Object.keys(vol.toJSON()).map(osPath);
       const expectedFiles = [
         osPath(`${projectDirectory}/${output}/generated/file.ext`),
         osPath(`${projectDirectory}/${output}/.gitattributes`),
@@ -900,7 +897,6 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
-      console.log(vol.toJSON());
       expect(engine.errors).toEqual([
         {
           code: 'WRITE_ERROR',
@@ -908,7 +904,7 @@ describe('engine', () => {
           filepath: osPath(`${output}/removed.ext`),
         },
       ]);
-      const actualFilepaths = Object.keys(vol.toJSON());
+      const actualFilepaths = Object.keys(vol.toJSON()).map(osPath);
       const expectedFiles = [
         osPath(`${projectDirectory}/${output}/removed.ext`), // Expect the file to still exist
         osPath(`${projectDirectory}/${output}/generated/file.ext`),
@@ -949,7 +945,6 @@ describe('engine', () => {
       await engine.commitFiles();
 
       // ASSERT
-      console.log(vol.toJSON());
       expect(engine.errors).toEqual([
         {
           code: 'WRITE_ERROR',
@@ -964,7 +959,7 @@ describe('engine', () => {
           )} (>>>> CANNOT WRITE <<<<)`,
         },
       ]);
-      const expectedFilepaths = Object.keys(vol.toJSON());
+      const expectedFilepaths = Object.keys(vol.toJSON()).map(osPath);
       expect(expectedFilepaths).not.toContain(
         osPath(`${projectDirectory}/${output}/generated/file.ext`),
       );
