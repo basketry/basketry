@@ -410,3 +410,5 @@ Note that the `lint` script is run prior to `build`. Auto-fixable linting or for
 ---
 
 Generated with [generator-ts-console](https://www.npmjs.com/package/generator-ts-console)
+
+Test!
