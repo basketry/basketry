@@ -565,7 +565,7 @@ async function runParser(options: {
 
   try {
     performance.mark('parser-start');
-    const result = await fn(sourceContent);
+    const result = await fn(sourceContent, sourcePath);
     /** Violations that contain unmapped source file paths (eg. '#') */
     unmappedViolations.push(...result.violations);
 

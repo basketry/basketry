@@ -55,6 +55,9 @@ export type GeneratorOptions = {
 export type Parser = (
   /** The content of the source SDL as text */
   sourceContent: string,
+
+  /** The absolute path to the source SDL file */
+  absoluteSourcePath: string,
 ) => ParserOutput | Promise<ParserOutput>;
 
 export type ParserOutput = {
