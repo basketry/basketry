@@ -1,14 +1,4 @@
-import { EOL } from 'os';
-import { join, relative } from 'path';
-import {
-  ApiKeyScheme,
-  BasicScheme,
-  Method,
-  OAuth2Scheme,
-  SecurityScheme,
-  ValidationRule,
-} from './ir';
-import { File, Range } from './types';
+import { MemberValue, Method, ValidationRule } from './ir';
 
 export function hasParameters(method: Method): boolean {
   return !!method.parameters.length;
@@ -30,12 +20,8 @@ export function hasOnlyOptionalParameters(method: Method): boolean {
   return !hasRequiredParameters(method) && hasOptionalParameters(method);
 }
 
-export function isRequired(obj: { rules?: ValidationRule[] }): boolean {
-  return !!obj.rules?.some((r) => r.id === 'Required');
-}
-
-export function isEnum(obj: { rules: ValidationRule[] }): boolean {
-  return obj.rules.some((r) => r.id === 'StringEnum');
+export function isRequired(obj: MemberValue): boolean {
+  return !obj.isOptional?.value;
 }
 
 export { encodeRange, decodeRange } from './range';
