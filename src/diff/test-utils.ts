@@ -101,6 +101,7 @@ export function buildPrimitiveValue(
   return {
     kind: 'PrimitiveValue',
     typeName: primitiveLiteral('string'),
+    isOptional: { kind: 'TrueLiteral', value: true },
     rules: [],
     ...value,
   };

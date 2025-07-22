@@ -166,7 +166,7 @@ describe(properties, () => {
           name: stringLiteral(propertyName),
           value: buildPrimitiveValue({
             typeName: primitiveLiteral('string'),
-            rules: [{ kind: 'ValidationRule', id: 'Required' }],
+            isOptional: undefined,
           }),
         }),
       );
@@ -235,7 +235,7 @@ describe(properties, () => {
           name: stringLiteral(propertyName),
           value: buildPrimitiveValue({
             typeName: primitiveLiteral('string'),
-            rules: [{ kind: 'ValidationRule', id: 'Required' }],
+            isOptional: undefined,
           }),
         }),
         undefined,
@@ -607,12 +607,14 @@ describe(properties, () => {
           name: stringLiteral(propertyName),
           value: buildPrimitiveValue({
             typeName: primitiveLiteral('string'),
+            isOptional: { kind: 'TrueLiteral', value: true },
           }),
         }),
         buildProperty({
           name: stringLiteral(propertyName),
           value: buildComplexValue({
             typeName: stringLiteral('string'),
+            isOptional: { kind: 'TrueLiteral', value: true },
           }),
         }),
       );

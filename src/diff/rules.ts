@@ -81,7 +81,6 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
   b: TScope,
 ): Iterable<ChangeInfo> {
   for (const a_rule of getRules(a)) {
-    if (a_rule.id === 'StringEnum') continue;
     const b_rule = getRules(b).find((r) => r.id === a_rule.id);
 
     const a_context = buildContext(mode, a);
@@ -145,19 +144,6 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
                 kind: 'changed',
                 target: a_rule.id,
                 category: b_rule.required ? 'major' : 'minor',
-                a: { context: a_context, ...asValue(a_rule) },
-                b: { context: b_context, ...asValue(b_rule) },
-              };
-            }
-          }
-          break;
-        case 'Constant':
-          if (a_rule.id === b_rule.id) {
-            if (a_rule.value?.value !== b_rule.value?.value) {
-              yield {
-                kind: 'changed',
-                target: a_rule.id,
-                category: 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -243,7 +229,6 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
             }
           }
           break;
-        case 'Required':
         default:
           return undefined;
       }
@@ -251,7 +236,6 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
   }
 
   for (const b_rule of getRules(b)) {
-    if (b_rule.id === 'StringEnum') continue;
     const a_rule = getRules(a).find((r) => r.id === b_rule.id);
     const b_context = buildContext(mode, b);
 
@@ -285,18 +269,12 @@ function asValue(rule: ValidationRule): {
       return clean(rule.min);
     case 'ArrayUniqueItems':
       return { value: rule.required };
-    case 'Constant':
-      return { value: rule.value.value };
     case 'NumberGT':
     case 'NumberGTE':
     case 'NumberLT':
     case 'NumberLTE':
     case 'NumberMultipleOf':
       return clean(rule.value);
-    case 'Required':
-      return { value: true };
-    case 'StringEnum':
-      return { value: rule.values.map((v) => v.value) };
     case 'StringFormat':
       return clean(rule.format);
     case 'StringMaxLength':
