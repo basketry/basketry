@@ -1,3 +1,5 @@
+import { relative } from 'path';
+
 import chalk from 'chalk';
 
 import { Engine } from '../engine';
@@ -72,7 +74,10 @@ export async function ci(args: CiArgs) {
       // TODO: fail if multiplexed with stdin (#24)
 
       for (const pipeline of pipelines) {
-        if (!json) console.log(info(`Parsing ${pipeline.sourcePath}`));
+        if (!json)
+          console.log(
+            info(`Parsing ${relative(process.cwd(), pipeline.sourcePath)}`),
+          );
 
         await pipeline.runParser();
         await pipeline.runRules();

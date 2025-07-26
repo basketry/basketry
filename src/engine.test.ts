@@ -5,7 +5,7 @@ import { setParser } from './test-modules/parser';
 import { setFiles } from './test-modules/generator';
 import { setViolations as setRuleViolations } from './test-modules/rule';
 import { Service } from './ir';
-import { join, relative, sep } from 'path';
+import { join, relative, resolve, sep } from 'path';
 import { FileSystem } from './file-system';
 
 import { PathLike } from 'fs';
@@ -82,7 +82,7 @@ const projectDirectory = `${sep}some${sep}project${sep}path`;
 describe('engine', () => {
   beforeEach(() => vol.reset());
 
-  it('returns the relative source path', () => {
+  it('returns the absolute source path', () => {
     // ARRANGE
     const engine = new Engine(
       {
@@ -97,7 +97,9 @@ describe('engine', () => {
     );
 
     // ACT & ASSERT
-    expect(engine.sourcePath).toEqual('some-file.ext');
+    expect(engine.sourcePath).toEqual(
+      resolve(projectDirectory, 'some-file.ext'),
+    );
   });
 
   describe('runParser', () => {

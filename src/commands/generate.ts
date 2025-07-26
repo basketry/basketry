@@ -1,4 +1,5 @@
 import { StatWatcher, watchFile } from 'fs';
+import { relative } from 'path';
 import { performance } from 'perf_hooks';
 
 import {
@@ -90,7 +91,10 @@ export async function generate(args: GenerateArgs) {
       // TODO: fail if multiplexed with stdin (#24)
 
       for (const pipeline of pipelines) {
-        if (!json) console.log(info(`Parsing ${pipeline.sourcePath}`));
+        if (!json)
+          console.log(
+            info(`Parsing ${relative(process.cwd(), pipeline.sourcePath)}`),
+          );
 
         performance.mark('run-start');
 

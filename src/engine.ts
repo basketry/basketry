@@ -1,6 +1,6 @@
 import * as fsPromises from 'fs/promises';
 import { EOL } from 'os';
-import { join, relative, resolve, sep } from 'path';
+import { dirname, join, relative, resolve, sep } from 'path';
 import { performance } from 'perf_hooks';
 
 import { merge as webpackMerge } from 'webpack-merge';
@@ -59,8 +59,10 @@ export class Engine {
 
     ...overrides
   }: EngineLoadInput): Promise<{ engines: Engine[]; errors: BasketryError[] }> {
+    const absoluteConfigPath = configPath ? resolve(configPath) : undefined;
+
     const { values: inputs, errors } = await getInput(
-      configPath,
+      absoluteConfigPath,
       fsPromises,
       overrides,
     );
@@ -123,8 +125,9 @@ export class Engine {
   private readonly _filesByFilepath: Map<string, File> = new Map();
   private readonly _violationsByRange = new Map<string, Violation[]>();
 
+  /** Gets the absolute path to the source file. */
   public get sourcePath(): string {
-    return this.input.sourcePath;
+    return resolve(this._projectDirectory.join(sep), this.input.sourcePath);
   }
 
   public get files() {
@@ -422,13 +425,19 @@ export async function getInput(
     values.push(input);
   }
 
-  for (const config of configs.value) {
+  for (const [absoluteConfigPath, config] of configs.value) {
     if (!isLocalConfig(config)) continue;
+
+    const cwd = dirname(absoluteConfigPath);
 
     let inputs: LegacyInput | undefined = undefined;
     const sourcePath = overrides?.sourcePath || config.source;
 
-    const source = await getSource(sourcePath, fs);
+    const absoluteSourcePath = sourcePath
+      ? resolve(cwd, sourcePath)
+      : undefined;
+
+    const source = await getSource(absoluteSourcePath, absoluteConfigPath, fs);
     errors.push(...source.errors);
 
     const sourceContent = overrides?.sourceContent || source.content;
@@ -440,9 +449,9 @@ export async function getInput(
 
     if (sourcePath && sourceContent && parser) {
       inputs = {
-        sourcePath: resolve(process.cwd(), sourcePath),
+        sourcePath,
         sourceContent,
-        configPath,
+        configPath: absoluteConfigPath,
         parser,
         rules,
         generators,
@@ -456,10 +465,11 @@ export async function getInput(
       errors.push({
         code: 'MISSING_PARAMETER',
         message: '`sourcePath` is not specified',
+        filepath: absoluteConfigPath,
       });
     }
 
-    if (!sourceContent) {
+    if (!sourceContent && !configPath) {
       errors.push({
         code: 'MISSING_PARAMETER',
         message: '`sourceContent` is not specified',
@@ -470,6 +480,7 @@ export async function getInput(
       errors.push({
         code: 'MISSING_PARAMETER',
         message: '`parser` is not specified',
+        filepath: absoluteConfigPath,
       });
     }
 
@@ -703,6 +714,7 @@ async function runGenerators(options: {
 
 async function getSource(
   sourcePath: string | undefined,
+  configPath: string | undefined,
   fs: FileSystem,
 ): Promise<{ content: string | undefined; errors: BasketryError[] }> {
   let content: string | undefined;
@@ -715,6 +727,7 @@ async function getSource(
       errors.push({
         code: 'SOURCE_ERROR',
         message: 'Source file not found ',
+        filepath: configPath,
       });
     }
   }

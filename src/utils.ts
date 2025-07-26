@@ -1,10 +1,14 @@
 import { readFile } from 'fs/promises';
-import { join, resolve } from 'path';
+import { dirname, resolve } from 'path';
 import { BasketryError, GlobalConfig, LocalConfig } from '.';
 import { validateConfig } from './config-validator';
 
 export type ResolveOptions = { cwd?: string };
 
+/**
+ * Starts with a single config path and resolves all local configs.
+ * The returned values are a list of absolute paths to the local configs.
+ */
 export async function resolveConfig(
   configPath: string | undefined,
   options?: ResolveOptions,
@@ -17,7 +21,10 @@ export async function resolveConfig(
   let path: string | undefined;
   try {
     if (configPath?.length) {
-      path = options?.cwd ? resolve(options.cwd, configPath) : configPath;
+      path = options?.cwd
+        ? resolve(options.cwd, configPath)
+        : resolve(process.cwd(), configPath);
+
       const config = validateConfig(
         JSON.parse((await readFile(path)).toString()),
       );
@@ -26,7 +33,17 @@ export async function resolveConfig(
       if (isLocalConfig(config.value)) {
         value.push(path);
       } else if (isGlobalConfig(config.value)) {
-        value.push(...config.value.configs);
+        // Recursively resolve each nested config
+        let cwd = options?.cwd || dirname(path);
+        for (const nestedConfigPath of config.value.configs) {
+          const absoluteNestedConfigPath = resolve(cwd, nestedConfigPath);
+          const resolved = await resolveConfig(absoluteNestedConfigPath, {
+            cwd: dirname(absoluteNestedConfigPath),
+          });
+          value.push(...resolved.value);
+          errors.push(...resolved.errors);
+          cwd = dirname(nestedConfigPath);
+        }
       }
     }
   } catch (ex) {
@@ -47,27 +64,24 @@ export async function getConfigs(
   configPath: string | undefined,
   options?: ResolveOptions,
 ): Promise<{
-  value: LocalConfig[];
+  value: Map<string, LocalConfig>;
   errors: BasketryError[];
 }> {
-  const value: LocalConfig[] = [];
+  const value: Map<string, LocalConfig> = new Map();
   const errors: BasketryError[] = [];
 
   try {
-    const resolved = await resolveConfig(configPath);
+    const resolved = await resolveConfig(configPath, options);
     if (resolved.errors) errors.push(...resolved.errors);
 
-    const buffers = await Promise.all(
-      resolved.value.map((uri) =>
-        readFile(options?.cwd ? resolve(options.cwd, uri) : uri),
-      ),
-    );
+    for (const absoluteConfigPath of resolved.value) {
+      const config = await readFile(absoluteConfigPath);
+      const localConfig = validateConfig(JSON.parse(config.toString()));
 
-    const localConfigs = buffers
-      .map((x) => JSON.parse(x.toString()))
-      .filter(isLocalConfig);
-
-    value.push(...localConfigs);
+      if (isLocalConfig(localConfig.value)) {
+        value.set(absoluteConfigPath, localConfig.value);
+      }
+    }
   } catch (ex) {
     // TOOD: look for ENOENT
     // TOOD: look for SyntaxError
