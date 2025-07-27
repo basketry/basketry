@@ -34,7 +34,7 @@ export async function resolveConfig(
         value.push(path);
       } else if (isGlobalConfig(config.value)) {
         // Recursively resolve each nested config
-        let cwd = options?.cwd || dirname(path);
+        const cwd = options?.cwd || dirname(path);
         for (const nestedConfigPath of config.value.configs) {
           const absoluteNestedConfigPath = resolve(cwd, nestedConfigPath);
           const resolved = await resolveConfig(absoluteNestedConfigPath, {
@@ -42,7 +42,6 @@ export async function resolveConfig(
           });
           value.push(...resolved.value);
           errors.push(...resolved.errors);
-          cwd = dirname(nestedConfigPath);
         }
       }
     }
