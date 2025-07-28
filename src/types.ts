@@ -19,6 +19,11 @@ export type LocalConfig<
   options?: TOptions;
 };
 
+export interface ExtendedBasketryOptions {
+  basketry?: BasketryOptions & { absoluteProjectPath?: string };
+  [x: string | number | symbol]: unknown;
+}
+
 export interface NamespacedBasketryOptions {
   basketry?: BasketryOptions;
   [x: string | number | symbol]: unknown;

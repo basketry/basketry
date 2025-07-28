@@ -76,7 +76,7 @@ export class Engine {
         input.generators,
         input.configPath,
         input.options,
-        input.output,
+        input.configPath ? dirname(input.configPath) : undefined,
       );
 
       // Absolute path of this Engine's single-project config
@@ -809,18 +809,24 @@ function getGenerators(
   moduleNames: (string | Generator | GeneratorOptions)[],
   configPath: string | undefined,
   commonOptions: any,
-  output?: string,
+  absoluteProjectPath?: string,
 ): {
   fns: Generator[];
   errors: BasketryError[];
 } {
+  const extendedOptions = absoluteProjectPath
+    ? {
+        basketry: { absoluteProjectPath },
+      }
+    : {};
+
   try {
     performance.mark('load-generators-start');
     const generators = moduleNames.reduce(
       (acc, item) => {
         if (item instanceof Function) {
           const withOptions = (service: Service, options: any) =>
-            item(service, merge(commonOptions, options));
+            item(service, merge(commonOptions, options, extendedOptions));
 
           return {
             fns: [...acc.fns, withOptions],
@@ -845,6 +851,7 @@ function getGenerators(
                 commonOptions,
                 generatorOptions,
                 localOptions,
+                extendedOptions,
               );
 
               const files = await fn(service, options);
