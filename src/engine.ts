@@ -127,7 +127,12 @@ export class Engine {
 
   /** Gets the absolute path to the source file. */
   public get sourcePath(): string {
-    return resolve(this._projectDirectory.join(sep), this.input.sourcePath);
+    return this.resolve(this.input.sourcePath);
+  }
+
+  /** Gets the absolute path to a file relative to the project config. */
+  public resolve(relativePath: string): string {
+    return resolve(this._projectDirectory.join(sep), relativePath);
   }
 
   public get files() {
