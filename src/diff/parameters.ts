@@ -15,7 +15,7 @@ function buildContext(
     interface: scope.interface.name.value,
     method: scope.method.name.value,
     parameter: parameter.name.value,
-    required: isRequired(parameter),
+    required: isRequired(parameter.value),
   };
 }
 
@@ -83,45 +83,45 @@ export function* parameters(
       }
 
       // Type
-      if (!eq(a_param.typeName, b_param.typeName)) {
+      if (!eq(a_param.value.typeName, b_param.value.typeName)) {
         yield {
           kind: 'changed',
           target: 'parameter-type',
           category: 'major',
-          a: { context: a_context, ...asValue(a_param.typeName) },
-          b: { context: b_context, ...asValue(b_param.typeName) },
+          a: { context: a_context, ...asValue(a_param.value.typeName) },
+          b: { context: b_context, ...asValue(b_param.value.typeName) },
         };
       }
-      if (!eq(a_param.isPrimitive, b_param.isPrimitive)) {
+      if (!eq(a_param.value.kind, b_param.value.kind)) {
         yield {
           kind: 'changed',
           target: 'parameter-type-primitive',
           category: 'major',
           a: {
             context: a_context,
-            value: a_param.isPrimitive,
+            value: a_param.value.kind === 'PrimitiveValue',
             loc: a_param.loc,
           },
           b: {
             context: b_context,
-            value: b_param.isPrimitive,
+            value: b_param.value.kind === 'PrimitiveValue',
             loc: b_param.loc,
           },
         };
       }
-      if (!eq(a_param.isArray, b_param.isArray)) {
+      if (!eq(a_param.value.isArray, b_param.value.isArray)) {
         yield {
           kind: 'changed',
           target: 'parameter-type-array',
           category: 'major',
           a: {
             context: a_context,
-            value: a_param.isArray,
+            value: a_param.value.isArray?.value ?? false,
             loc: a_param.loc,
           },
           b: {
             context: b_context,
-            value: b_param.isArray,
+            value: b_param.value.isArray?.value ?? false,
             loc: b_param.loc,
           },
         };
@@ -155,7 +155,7 @@ export function* parameters(
       yield {
         kind: 'added',
         target: 'parameter',
-        category: isRequired(b_param) ? 'major' : 'minor',
+        category: isRequired(b_param.value) ? 'major' : 'minor',
         b: {
           context: b_context,
           value: b_param.name.value,

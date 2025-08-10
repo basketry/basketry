@@ -1,6 +1,7 @@
 import { exec } from 'child_process';
+import * as fsPromises from 'fs/promises';
 
-import { BasketryError, LegacyEngine, getInput } from '..';
+import { BasketryError, Engine, getInput } from '..';
 import { CommmonArgs } from './types';
 
 import { diff as compare } from '../diff';
@@ -50,7 +51,7 @@ export async function diff(args: DiffArgs) {
     ? await readStreamToString(process.stdin)
     : undefined;
 
-  const b_inputs = await getInput(config, {
+  const b_inputs = await getInput(config, fsPromises, {
     parser,
     sourcePath: source,
   });
@@ -60,7 +61,7 @@ export async function diff(args: DiffArgs) {
     : sourceContent || (await readFromGit(b_inputs.values[0].sourcePath, ref));
 
   const [a_inputs] = await Promise.all([
-    getInput(config, {
+    getInput(config, fsPromises, {
       parser,
       sourceContent: a_sourceContent,
       sourcePath: previous || (sourceContent ? source : undefined),
@@ -76,13 +77,21 @@ export async function diff(args: DiffArgs) {
 
   // TODO: ensure that a and b only have one value each
 
-  const a = new LegacyEngine(a_inputs.values[0], { onError: console.error });
-  a.loadParser();
-  a.runParser();
+  const {
+    engines: [a],
+  } = await Engine.load({
+    ...a_inputs.values[0],
+    onError: console.error,
+  });
+  await a.runParser();
 
-  const b = new LegacyEngine(b_inputs.values[0], { onError: console.error });
-  b.loadParser();
-  b.runParser();
+  const {
+    engines: [b],
+  } = await Engine.load({
+    ...b_inputs.values[0],
+    onError: console.error,
+  });
+  await b.runParser();
 
   if (a.service && b.service) {
     const changes = compare(a.service, b.service);

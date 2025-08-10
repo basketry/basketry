@@ -8,4 +8,4 @@ on:
 
 jobs:
   build:
-    uses: basketry/workflows/.github/workflows/build.yml@main
+    uses: basketry/workflows/.github/workflows/build.yml@windows

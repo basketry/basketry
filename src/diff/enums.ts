@@ -62,64 +62,67 @@ export function* enums(
         };
       }
 
-      for (const a_value of a_enum.values) {
-        const b_value = cache.getEnumValue(b_enum, a_value.content.value);
+      for (const a_member of a_enum.members) {
+        const b_member = cache.getEnumMember(b_enum, a_member.content.value);
 
-        if (b_value) {
-          if (!eq(a_value.content, b_value.content)) {
+        if (b_member) {
+          if (!eq(a_member.content, b_member.content)) {
             yield {
               kind: 'changed',
-              target: `${mode}-enum-value-casing`,
+              target: `${mode}-enum-member-casing`,
               category: 'major',
-              a: { context: a_context, ...asValue(a_value.content) },
-              b: { context: b_context, ...asValue(b_value.content) },
+              a: { context: a_context, ...asValue(a_member.content) },
+              b: { context: b_context, ...asValue(b_member.content) },
             };
           }
 
-          if (!eq(a_value.description, b_value.description)) {
+          if (!eq(a_member.description, b_member.description)) {
             yield {
               kind: 'changed',
-              target: `${mode}-enum-value-description`,
+              target: `${mode}-enum-member-description`,
               category: 'patch',
-              a: { context: a_context, ...asValue(a_value.description) },
-              b: { context: b_context, ...asValue(b_value.description) },
+              a: { context: a_context, ...asValue(a_member.description) },
+              b: { context: b_context, ...asValue(b_member.description) },
             };
           }
 
-          if (!a_value.deprecated?.value && b_value.deprecated?.value) {
+          if (!a_member.deprecated?.value && b_member.deprecated?.value) {
             yield {
               kind: 'added',
-              target: `${mode}-enum-value-deprecated`,
+              target: `${mode}-enum-member-deprecated`,
               category: 'minor',
-              b: { context: b_context, ...asValue(b_value.deprecated) },
+              b: { context: b_context, ...asValue(b_member.deprecated) },
             };
-          } else if (a_value.deprecated?.value && !b_value.deprecated?.value) {
+          } else if (
+            a_member.deprecated?.value &&
+            !b_member.deprecated?.value
+          ) {
             yield {
               kind: 'removed',
-              target: `${mode}-enum-value-deprecated`,
+              target: `${mode}-enum-member-deprecated`,
               category: 'patch',
-              a: { context: a_context, ...asValue(a_value.deprecated) },
+              a: { context: a_context, ...asValue(a_member.deprecated) },
             };
           }
         } else {
           yield {
             kind: 'removed',
-            target: `${mode}-enum-value`,
+            target: `${mode}-enum-member`,
             category: mode === 'input' ? 'major' : 'minor',
-            a: { context: b_context, ...asValue(a_value.content) },
+            a: { context: b_context, ...asValue(a_member.content) },
           };
         }
       }
 
-      for (const b_value of b_enum.values) {
-        const a_value = cache.getEnumValue(a_enum, b_value.content.value);
+      for (const b_member of b_enum.members) {
+        const a_member = cache.getEnumMember(a_enum, b_member.content.value);
 
-        if (a_value === undefined) {
+        if (a_member === undefined) {
           yield {
             kind: 'added',
-            target: `${mode}-enum-value`,
+            target: `${mode}-enum-member`,
             category: mode === 'input' ? 'minor' : 'major',
-            b: { context: b_context, ...asValue(b_value.content) },
+            b: { context: b_context, ...asValue(b_member.content) },
           };
         }
       }

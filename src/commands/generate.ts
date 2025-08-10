@@ -1,4 +1,5 @@
 import { StatWatcher, watchFile } from 'fs';
+import { relative } from 'path';
 import { performance } from 'perf_hooks';
 
 import {
@@ -90,13 +91,25 @@ export async function generate(args: GenerateArgs) {
       // TODO: fail if multiplexed with stdin (#24)
 
       for (const pipeline of pipelines) {
-        if (!json) console.log(info(`Parsing ${pipeline.sourcePath}`));
+        if (!json) {
+          console.log(
+            info(
+              `Project: ${relative(
+                process.cwd(),
+                pipeline.resolve('./basketry.config.json'), // TODO: allow for custom config file names
+              )}`,
+            ),
+          );
+          console.log(
+            info(`Source:  ${relative(process.cwd(), pipeline.sourcePath)}`),
+          );
+        }
 
         performance.mark('run-start');
 
-        pipeline.runParser();
-        pipeline.runRules();
-        if (!validate) pipeline.runGenerators();
+        await pipeline.runParser();
+        await pipeline.runRules();
+        if (!validate) await pipeline.runGenerators();
 
         performance.mark('run-end');
         performance.measure('run', 'run-start', 'run-end');
@@ -107,9 +120,17 @@ export async function generate(args: GenerateArgs) {
         errors.push(...pipeline.errors);
 
         violations.push(...pipeline.violations);
-
         files = pipeline.changes;
-        if (!json && !validate) printFiles(pipeline.changes);
+        if (!json && !validate) {
+          const changesWithRelativePaths = Object.fromEntries(
+            Object.entries(pipeline.changes).map(([filepath, fileStatus]) => [
+              relative(process.cwd(), pipeline.resolve(filepath)),
+              fileStatus,
+            ]),
+          );
+
+          printFiles(changesWithRelativePaths);
+        }
       }
 
       if (!watcher && watch && !stdin && !json) {

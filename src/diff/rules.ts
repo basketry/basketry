@@ -3,16 +3,17 @@ import {
   MethodScope,
   ParameterScope,
   PropertyScope,
-  ReturnTypeScope,
+  ReturnValueScope as ReturnsScope,
   RuleContext,
 } from '.';
 import { isRequired } from '..';
 
 import { ValidationRule } from '../ir';
+import { Literal } from './utils';
 
 function buildContext(
   mode: Mode,
-  scope: ParameterScope | ReturnTypeScope | PropertyScope,
+  scope: ParameterScope | ReturnsScope | PropertyScope,
 ): RuleContext {
   if (isParameterScope(scope)) {
     return {
@@ -21,15 +22,15 @@ function buildContext(
       interface: scope.interface.name.value,
       method: scope.method.name.value,
       parameter: scope.parameter.name.value,
-      required: isRequired(scope.parameter),
+      required: isRequired(scope.parameter.value),
     };
   } else if (isReturnTypeScope(scope)) {
     return {
-      scope: 'return-type',
+      scope: 'returns',
       service: scope.service.title.value,
       interface: scope.interface.name.value,
       method: scope.method.name.value,
-      returnType: scope.returnType.typeName.value,
+      returns: scope.returns.value.typeName.value,
     };
   } else {
     return {
@@ -37,7 +38,7 @@ function buildContext(
       service: scope.service.title.value,
       type: scope.type.name.value,
       property: scope.property.name.value,
-      required: isRequired(scope.property),
+      required: isRequired(scope.property.value),
     };
   }
 }
@@ -49,26 +50,26 @@ function isParameterScope(
 }
 
 function isReturnTypeScope(
-  scope: ParameterScope | ReturnTypeScope | PropertyScope,
-): scope is ReturnTypeScope {
-  return !!(scope as any).returnType;
+  scope: ParameterScope | ReturnsScope | PropertyScope,
+): scope is ReturnsScope {
+  return !!(scope as any).returns;
 }
 
 function getRules(
-  scope: ParameterScope | ReturnTypeScope | PropertyScope,
+  scope: ParameterScope | ReturnsScope | PropertyScope,
 ): ValidationRule[] {
   if (isParameterScope(scope)) {
-    return scope.parameter.rules;
+    return scope.parameter.value.rules;
   } else if (isReturnTypeScope(scope)) {
-    return scope.returnType.rules;
+    return scope.returns.value.rules;
   } else {
-    return scope.property.rules;
+    return scope.property.value.rules;
   }
 }
 
 export type ModeMap = {
   parameter: ParameterScope;
-  'return-type': ReturnTypeScope;
+  returns: ReturnsScope;
   'input-property': PropertyScope;
   'output-property': PropertyScope;
 };
@@ -80,7 +81,6 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
   b: TScope,
 ): Iterable<ChangeInfo> {
   for (const a_rule of getRules(a)) {
-    if (a_rule.id === 'string-enum') continue;
     const b_rule = getRules(b).find((r) => r.id === a_rule.id);
 
     const a_context = buildContext(mode, a);
@@ -95,7 +95,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
     } else {
       const b_context = buildContext(mode, b);
       switch (a_rule.id) {
-        case 'array-max-items':
+        case 'ArrayMaxItems':
           if (a_rule.id === b_rule.id) {
             if (a_rule.max.value < b_rule.max.value) {
               yield {
@@ -116,7 +116,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
             }
           }
           break;
-        case 'array-min-items':
+        case 'ArrayMinItems':
           if (a_rule.id === b_rule.id) {
             if (a_rule.min.value < b_rule.min.value) {
               yield {
@@ -137,7 +137,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
             }
           }
           break;
-        case 'array-unique-items':
+        case 'ArrayUniqueItems':
           if (a_rule.id === b_rule.id) {
             if (a_rule.required !== b_rule.required) {
               yield {
@@ -150,31 +150,18 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
             }
           }
           break;
-        case 'constant':
-          if (a_rule.id === b_rule.id) {
-            if (a_rule.value?.value !== b_rule.value?.value) {
-              yield {
-                kind: 'changed',
-                target: a_rule.id,
-                category: 'major',
-                a: { context: a_context, ...asValue(a_rule) },
-                b: { context: b_context, ...asValue(b_rule) },
-              };
-            }
-          }
-          break;
-        case 'number-gt':
-        case 'number-gte':
-        case 'number-lt':
-        case 'number-lte':
-        case 'number-multiple-of':
+        case 'NumberGT':
+        case 'NumberGTE':
+        case 'NumberLT':
+        case 'NumberLTE':
+        case 'NumberMultipleOf':
           if (a_rule.id === b_rule.id) {
             if (a_rule.value.value < b_rule.value.value) {
               yield {
                 kind: 'increased',
                 target: a_rule.id,
                 category:
-                  a_rule.id === 'number-lt' || a_rule.id === 'number-lte'
+                  a_rule.id === 'NumberLT' || a_rule.id === 'NumberLTE'
                     ? 'minor'
                     : 'major',
                 a: { context: a_context, ...asValue(a_rule) },
@@ -185,7 +172,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
                 kind: 'decreased',
                 target: a_rule.id,
                 category:
-                  a_rule.id === 'number-gt' || a_rule.id === 'number-gte'
+                  a_rule.id === 'NumberGT' || a_rule.id === 'NumberGTE'
                     ? 'minor'
                     : 'major',
                 a: { context: a_context, ...asValue(a_rule) },
@@ -194,7 +181,7 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
             }
           }
           break;
-        case 'string-format':
+        case 'StringFormat':
           if (a_rule.id === b_rule.id) {
             if (a_rule.format.value !== b_rule.format.value) {
               yield {
@@ -207,14 +194,14 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
             }
           }
           break;
-        case 'string-max-length':
-        case 'string-min-length':
+        case 'StringMaxLength':
+        case 'StringMinLength':
           if (a_rule.id === b_rule.id) {
             if (a_rule.length.value < b_rule.length.value) {
               yield {
                 kind: 'increased',
                 target: a_rule.id,
-                category: a_rule.id === 'string-max-length' ? 'minor' : 'major',
+                category: a_rule.id === 'StringMaxLength' ? 'minor' : 'major',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
@@ -222,14 +209,14 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
               yield {
                 kind: 'decreased',
                 target: a_rule.id,
-                category: a_rule.id === 'string-max-length' ? 'major' : 'minor',
+                category: a_rule.id === 'StringMaxLength' ? 'major' : 'minor',
                 a: { context: a_context, ...asValue(a_rule) },
                 b: { context: b_context, ...asValue(b_rule) },
               };
             }
           }
           break;
-        case 'string-pattern':
+        case 'StringPattern':
           if (a_rule.id === b_rule.id) {
             if (a_rule.pattern.value !== b_rule.pattern.value) {
               yield {
@@ -242,7 +229,6 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
             }
           }
           break;
-        case 'required':
         default:
           return undefined;
       }
@@ -250,7 +236,6 @@ export function* rules<TMode extends Mode, TScope extends ModeMap[TMode]>(
   }
 
   for (const b_rule of getRules(b)) {
-    if (b_rule.id === 'string-enum') continue;
     const a_rule = getRules(a).find((r) => r.id === b_rule.id);
     const b_context = buildContext(mode, b);
 
@@ -272,32 +257,31 @@ function asValue(rule: ValidationRule): {
   value: Primitive | Primitive[] | undefined;
   loc?: string;
 } {
+  function clean<T extends Literal>(literal: T): Omit<T, 'kind'> {
+    const { kind, ...rest } = literal;
+    return rest;
+  }
+
   switch (rule.id) {
-    case 'array-max-items':
-      return rule.max;
-    case 'array-min-items':
-      return rule.min;
-    case 'array-unique-items':
+    case 'ArrayMaxItems':
+      return clean(rule.max);
+    case 'ArrayMinItems':
+      return clean(rule.min);
+    case 'ArrayUniqueItems':
       return { value: rule.required };
-    case 'constant':
-      return { value: rule.value.value };
-    case 'number-gt':
-    case 'number-gte':
-    case 'number-lt':
-    case 'number-lte':
-    case 'number-multiple-of':
-      return rule.value;
-    case 'required':
-      return { value: true };
-    case 'string-enum':
-      return { value: rule.values.map((v) => v.value) };
-    case 'string-format':
-      return rule.format;
-    case 'string-max-length':
-    case 'string-min-length':
-      return rule.length;
-    case 'string-pattern':
-      return rule.pattern;
+    case 'NumberGT':
+    case 'NumberGTE':
+    case 'NumberLT':
+    case 'NumberLTE':
+    case 'NumberMultipleOf':
+      return clean(rule.value);
+    case 'StringFormat':
+      return clean(rule.format);
+    case 'StringMaxLength':
+    case 'StringMinLength':
+      return clean(rule.length);
+    case 'StringPattern':
+      return clean(rule.pattern);
     default:
       return { value: undefined };
   }

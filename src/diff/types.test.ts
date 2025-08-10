@@ -2,13 +2,15 @@ import { ServiceScope, TypeChangeInfo } from '.';
 import { Type } from '../ir';
 import { types, Mode } from './types';
 import {
+  buildComplexValue,
   buildInterface,
   buildMethod,
   buildParameter,
-  buildReturnType,
-  buildScalar,
+  buildReturnValue,
   buildService,
   buildType,
+  stringLiteral,
+  trueLiteral,
 } from './test-utils';
 
 const title = 'service title';
@@ -23,55 +25,59 @@ function setup(
   b: Type | undefined,
 ): [ServiceScope, ServiceScope] {
   const a_parameter = buildParameter({
-    name: { value: parameterName },
-    isPrimitive: false,
-    typeName: a ? { value: a.name.value } : undefined,
+    name: stringLiteral(parameterName),
+    value: buildComplexValue({
+      typeName: stringLiteral(a?.name.value ?? 'string'),
+    }),
   });
   const b_parameter = buildParameter({
-    name: { value: parameterName },
-    isPrimitive: false,
-    typeName: b ? { value: b.name.value } : undefined,
+    name: stringLiteral(parameterName),
+    value: buildComplexValue({
+      typeName: stringLiteral(b?.name.value ?? 'string'),
+    }),
   });
 
   const a_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: mode === 'input' ? [a_parameter] : [],
-    returnType:
+    returns:
       mode === 'input' || !a
         ? undefined
-        : buildReturnType({
-            isPrimitive: false,
-            typeName: { value: a.name.value },
+        : buildReturnValue({
+            value: buildComplexValue({
+              typeName: stringLiteral(a.name.value),
+            }),
           }),
   });
   const b_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: mode === 'input' ? [b_parameter] : [],
-    returnType:
+    returns:
       mode === 'input' || !b
         ? undefined
-        : buildReturnType({
-            isPrimitive: false,
-            typeName: { value: b.name.value },
+        : buildReturnValue({
+            value: buildComplexValue({
+              typeName: stringLiteral(b.name.value),
+            }),
           }),
   });
 
   const a_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [a_method],
   });
   const b_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [b_method],
   });
 
   const a_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [a_int],
     types: a ? [a] : [],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [b_int],
     types: b ? [b] : [],
   });
@@ -92,8 +98,8 @@ describe(types, () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
-        buildType({ name: { value: typeName } }),
-        buildType({ name: { value: typeName } }),
+        buildType({ name: stringLiteral(typeName) }),
+        buildType({ name: stringLiteral(typeName) }),
       );
 
       // ACT
@@ -108,7 +114,7 @@ describe(types, () => {
       const [a, b] = setup(
         mode,
         undefined,
-        buildType({ name: { value: typeName } }),
+        buildType({ name: stringLiteral(typeName) }),
       );
 
       // ACT
@@ -136,7 +142,7 @@ describe(types, () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
-        buildType({ name: { value: typeName } }),
+        buildType({ name: stringLiteral(typeName) }),
         undefined,
       );
 
@@ -167,8 +173,8 @@ describe(types, () => {
       const newName = 'someName';
       const [a, b] = setup(
         mode,
-        buildType({ name: { value: originalName } }),
-        buildType({ name: { value: newName } }),
+        buildType({ name: stringLiteral(originalName) }),
+        buildType({ name: stringLiteral(newName) }),
       );
 
       // ACT
@@ -204,10 +210,10 @@ describe(types, () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
-        buildType({ name: buildScalar(typeName) }),
+        buildType({ name: stringLiteral(typeName) }),
         buildType({
-          name: buildScalar(typeName),
-          deprecated: buildScalar(true),
+          name: stringLiteral(typeName),
+          deprecated: trueLiteral(),
         }),
       );
 
@@ -237,10 +243,10 @@ describe(types, () => {
       const [a, b] = setup(
         mode,
         buildType({
-          name: buildScalar(typeName),
-          deprecated: buildScalar(true),
+          name: stringLiteral(typeName),
+          deprecated: trueLiteral(),
         }),
-        buildType({ name: buildScalar(typeName) }),
+        buildType({ name: stringLiteral(typeName) }),
       );
 
       // ACT

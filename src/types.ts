@@ -19,6 +19,11 @@ export type LocalConfig<
   options?: TOptions;
 };
 
+export interface ExtendedBasketryOptions {
+  basketry?: BasketryOptions & { absoluteProjectPath?: string };
+  [x: string | number | symbol]: unknown;
+}
+
 export interface NamespacedBasketryOptions {
   basketry?: BasketryOptions;
   [x: string | number | symbol]: unknown;
@@ -55,12 +60,12 @@ export type GeneratorOptions = {
 export type Parser = (
   /** The content of the source SDL as text */
   sourceContent: string,
-  /**
-   * The path to the source SDL on the file system. This path is used for
-   * generating Violations that point to a specific range within the SDL file.
-   */
-  sourcePath: string,
-) => {
+
+  /** The absolute path to the source SDL file */
+  absoluteSourcePath: string,
+) => ParserOutput | Promise<ParserOutput>;
+
+export type ParserOutput = {
   /** The Intermediate Representation (IR) of the source SDL */
   service: Service;
   /**
@@ -81,9 +86,16 @@ export type Rule = (
   /** The Intermediate Representation (IR) of the service */
   service: Service,
   options?: any,
-) => Violation[];
+) => RuleOutput;
 
-export type Generator = (service: Service, options?: any) => File[];
+export type RuleOutput = Violation[] | Promise<Violation[]>;
+
+export type Generator = (
+  service: Service,
+  options?: any,
+) => GeneratorOutput | Promise<GeneratorOutput>;
+
+export type GeneratorOutput = File[];
 
 export type FileStatus =
   | 'added'
@@ -98,6 +110,8 @@ export type EngineEvents = {
 };
 
 export type EngineInput = {
+  /** Absolute directory path of this Engine's single-project config */
+  projectDirectory: string;
   sourcePath: string;
   sourceContent: string;
   parser: Parser;

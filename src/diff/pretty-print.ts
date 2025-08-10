@@ -131,7 +131,7 @@ function prettyPrintByParameter(changes: ChangeInfo[]): void {
         ? parameterChanges[0].b?.context || parameterChanges[0].a?.context
         : undefined;
       const required =
-        ctx?.scope !== 'return-type' ? ctx?.required === true : false;
+        ctx?.scope !== 'returns' ? ctx?.required === true : false;
       log(
         `      ${parameter} ${chalk.gray(
           `(${required ? 'requred' : 'optional'} parameter)`,
@@ -178,7 +178,7 @@ function prettyPrintByProperty(changes: ChangeInfo[]): void {
         ? propertyChanges[0].b?.context || propertyChanges[0].a?.context
         : undefined;
       const required =
-        ctx?.scope !== 'return-type' ? ctx?.required === true : false;
+        ctx?.scope !== 'returns' ? ctx?.required === true : false;
       log(
         `    ${property} ${chalk.gray(
           `(${required ? 'requred' : 'optional'} ${lower(ctx!.scope)})`,
@@ -228,7 +228,7 @@ function getInterface(change: ChangeInfo): string | undefined {
     case 'interface':
     case 'method':
     case 'parameter':
-    case 'return-type':
+    case 'returns':
       return context.interface;
     default:
       return undefined;
@@ -267,7 +267,7 @@ function getMethod(change: ChangeInfo): string | undefined {
   switch (context?.scope) {
     case 'method':
     case 'parameter':
-    case 'return-type':
+    case 'returns':
       return context.method;
     default:
       return undefined;

@@ -1,7 +1,7 @@
 import { snake } from 'case';
 import {
   Enum,
-  EnumValue,
+  EnumMember,
   Interface,
   Method,
   Parameter,
@@ -132,21 +132,21 @@ export function getEnum(service: Service, name: string): Enum | undefined {
   return undefined;
 }
 
-const enumValueCache = new WeakMap<Enum, Map<string, EnumValue | null>>();
-export function getEnumValue(e: Enum, value: string): EnumValue | undefined {
+const enumMemberCache = new WeakMap<Enum, Map<string, EnumMember | null>>();
+export function getEnumMember(e: Enum, value: string): EnumMember | undefined {
   const key = snake(value);
-  if (!enumValueCache.has(e)) enumValueCache.set(e, new Map());
-  const hit = enumValueCache.get(e)!.get(key);
+  if (!enumMemberCache.has(e)) enumMemberCache.set(e, new Map());
+  const hit = enumMemberCache.get(e)!.get(key);
 
   if (hit === null) return undefined;
 
-  for (const v of e.values) {
-    if (key === snake(v.content.value)) {
-      enumValueCache.get(e)!.set(key, v);
-      return v;
+  for (const m of e.members) {
+    if (key === snake(m.content.value)) {
+      enumMemberCache.get(e)!.set(key, m);
+      return m;
     }
   }
 
-  enumValueCache.get(e)!.set(key, null);
+  enumMemberCache.get(e)!.set(key, null);
   return undefined;
 }

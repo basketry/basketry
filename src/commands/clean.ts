@@ -1,4 +1,4 @@
-import { readFile, unlink } from 'fs/promises';
+import * as fsPromises from 'fs/promises';
 import { relative, resolve } from 'path';
 
 import chalk from 'chalk';
@@ -21,7 +21,7 @@ export async function clean(args: CleanArgs) {
 
   const { config, output } = args;
 
-  const result = await getInput(config, { output });
+  const result = await getInput(config, fsPromises, { output });
   errors.push(...result.errors);
 
   const files: string[] = [];
@@ -35,7 +35,7 @@ export async function clean(args: CleanArgs) {
 
     for (const file of files) {
       try {
-        await unlink(file);
+        await fsPromises.unlink(file);
         console.log(chalk.bold.red(`- ${relative(process.cwd(), file)}`));
         removed++;
       } catch {
@@ -57,7 +57,7 @@ async function getFiles(output?: string): Promise<string[]> {
 
   let file: string | undefined;
   try {
-    file = (await readFile(path)).toString();
+    file = (await fsPromises.readFile(path)).toString();
   } catch {
     return [];
   }

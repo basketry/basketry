@@ -1,23 +1,70 @@
 import {
+  ComplexValue,
   Enum,
-  EnumValue,
+  EnumMember,
+  IntegerLiteral,
   Interface,
+  MemberValue,
   Method,
+  NonEmptyStringLiteral,
+  NonNegativeIntegerLiteral,
+  NonNegativeNumberLiteral,
+  NumberLiteral,
   Parameter,
+  Primitive,
+  PrimitiveLiteral,
+  PrimitiveValue,
   Property,
-  ReturnType,
-  Scalar,
+  ReturnValue,
   Service,
+  StringLiteral,
+  TrueLiteral,
   Type,
 } from '../ir';
+
+export function stringLiteral(value: string): StringLiteral {
+  return { kind: 'StringLiteral', value };
+}
+
+export function integerLiteral(value: number): IntegerLiteral {
+  return { kind: 'IntegerLiteral', value };
+}
+
+export function numberLiteral(value: number): NumberLiteral {
+  return { kind: 'NumberLiteral', value };
+}
+
+export function trueLiteral(): TrueLiteral {
+  return { kind: 'TrueLiteral', value: true };
+}
+
+export function primitiveLiteral(value: Primitive): PrimitiveLiteral {
+  return { kind: 'PrimitiveLiteral', value };
+}
+
+export function nonNegativeNumberLiteral(
+  value: number,
+): NonNegativeNumberLiteral {
+  return { kind: 'NonNegativeNumberLiteral', value };
+}
+
+export function nonNegativeIntegerLiteral(
+  value: number,
+): NonNegativeIntegerLiteral {
+  return { kind: 'NonNegativeIntegerLiteral', value };
+}
+
+export function nonEmptyStringLiteral(value: string): NonEmptyStringLiteral {
+  return { kind: 'NonEmptyStringLiteral', value };
+}
 
 export function buildService(service?: Partial<Service>): Service {
   return {
     kind: 'Service',
-    basketry: '1.1-rc',
-    sourcePath: 'path/file.ext',
-    title: { value: 'my service' },
-    majorVersion: { value: 1 },
+    basketry: '0.2',
+    sourcePaths: ['path/file.ext'],
+    title: stringLiteral('my service'),
+    majorVersion: integerLiteral(1),
     interfaces: [],
     types: [],
     enums: [],
@@ -29,22 +76,43 @@ export function buildService(service?: Partial<Service>): Service {
 export function buildInterface(int?: Partial<Interface>): Interface {
   return {
     kind: 'Interface',
-    name: { value: 'my_interface' },
+    name: stringLiteral('my_interface'),
     methods: [],
     protocols: {
+      kind: 'InterfaceProtocols',
       http: [],
     },
     ...int,
   };
 }
 
+export function buildComplexValue(value: Partial<ComplexValue>): ComplexValue {
+  return {
+    kind: 'ComplexValue',
+    rules: [],
+    typeName: stringLiteral('my_type'),
+    ...value,
+  };
+}
+
+export function buildPrimitiveValue(
+  value?: Partial<PrimitiveValue>,
+): PrimitiveValue {
+  return {
+    kind: 'PrimitiveValue',
+    typeName: primitiveLiteral('string'),
+    isOptional: { kind: 'TrueLiteral', value: true },
+    rules: [],
+    ...value,
+  };
+}
+
 export function buildMethod(method?: Partial<Method>): Method {
   return {
     kind: 'Method',
-    name: { value: 'my_method' },
+    name: stringLiteral('my_method'),
     parameters: [],
     security: [],
-    returnType: undefined,
     ...method,
   };
 }
@@ -52,30 +120,26 @@ export function buildMethod(method?: Partial<Method>): Method {
 export function buildParameter(parameter?: Partial<Parameter>): Parameter {
   return {
     kind: 'Parameter',
-    name: { value: 'my_parameter' },
-    isArray: false,
-    isPrimitive: true,
-    typeName: { value: 'string' },
-    rules: [],
-    ...(parameter as any),
+    name: stringLiteral('my_parameter'),
+    value: buildPrimitiveValue(),
+    ...parameter,
   };
 }
 
-export function buildReturnType(returnType?: Partial<ReturnType>): ReturnType {
+export function buildReturnValue(
+  returnValue?: Partial<ReturnValue>,
+): ReturnValue {
   return {
-    kind: 'ReturnType',
-    isArray: false,
-    isPrimitive: true,
-    typeName: { value: 'string' },
-    rules: [],
-    ...(returnType as any),
+    kind: 'ReturnValue',
+    value: buildPrimitiveValue(),
+    ...returnValue,
   };
 }
 
 export function buildType(type?: Partial<Type>): Type {
   return {
     kind: 'Type',
-    name: { value: 'my_method' },
+    name: stringLiteral('my_type'),
     properties: [buildProperty()],
     rules: [],
     ...type,
@@ -85,37 +149,28 @@ export function buildType(type?: Partial<Type>): Type {
 export function buildProperty(property?: Partial<Property>): Property {
   return {
     kind: 'Property',
-    name: { value: 'my_method' },
-    isArray: false,
-    isPrimitive: true,
-    typeName: { value: 'string' },
-    rules: [],
-    ...(property as any),
+    name: stringLiteral('my_property'),
+    value: buildPrimitiveValue(),
+    ...property,
   };
 }
 
 export function buildEnum(e?: Partial<Enum>): Enum {
   return {
     kind: 'Enum',
-    name: { value: 'my_enum' },
-    values: [
-      buildEnumValue({ content: { value: 'some_value' } }),
-      buildEnumValue({ content: { value: 'other_value' } }),
+    name: stringLiteral('my_enum'),
+    members: [
+      buildEnumMember({ content: stringLiteral('some_content') }),
+      buildEnumMember({ content: stringLiteral('other_content') }),
     ],
     ...e,
   };
 }
 
-export function buildEnumValue(value?: Partial<EnumValue>): EnumValue {
+export function buildEnumMember(value?: Partial<EnumMember>): EnumMember {
   return {
-    kind: 'EnumValue',
-    content: { value: 'my_enum_value' },
+    kind: 'EnumMember',
+    content: stringLiteral('some_content'),
     ...value,
   };
-}
-
-export function buildScalar<T extends string | number | boolean | null>(
-  value: T,
-): Scalar<T> {
-  return { value };
 }

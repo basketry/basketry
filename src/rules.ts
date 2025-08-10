@@ -5,11 +5,12 @@ import {
   HttpMethod,
   Parameter,
   HttpParameter,
-  HttpPath,
+  HttpRoute,
   Property,
   Service,
   Type,
   Union,
+  EnumMember,
 } from './ir';
 import { Rule, Severity, Violation } from './types';
 
@@ -78,25 +79,28 @@ export const allMethods: ContextIterator<MethodRuleContext> = (
       options,
     }));
 
-export interface HttpPathRuleContext extends InterfaceRuleContext {
-  httpPath: HttpPath;
+export interface HttpRouteRuleContext extends InterfaceRuleContext {
+  httpRoute: HttpRoute;
 }
 export function httpPathRule(
-  rule: (context: HttpPathRuleContext) => Violation | undefined,
+  rule: (context: HttpRouteRuleContext) => Violation | undefined,
 ): Rule {
   return (service, options) =>
-    allHttpPaths(service, options)
+    allHttpRoutes(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
-export const allHttpPaths: ContextIterator<HttpPathRuleContext> = (
+export const allHttpRoutes: ContextIterator<HttpRouteRuleContext> = (
   service,
   options,
 ) =>
   service.interfaces
-    .flatMap((i) => i.protocols.http.map<[HttpPath, Interface]>((p) => [p, i]))
-    .map(([p, i]) => ({
-      httpPath: p,
+    .flatMap(
+      (i) =>
+        i.protocols?.http?.map<[HttpRoute, Interface]>((r) => [r, i]) ?? [],
+    )
+    ?.map(([r, i]) => ({
+      httpRoute: r,
       interface: i,
       service,
       options,
@@ -183,24 +187,24 @@ export function enumRule(
 export const allEnums: ContextIterator<EnumRuleContext> = (service, options) =>
   service.enums.map((e) => ({ enum: e, service, options }));
 
-export interface EnumValueRuleContext extends EnumRuleContext {
-  value: Enum['values'][number];
+export interface EnumMemberRuleContext extends EnumRuleContext {
+  member: EnumMember;
 }
 export function enumValueRule(
-  rule: (context: EnumValueRuleContext) => Violation | undefined,
+  rule: (context: EnumMemberRuleContext) => Violation | undefined,
 ): Rule {
   return (service, options) =>
-    allEnumValues(service, options)
+    allEnumMembers(service, options)
       .map((context) => rule(context))
       .filter((v): v is Violation => !!v);
 }
-export const allEnumValues: ContextIterator<EnumValueRuleContext> = (
+export const allEnumMembers: ContextIterator<EnumMemberRuleContext> = (
   service,
   options,
 ) =>
   service.enums
-    .flatMap((e) => e.values.map<[Enum['values'][number], Enum]>((v) => [v, e]))
-    .map(([v, e]) => ({ value: v, enum: e, service, options }));
+    .flatMap((e) => e.members.map<[EnumMember, Enum]>((m) => [m, e]))
+    .map(([m, e]) => ({ member: m, enum: e, service, options }));
 
 export interface UnionRuleContext extends ServiceRuleContext {
   union: Union;
@@ -219,7 +223,10 @@ export const allUnions: ContextIterator<UnionRuleContext> = (
 ) => service.unions.map((union) => ({ union, service, options }));
 
 export function combineRules(...rules: Rule[]): Rule {
-  return (service, options) => rules.flatMap((rule) => rule(service, options));
+  return (service: Service, options: any) =>
+    Promise.all(rules.map((rule) => rule(service, options))).then((results) =>
+      results.flatMap((x) => x),
+    );
 }
 
 export function parseSeverity(
@@ -249,7 +256,7 @@ export function getHttpMethodByName(
   if (!methodMapsByService.has(service)) {
     const httpMethodsByName: ReadonlyMap<string, HttpMethod> = new Map(
       service.interfaces
-        .flatMap((i) => i.protocols.http)
+        .flatMap((i) => i.protocols?.http ?? [])
         .flatMap((p) => p.methods)
         .map((m) => [m.name.value.toLowerCase(), m]),
     );

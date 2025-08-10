@@ -115,7 +115,6 @@ export const generateArgs = {
   ...outputArg,
   ...generatorsArg,
   ...rulesArg,
-  ...validateArg,
   ...watchArg,
 };
 

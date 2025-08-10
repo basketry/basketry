@@ -18,7 +18,7 @@ const rule: Rule = (service, options) => {
       },
     },
     severity: options?.severity || 'error',
-    sourcePath: service.sourcePath,
+    sourcePath: service.sourcePaths[0],
   };
 
   return [violation, violation, violation, violation];

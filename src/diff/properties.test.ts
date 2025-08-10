@@ -2,14 +2,18 @@ import { PropertyChangeInfo, RuleChangeInfo, TypeScope } from '.';
 import { Property } from '../ir';
 import { properties, Mode } from './properties';
 import {
+  buildComplexValue,
   buildInterface,
   buildMethod,
   buildParameter,
+  buildPrimitiveValue,
   buildProperty,
-  buildReturnType,
-  buildScalar,
+  buildReturnValue,
   buildService,
   buildType,
+  primitiveLiteral,
+  stringLiteral,
+  trueLiteral,
 } from './test-utils';
 
 const title = 'service title';
@@ -25,65 +29,69 @@ function setup(
   b: Property | undefined,
 ): [TypeScope, TypeScope] {
   const a_type = buildType({
-    name: { value: typeName },
+    name: stringLiteral(typeName),
     properties: a ? [a] : [],
   });
 
   const b_type = buildType({
-    name: { value: typeName },
+    name: stringLiteral(typeName),
     properties: b ? [b] : [],
   });
 
   const a_parameter = buildParameter({
-    name: { value: parameterName },
-    isPrimitive: false,
-    typeName: a ? { value: a.name.value } : undefined,
+    name: stringLiteral(parameterName),
+    value: buildComplexValue({
+      typeName: stringLiteral(a?.name.value ?? 'string'),
+    }),
   });
   const b_parameter = buildParameter({
-    name: { value: parameterName },
-    isPrimitive: false,
-    typeName: b ? { value: b.name.value } : undefined,
+    name: stringLiteral(parameterName),
+    value: buildComplexValue({
+      typeName: stringLiteral(b?.name.value ?? 'string'),
+    }),
   });
 
   const a_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: mode === 'input' ? [a_parameter] : [],
-    returnType:
+    returns:
       mode === 'input' || !a
         ? undefined
-        : buildReturnType({
-            isPrimitive: false,
-            typeName: { value: a.name.value },
+        : buildReturnValue({
+            value: buildComplexValue({
+              typeName: stringLiteral(a?.name.value ?? 'string'),
+            }),
           }),
   });
   const b_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: mode === 'input' ? [b_parameter] : [],
-    returnType:
+    returns:
       mode === 'input' || !b
         ? undefined
-        : buildReturnType({
-            isPrimitive: false,
-            typeName: { value: b.name.value },
+        : buildReturnValue({
+            value: buildComplexValue({
+              typeName: stringLiteral(b?.name.value ?? 'string'),
+            }),
           }),
   });
 
   const a_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [a_method],
   });
   const b_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [b_method],
   });
 
   const a_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [a_int],
     types: [a_type],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [b_int],
     types: [b_type],
   });
@@ -107,8 +115,8 @@ describe(properties, () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
-        buildProperty({ name: { value: propertyName } }),
-        buildProperty({ name: { value: propertyName } }),
+        buildProperty({ name: stringLiteral(propertyName) }),
+        buildProperty({ name: stringLiteral(propertyName) }),
       );
 
       // ACT
@@ -123,7 +131,7 @@ describe(properties, () => {
       const [a, b] = setup(
         mode,
         undefined,
-        buildProperty({ name: { value: propertyName } }),
+        buildProperty({ name: stringLiteral(propertyName) }),
       );
 
       // ACT
@@ -155,8 +163,11 @@ describe(properties, () => {
         mode,
         undefined,
         buildProperty({
-          name: { value: propertyName },
-          rules: [{ kind: 'ValidationRule', id: 'required' }],
+          name: stringLiteral(propertyName),
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+            isOptional: undefined,
+          }),
         }),
       );
 
@@ -189,7 +200,7 @@ describe(properties, () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
-        buildProperty({ name: { value: propertyName } }),
+        buildProperty({ name: stringLiteral(propertyName) }),
         undefined,
       );
 
@@ -221,8 +232,11 @@ describe(properties, () => {
       const [a, b] = setup(
         mode,
         buildProperty({
-          name: { value: propertyName },
-          rules: [{ kind: 'ValidationRule', id: 'required' }],
+          name: stringLiteral(propertyName),
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+            isOptional: undefined,
+          }),
         }),
         undefined,
       );
@@ -258,8 +272,8 @@ describe(properties, () => {
       const newName = 'someName';
       const [a, b] = setup(
         mode,
-        buildProperty({ name: { value: originalName } }),
-        buildProperty({ name: { value: newName } }),
+        buildProperty({ name: stringLiteral(originalName) }),
+        buildProperty({ name: stringLiteral(newName) }),
       );
 
       // ACT
@@ -300,10 +314,10 @@ describe(properties, () => {
       const description = 'some description';
       const [a, b] = setup(
         mode,
-        buildProperty({ name: buildScalar(propertyName) }),
+        buildProperty({ name: stringLiteral(propertyName) }),
         buildProperty({
-          name: buildScalar(propertyName),
-          description: buildScalar(description),
+          name: stringLiteral(propertyName),
+          description: [stringLiteral(description)],
         }),
       );
 
@@ -324,7 +338,7 @@ describe(properties, () => {
               type: typeName,
               required: false,
             },
-            value: description,
+            value: [description],
           },
         },
       ]);
@@ -336,10 +350,10 @@ describe(properties, () => {
       const [a, b] = setup(
         mode,
         buildProperty({
-          name: buildScalar(propertyName),
-          description: buildScalar(description),
+          name: stringLiteral(propertyName),
+          description: [stringLiteral(description)],
         }),
-        buildProperty({ name: buildScalar(propertyName) }),
+        buildProperty({ name: stringLiteral(propertyName) }),
       );
 
       // ACT
@@ -359,7 +373,7 @@ describe(properties, () => {
               type: typeName,
               required: false,
             },
-            value: description,
+            value: [description],
           },
         },
       ]);
@@ -372,12 +386,12 @@ describe(properties, () => {
       const [a, b] = setup(
         mode,
         buildProperty({
-          name: buildScalar(propertyName),
-          description: buildScalar(originalDescription),
+          name: stringLiteral(propertyName),
+          description: [stringLiteral(originalDescription)],
         }),
         buildProperty({
-          name: buildScalar(propertyName),
-          description: buildScalar(newDescription),
+          name: stringLiteral(propertyName),
+          description: [stringLiteral(newDescription)],
         }),
       );
 
@@ -398,7 +412,7 @@ describe(properties, () => {
               type: typeName,
               required: false,
             },
-            value: originalDescription,
+            value: [originalDescription],
           },
           b: {
             context: {
@@ -408,7 +422,7 @@ describe(properties, () => {
               type: typeName,
               required: false,
             },
-            value: newDescription,
+            value: [newDescription],
           },
         },
       ]);
@@ -418,10 +432,10 @@ describe(properties, () => {
       // ARRANGE
       const [a, b] = setup(
         mode,
-        buildProperty({ name: buildScalar(propertyName) }),
+        buildProperty({ name: stringLiteral(propertyName) }),
         buildProperty({
-          name: buildScalar(propertyName),
-          deprecated: buildScalar(true),
+          name: stringLiteral(propertyName),
+          deprecated: trueLiteral(),
         }),
       );
 
@@ -453,10 +467,10 @@ describe(properties, () => {
       const [a, b] = setup(
         mode,
         buildProperty({
-          name: buildScalar(propertyName),
-          deprecated: buildScalar(true),
+          name: stringLiteral(propertyName),
+          deprecated: trueLiteral(),
         }),
-        buildProperty({ name: buildScalar(propertyName) }),
+        buildProperty({ name: stringLiteral(propertyName) }),
       );
 
       // ACT
@@ -487,12 +501,16 @@ describe(properties, () => {
       const [a, b] = setup(
         mode,
         buildProperty({
-          name: { value: propertyName },
-          typeName: { value: 'number' },
+          name: stringLiteral(propertyName),
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('number'),
+          }),
         }),
         buildProperty({
-          name: { value: propertyName },
-          typeName: { value: 'string' },
+          name: stringLiteral(propertyName),
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+          }),
         }),
       );
 
@@ -534,12 +552,17 @@ describe(properties, () => {
       const [a, b] = setup(
         mode,
         buildProperty({
-          name: { value: propertyName },
-          isArray: true,
+          name: stringLiteral(propertyName),
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+            isArray: trueLiteral(),
+          }),
         }),
         buildProperty({
-          name: { value: propertyName },
-          isArray: false,
+          name: stringLiteral(propertyName),
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+          }),
         }),
       );
 
@@ -581,12 +604,18 @@ describe(properties, () => {
       const [a, b] = setup(
         mode,
         buildProperty({
-          name: { value: propertyName },
-          isPrimitive: true,
+          name: stringLiteral(propertyName),
+          value: buildPrimitiveValue({
+            typeName: primitiveLiteral('string'),
+            isOptional: { kind: 'TrueLiteral', value: true },
+          }),
         }),
         buildProperty({
-          name: { value: propertyName },
-          isPrimitive: false,
+          name: stringLiteral(propertyName),
+          value: buildComplexValue({
+            typeName: stringLiteral('string'),
+            isOptional: { kind: 'TrueLiteral', value: true },
+          }),
         }),
       );
 

@@ -1,5 +1,18 @@
 import { Enum, getEnumByName, getTypeByName, Service, Type } from '..';
-import { Scalar } from '../ir';
+import {
+  BooleanLiteral,
+  HttpArrayFormatLiteral,
+  HttpLocationLiteral,
+  HttpVerbLiteral,
+  IntegerLiteral,
+  NonEmptyStringLiteral,
+  NonNegativeIntegerLiteral,
+  NonNegativeNumberLiteral,
+  NumberLiteral,
+  PrimitiveLiteral,
+  StringLiteral,
+  TrueLiteral,
+} from '../ir';
 
 export function getInputs(service: Service): {
   types: Iterable<Type>;
@@ -20,8 +33,9 @@ function getInputTypeNames(service: Service): Iterable<string> {
   for (const int of service.interfaces) {
     for (const method of int.methods) {
       for (const param of method.parameters) {
-        if (param.isPrimitive || !param.typeName) continue;
-        typeNames.add(param.typeName.value);
+        if (param.value.kind === 'ComplexValue' && param.value.typeName.value) {
+          typeNames.add(param.value.typeName.value);
+        }
       }
     }
   }
@@ -32,8 +46,8 @@ function getOutputTypeNames(service: Service): Iterable<string> {
   const typeNames = new Set<string>();
   for (const int of service.interfaces) {
     for (const method of int.methods) {
-      if (method.returnType?.isPrimitive !== false) continue;
-      typeNames.add(method.returnType.typeName.value);
+      if (method.returns?.value.kind !== 'ComplexValue') continue;
+      typeNames.add(method.returns.value.typeName.value);
     }
   }
   return typeNames;
@@ -63,8 +77,8 @@ function getTypesAndEnums(
 
   for (const type of types) {
     for (const prop of type.properties) {
-      if (prop.isPrimitive) continue;
-      const e = getEnumByName(service, prop.typeName.value);
+      if (prop.value.kind === 'PrimitiveValue') continue;
+      const e = getEnumByName(service, prop.value.typeName.value);
       if (e) enums.add(e);
     }
   }
@@ -76,24 +90,24 @@ function* traverseType(service: Service, type: Type): Iterable<Type> {
   yield type;
 
   for (const prop of type.properties) {
-    if (!prop.isPrimitive) {
-      const subtype = getTypeByName(service, prop.typeName.value);
+    if (prop.value.kind === 'ComplexValue') {
+      const subtype = getTypeByName(service, prop.value.typeName.value);
       if (subtype) yield* traverseType(service, subtype);
       // TODO: traverse unions
     }
   }
 }
 
-export function asValue<T extends string | number | boolean | null>(
-  value: T | Scalar<T> | T[] | Scalar<T>[] | undefined,
-): { value: T | T[] | undefined; loc?: string } {
+export function asValue<T extends Literal>(
+  value: T | T['value'] | T[] | T['value'][] | undefined,
+): { value: T['value'] | T['value'][] | undefined; loc?: string } {
   if (value === undefined) return { value: undefined };
   if (Array.isArray(value)) {
     let loc: string | undefined;
-    const values: T[] = [];
+    const values: T['value'][] = [];
 
     for (const item of value) {
-      if (isScalar(item)) {
+      if (isLiteral(item)) {
         loc ||= item.loc;
         values.push(item.value);
       } else {
@@ -103,17 +117,19 @@ export function asValue<T extends string | number | boolean | null>(
 
     return { value: values, loc };
   } else {
-    if (isScalar(value)) {
-      return value;
+    if (isLiteral(value)) {
+      const { kind, ...rest } = value;
+
+      return rest;
     } else {
       return { value };
     }
   }
 }
 
-export function eq<T extends string | number | boolean | null>(
-  a: T | Scalar<T> | T[] | Scalar<T>[] | undefined,
-  b: T | Scalar<T> | T[] | Scalar<T>[] | undefined,
+export function eq<T extends Literal>(
+  a: T | Literal['value'] | T[] | Literal['value'][] | undefined,
+  b: T | Literal['value'] | T[] | Literal['value'][] | undefined,
 ): boolean {
   if (a === undefined && b === undefined) return true;
   if (a === undefined || b === undefined) return false;
@@ -126,17 +142,29 @@ export function eq<T extends string | number | boolean | null>(
   }
   if (Array.isArray(a) || Array.isArray(b)) return false;
 
-  if (isScalar(a) && isScalar(b)) return a.value === b.value;
-  if (isScalar(a) || isScalar(b)) return false;
+  if (isLiteral(a) && isLiteral(b)) return a.value === b.value;
+  if (isLiteral(a) || isLiteral(b)) return false;
 
   return a === b;
 }
 
-function isScalar<T extends string | number | boolean | null>(
-  value: T | Scalar<T>,
-): value is Scalar<T> {
-  if (value === null) return false;
-  const t = typeof value;
-
-  return t !== 'string' && t !== 'number' && t !== 'boolean';
+function isLiteral<T extends Literal>(value: T | T['value']): value is T {
+  return (value as Literal).kind !== undefined;
 }
+
+export type LiteralValue = Literal['value'];
+export type LiteralKind = Literal['kind'];
+
+export type Literal =
+  | StringLiteral
+  | NumberLiteral
+  | IntegerLiteral
+  | BooleanLiteral
+  | TrueLiteral
+  | NonEmptyStringLiteral
+  | NonNegativeIntegerLiteral
+  | NonNegativeNumberLiteral
+  | PrimitiveLiteral
+  | HttpVerbLiteral
+  | HttpLocationLiteral
+  | HttpArrayFormatLiteral;

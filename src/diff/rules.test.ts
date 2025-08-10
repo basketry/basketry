@@ -3,22 +3,28 @@ import {
   ParameterScope,
   PropertyContext,
   PropertyScope,
-  ReturnTypeContext,
-  ReturnTypeScope,
+  ReturnValueContext,
+  ReturnValueScope,
   RuleChangeInfo,
   RuleContext,
 } from '.';
 import { ValidationRule } from '../ir';
 import { Mode, rules } from './rules';
 import {
+  buildComplexValue,
   buildInterface,
   buildMethod,
   buildParameter,
+  buildPrimitiveValue,
   buildProperty,
-  buildReturnType,
-  buildScalar,
+  buildReturnValue,
   buildService,
   buildType,
+  nonEmptyStringLiteral,
+  nonNegativeIntegerLiteral,
+  nonNegativeNumberLiteral,
+  numberLiteral,
+  stringLiteral,
 } from './test-utils';
 
 type SetupFunction = (
@@ -26,7 +32,7 @@ type SetupFunction = (
   b: ValidationRule | undefined,
 ) =>
   | [ParameterScope, ParameterScope]
-  | [ReturnTypeScope, ReturnTypeScope]
+  | [ReturnValueScope, ReturnValueScope]
   | [PropertyScope, PropertyScope];
 
 const title = 'service title';
@@ -39,35 +45,39 @@ function setupParameter(
   b: ValidationRule | undefined,
 ): [ParameterScope, ParameterScope] {
   const a_param = buildParameter({
-    name: { value: parameterName },
-    rules: a ? [a] : [],
+    name: stringLiteral(parameterName),
+    value: buildPrimitiveValue({
+      rules: a ? [a] : [],
+    }),
   });
   const b_param = buildParameter({
-    name: { value: parameterName },
-    rules: b ? [b] : [],
+    name: stringLiteral(parameterName),
+    value: buildPrimitiveValue({
+      rules: b ? [b] : [],
+    }),
   });
   const a_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: [a_param],
   });
   const b_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: [b_param],
   });
   const a_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [a_method],
   });
   const b_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [b_method],
   });
   const a_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [a_int],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [b_int],
   });
 
@@ -87,32 +97,40 @@ function setupParameter(
   ];
 }
 
-function setupReturnType(
+function setupReturnValue(
   a: ValidationRule | undefined,
   b: ValidationRule | undefined,
-): [ReturnTypeScope, ReturnTypeScope] {
+): [ReturnValueScope, ReturnValueScope] {
   const a_method = buildMethod({
-    name: { value: methodName },
-    returnType: buildReturnType({ rules: a ? [a] : [] }),
+    name: stringLiteral(methodName),
+    returns: buildReturnValue({
+      value: buildPrimitiveValue({
+        rules: a ? [a] : [],
+      }),
+    }),
   });
   const b_method = buildMethod({
-    name: { value: methodName },
-    returnType: buildReturnType({ rules: b ? [b] : [] }),
+    name: stringLiteral(methodName),
+    returns: buildReturnValue({
+      value: buildPrimitiveValue({
+        rules: b ? [b] : [],
+      }),
+    }),
   });
   const a_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [a_method],
   });
   const b_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [b_method],
   });
   const a_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [a_int],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [b_int],
   });
 
@@ -121,13 +139,13 @@ function setupReturnType(
       service: a_service,
       interface: a_int,
       method: a_method,
-      returnType: a_method.returnType!,
+      returns: a_method.returns!,
     },
     {
       service: b_service,
       interface: b_int,
       method: b_method,
-      returnType: b_method.returnType!,
+      returns: b_method.returns!,
     },
   ];
 }
@@ -140,75 +158,83 @@ function setupProperty(
   b: ValidationRule | undefined,
 ): [PropertyScope, PropertyScope] {
   const a_property = buildProperty({
-    name: { value: propertyName },
-    rules: a ? [a] : [],
+    name: stringLiteral(propertyName),
+    value: buildPrimitiveValue({
+      rules: a ? [a] : [],
+    }),
   });
 
   const b_property = buildProperty({
-    name: { value: propertyName },
-    rules: b ? [b] : [],
+    name: stringLiteral(propertyName),
+    value: buildPrimitiveValue({
+      rules: b ? [b] : [],
+    }),
   });
 
   const a_type = buildType({
-    name: { value: typeName },
+    name: stringLiteral(typeName),
     properties: [a_property],
   });
 
   const b_type = buildType({
-    name: { value: typeName },
+    name: stringLiteral(typeName),
     properties: [b_property],
   });
 
   const a_parameter = buildParameter({
-    name: { value: parameterName },
-    isPrimitive: false,
-    typeName: { value: typeName },
+    name: stringLiteral(parameterName),
+    value: buildComplexValue({
+      typeName: stringLiteral(typeName),
+    }),
   });
   const b_parameter = buildParameter({
-    name: { value: parameterName },
-    isPrimitive: false,
-    typeName: { value: typeName },
+    name: stringLiteral(parameterName),
+    value: buildComplexValue({
+      typeName: stringLiteral(typeName),
+    }),
   });
 
   const a_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: mode === 'input-property' ? [a_parameter] : [],
-    returnType:
+    returns:
       mode === 'input-property' || !a
         ? undefined
-        : buildReturnType({
-            isPrimitive: false,
-            typeName: { value: typeName },
+        : buildReturnValue({
+            value: buildComplexValue({
+              typeName: stringLiteral(typeName),
+            }),
           }),
   });
   const b_method = buildMethod({
-    name: { value: methodName },
+    name: stringLiteral(methodName),
     parameters: mode === 'input-property' ? [b_parameter] : [],
-    returnType:
+    returns:
       mode === 'input-property' || !b
         ? undefined
-        : buildReturnType({
-            isPrimitive: false,
-            typeName: { value: typeName },
+        : buildReturnValue({
+            value: buildComplexValue({
+              typeName: stringLiteral(typeName),
+            }),
           }),
   });
 
   const a_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [a_method],
   });
   const b_int = buildInterface({
-    name: buildScalar(interfaceName),
+    name: stringLiteral(interfaceName),
     methods: [b_method],
   });
 
   const a_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [a_int],
     types: [a_type],
   });
   const b_service = buildService({
-    title: { value: title },
+    title: stringLiteral(title),
     interfaces: [b_int],
     types: [b_type],
   });
@@ -245,12 +271,12 @@ function forEachContext(
     required: false,
   };
 
-  const returnTypeContext: ReturnTypeContext = {
-    scope: 'return-type',
+  const returnTypeContext: ReturnValueContext = {
+    scope: 'returns',
     service: title,
     interface: interfaceName,
     method: methodName,
-    returnType: 'string',
+    returns: 'string',
   };
 
   const inputPropertyContext: PropertyContext = {
@@ -271,8 +297,7 @@ function forEachContext(
 
   describe('parameter', () =>
     fn(setupParameter, parameterContext, 'parameter'));
-  describe('return-type', () =>
-    fn(setupReturnType, returnTypeContext, 'return-type'));
+  describe('returns', () => fn(setupReturnValue, returnTypeContext, 'returns'));
   describe('input-property', () =>
     fn(
       (a, b) => setupProperty('input-property', a, b),
@@ -289,12 +314,12 @@ function forEachContext(
 
 describe(rules, () => {
   forEachContext((setup, context, mode) => {
-    describeRule('array-max-items', (id) => {
+    describeRule('ArrayMaxItems', (id) => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, max: { value: 5 } },
-          { kind: 'ValidationRule', id, max: { value: 5 } },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
         );
 
         // ACT
@@ -309,7 +334,7 @@ describe(rules, () => {
         const [a, b] = setup(undefined, {
           kind: 'ValidationRule',
           id,
-          max: { value: 5 },
+          max: nonNegativeIntegerLiteral(5),
         });
 
         // ACT
@@ -329,7 +354,7 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, max: { value: 5 } },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
           undefined,
         );
 
@@ -350,8 +375,8 @@ describe(rules, () => {
       it('identifies an increased max', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, max: { value: 5 } },
-          { kind: 'ValidationRule', id, max: { value: 7 } },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(7) },
         );
 
         // ACT
@@ -372,8 +397,8 @@ describe(rules, () => {
       it('identifies a decreased max', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, max: { value: 5 } },
-          { kind: 'ValidationRule', id, max: { value: 3 } },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, max: nonNegativeIntegerLiteral(3) },
         );
 
         // ACT
@@ -392,12 +417,12 @@ describe(rules, () => {
       });
     });
 
-    describeRule('array-min-items', (id) => {
+    describeRule('ArrayMinItems', (id) => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, min: { value: 5 } },
-          { kind: 'ValidationRule', id, min: { value: 5 } },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
         );
 
         // ACT
@@ -412,7 +437,7 @@ describe(rules, () => {
         const [a, b] = setup(undefined, {
           kind: 'ValidationRule',
           id,
-          min: { value: 5 },
+          min: nonNegativeIntegerLiteral(5),
         });
 
         // ACT
@@ -432,7 +457,7 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, min: { value: 5 } },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
           undefined,
         );
 
@@ -453,8 +478,8 @@ describe(rules, () => {
       it('identifies an increased min', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, min: { value: 5 } },
-          { kind: 'ValidationRule', id, min: { value: 7 } },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(7) },
         );
 
         // ACT
@@ -475,8 +500,8 @@ describe(rules, () => {
       it('identifies a decreased min', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, min: { value: 5 } },
-          { kind: 'ValidationRule', id, min: { value: 3 } },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(5) },
+          { kind: 'ValidationRule', id, min: nonNegativeIntegerLiteral(3) },
         );
 
         // ACT
@@ -495,7 +520,7 @@ describe(rules, () => {
       });
     });
 
-    describeRule('array-unique-items', (id) => {
+    describeRule('ArrayUniqueItems', (id) => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
@@ -554,126 +579,12 @@ describe(rules, () => {
       });
     });
 
-    describeRules(
-      [
-        'number-gt',
-        'number-gte',
-        'number-lt',
-        'number-lte',
-        'number-multiple-of',
-      ],
-      (id) => {
-        it('identifies two identical rules', () => {
-          // ARRANGE
-          const [a, b] = setup(
-            { kind: 'ValidationRule', id, value: { value: 5 } },
-            { kind: 'ValidationRule', id, value: { value: 5 } },
-          );
-
-          // ACT
-          const result = rules(mode, a, b);
-
-          // ASSERT
-          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
-        });
-
-        it('identifies an added rule', () => {
-          // ARRANGE
-          const [a, b] = setup(undefined, {
-            kind: 'ValidationRule',
-            id,
-            value: { value: 5 },
-          });
-
-          // ACT
-          const result = rules(mode, a, b);
-
-          // ASSERT
-          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
-            {
-              kind: 'added',
-              target: id,
-              category: 'major',
-              b: { context, value: 5 },
-            },
-          ]);
-        });
-
-        it('identifies a removed rule', () => {
-          // ARRANGE
-          const [a, b] = setup(
-            { kind: 'ValidationRule', id, value: { value: 5 } },
-            undefined,
-          );
-
-          // ACT
-          const result = rules(mode, a, b);
-
-          // ASSERT
-          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
-            {
-              kind: 'removed',
-              target: id,
-              category: 'minor',
-              a: { context, value: 5 },
-            },
-          ]);
-        });
-
-        it('identifies an increased value', () => {
-          // ARRANGE
-          const [a, b] = setup(
-            { kind: 'ValidationRule', id, value: { value: 5 } },
-            { kind: 'ValidationRule', id, value: { value: 7 } },
-          );
-
-          // ACT
-          const result = rules(mode, a, b);
-
-          // ASSERT
-          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
-            {
-              kind: 'increased',
-              target: id,
-              category:
-                id === 'number-lt' || id === 'number-lte' ? 'minor' : 'major',
-              a: { context, value: 5 },
-              b: { context, value: 7 },
-            },
-          ]);
-        });
-
-        it('identifies a decreased value', () => {
-          // ARRANGE
-          const [a, b] = setup(
-            { kind: 'ValidationRule', id, value: { value: 5 } },
-            { kind: 'ValidationRule', id, value: { value: 3 } },
-          );
-
-          // ACT
-          const result = rules(mode, a, b);
-
-          // ASSERT
-          expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
-            {
-              kind: 'decreased',
-              target: id,
-              category:
-                id === 'number-gt' || id === 'number-gte' ? 'minor' : 'major',
-              a: { context, value: 5 },
-              b: { context, value: 3 },
-            },
-          ]);
-        });
-      },
-    );
-
-    describeRule('string-format', (id) => {
+    describeRules(['NumberGT', 'NumberGTE', 'NumberLT', 'NumberLTE'], (id) => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, format: { value: 'date' } },
-          { kind: 'ValidationRule', id, format: { value: 'date' } },
+          { kind: 'ValidationRule', id, value: numberLiteral(5) },
+          { kind: 'ValidationRule', id, value: numberLiteral(5) },
         );
 
         // ACT
@@ -688,7 +599,215 @@ describe(rules, () => {
         const [a, b] = setup(undefined, {
           kind: 'ValidationRule',
           id,
-          format: { value: 'date' },
+          value: numberLiteral(5),
+        });
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
+          {
+            kind: 'added',
+            target: id,
+            category: 'major',
+            b: { context, value: 5 },
+          },
+        ]);
+      });
+
+      it('identifies a removed rule', () => {
+        // ARRANGE
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, value: numberLiteral(5) },
+          undefined,
+        );
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
+          {
+            kind: 'removed',
+            target: id,
+            category: 'minor',
+            a: { context, value: 5 },
+          },
+        ]);
+      });
+
+      it('identifies an increased value', () => {
+        // ARRANGE
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, value: numberLiteral(5) },
+          { kind: 'ValidationRule', id, value: numberLiteral(7) },
+        );
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
+          {
+            kind: 'increased',
+            target: id,
+            category:
+              id === 'NumberLT' || id === 'NumberLTE' ? 'minor' : 'major',
+            a: { context, value: 5 },
+            b: { context, value: 7 },
+          },
+        ]);
+      });
+
+      it('identifies a decreased value', () => {
+        // ARRANGE
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, value: numberLiteral(5) },
+          { kind: 'ValidationRule', id, value: numberLiteral(3) },
+        );
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
+          {
+            kind: 'decreased',
+            target: id,
+            category:
+              id === 'NumberGT' || id === 'NumberGTE' ? 'minor' : 'major',
+            a: { context, value: 5 },
+            b: { context, value: 3 },
+          },
+        ]);
+      });
+    });
+
+    describeRules(['NumberMultipleOf'], (id) => {
+      it('identifies two identical rules', () => {
+        // ARRANGE
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, value: nonNegativeNumberLiteral(5) },
+          { kind: 'ValidationRule', id, value: nonNegativeNumberLiteral(5) },
+        );
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
+      });
+
+      it('identifies an added rule', () => {
+        // ARRANGE
+        const [a, b] = setup(undefined, {
+          kind: 'ValidationRule',
+          id,
+          value: nonNegativeNumberLiteral(5),
+        });
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
+          {
+            kind: 'added',
+            target: id,
+            category: 'major',
+            b: { context, value: 5 },
+          },
+        ]);
+      });
+
+      it('identifies a removed rule', () => {
+        // ARRANGE
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, value: nonNegativeNumberLiteral(5) },
+          undefined,
+        );
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
+          {
+            kind: 'removed',
+            target: id,
+            category: 'minor',
+            a: { context, value: 5 },
+          },
+        ]);
+      });
+
+      it('identifies an increased value', () => {
+        // ARRANGE
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, value: nonNegativeNumberLiteral(5) },
+          { kind: 'ValidationRule', id, value: nonNegativeNumberLiteral(7) },
+        );
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
+          {
+            kind: 'increased',
+            target: id,
+            category: 'major',
+            a: { context, value: 5 },
+            b: { context, value: 7 },
+          },
+        ]);
+      });
+
+      it('identifies a decreased value', () => {
+        // ARRANGE
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, value: nonNegativeNumberLiteral(5) },
+          { kind: 'ValidationRule', id, value: nonNegativeNumberLiteral(3) },
+        );
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
+          {
+            kind: 'decreased',
+            target: id,
+            category: 'major',
+            a: { context, value: 5 },
+            b: { context, value: 3 },
+          },
+        ]);
+      });
+    });
+
+    describeRule('StringFormat', (id) => {
+      it('identifies two identical rules', () => {
+        // ARRANGE
+        const [a, b] = setup(
+          { kind: 'ValidationRule', id, format: nonEmptyStringLiteral('date') },
+          { kind: 'ValidationRule', id, format: nonEmptyStringLiteral('date') },
+        );
+
+        // ACT
+        const result = rules(mode, a, b);
+
+        // ASSERT
+        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
+      });
+
+      it('identifies an added rule', () => {
+        // ARRANGE
+        const [a, b] = setup(undefined, {
+          kind: 'ValidationRule',
+          id,
+          format: nonEmptyStringLiteral('date'),
         });
 
         // ACT
@@ -708,7 +827,7 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, format: { value: 'date' } },
+          { kind: 'ValidationRule', id, format: nonEmptyStringLiteral('date') },
           undefined,
         );
 
@@ -729,8 +848,12 @@ describe(rules, () => {
       it('identifies a changed format', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, format: { value: 'date' } },
-          { kind: 'ValidationRule', id, format: { value: 'date-time' } },
+          { kind: 'ValidationRule', id, format: nonEmptyStringLiteral('date') },
+          {
+            kind: 'ValidationRule',
+            id,
+            format: nonEmptyStringLiteral('date-time'),
+          },
         );
 
         // ACT
@@ -749,12 +872,12 @@ describe(rules, () => {
       });
     });
 
-    describeRules(['string-max-length', 'string-min-length'], (id) => {
+    describeRules(['StringMaxLength', 'StringMinLength'], (id) => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, length: { value: 50 } },
-          { kind: 'ValidationRule', id, length: { value: 50 } },
+          { kind: 'ValidationRule', id, length: nonNegativeIntegerLiteral(50) },
+          { kind: 'ValidationRule', id, length: nonNegativeIntegerLiteral(50) },
         );
 
         // ACT
@@ -769,7 +892,7 @@ describe(rules, () => {
         const [a, b] = setup(undefined, {
           kind: 'ValidationRule',
           id,
-          length: { value: 50 },
+          length: nonNegativeIntegerLiteral(50),
         });
 
         // ACT
@@ -789,7 +912,7 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, length: { value: 50 } },
+          { kind: 'ValidationRule', id, length: nonNegativeIntegerLiteral(50) },
           undefined,
         );
 
@@ -810,8 +933,12 @@ describe(rules, () => {
       it('identifies an increased value', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, length: { value: 50 } },
-          { kind: 'ValidationRule', id, length: { value: 100 } },
+          { kind: 'ValidationRule', id, length: nonNegativeIntegerLiteral(50) },
+          {
+            kind: 'ValidationRule',
+            id,
+            length: nonNegativeIntegerLiteral(100),
+          },
         );
 
         // ACT
@@ -822,7 +949,7 @@ describe(rules, () => {
           {
             kind: 'increased',
             target: id,
-            category: id === 'string-max-length' ? 'minor' : 'major',
+            category: id === 'StringMaxLength' ? 'minor' : 'major',
             a: { context, value: 50 },
             b: { context, value: 100 },
           },
@@ -832,8 +959,8 @@ describe(rules, () => {
       it('identifies a decreased value', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, length: { value: 50 } },
-          { kind: 'ValidationRule', id, length: { value: 25 } },
+          { kind: 'ValidationRule', id, length: nonNegativeIntegerLiteral(50) },
+          { kind: 'ValidationRule', id, length: nonNegativeIntegerLiteral(25) },
         );
 
         // ACT
@@ -844,7 +971,7 @@ describe(rules, () => {
           {
             kind: 'decreased',
             target: id,
-            category: id === 'string-max-length' ? 'major' : 'minor',
+            category: id === 'StringMaxLength' ? 'major' : 'minor',
             a: { context, value: 50 },
             b: { context, value: 25 },
           },
@@ -852,12 +979,20 @@ describe(rules, () => {
       });
     });
 
-    describeRule('string-pattern', (id) => {
+    describeRule('StringPattern', (id) => {
       it('identifies two identical rules', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, pattern: { value: '^asdf$' } },
-          { kind: 'ValidationRule', id, pattern: { value: '^asdf$' } },
+          {
+            kind: 'ValidationRule',
+            id,
+            pattern: nonEmptyStringLiteral('^asdf$'),
+          },
+          {
+            kind: 'ValidationRule',
+            id,
+            pattern: nonEmptyStringLiteral('^asdf$'),
+          },
         );
 
         // ACT
@@ -872,7 +1007,7 @@ describe(rules, () => {
         const [a, b] = setup(undefined, {
           kind: 'ValidationRule',
           id,
-          pattern: { value: '^asdf$' },
+          pattern: nonEmptyStringLiteral('^asdf$'),
         });
 
         // ACT
@@ -892,7 +1027,11 @@ describe(rules, () => {
       it('identifies a removed rule', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, pattern: { value: '^asdf$' } },
+          {
+            kind: 'ValidationRule',
+            id,
+            pattern: nonEmptyStringLiteral('^asdf$'),
+          },
           undefined,
         );
 
@@ -913,8 +1052,16 @@ describe(rules, () => {
       it('identifies a changed pattern', () => {
         // ARRANGE
         const [a, b] = setup(
-          { kind: 'ValidationRule', id, pattern: { value: '^original$' } },
-          { kind: 'ValidationRule', id, pattern: { value: '^new$' } },
+          {
+            kind: 'ValidationRule',
+            id,
+            pattern: nonEmptyStringLiteral('^original$'),
+          },
+          {
+            kind: 'ValidationRule',
+            id,
+            pattern: nonEmptyStringLiteral('^new$'),
+          },
         );
 
         // ACT
@@ -928,66 +1075,6 @@ describe(rules, () => {
             category: 'major',
             a: { context, value: '^original$' },
             b: { context, value: '^new$' },
-          },
-        ]);
-      });
-    });
-
-    describeRule('required', (id) => {
-      it('no-ops on identical rules', () => {
-        // ARRANGE
-        const [a, b] = setup(
-          { kind: 'ValidationRule', id },
-          { kind: 'ValidationRule', id },
-        );
-
-        // ACT
-        const result = rules(mode, a, b);
-
-        // ASSERT
-        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([]);
-      });
-
-      it('identifies an added rule', () => {
-        // ARRANGE
-        const [a, b] = setup(undefined, { kind: 'ValidationRule', id });
-        const ctx =
-          mode === 'return-type'
-            ? context
-            : { ...(context as any), required: true };
-
-        // ACT
-        const result = rules(mode, a, b);
-
-        // ASSERT
-        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
-          {
-            kind: 'added',
-            target: id,
-            category: 'major',
-            b: { context: ctx, value: true },
-          },
-        ]);
-      });
-
-      it('identifies a removed rule', () => {
-        // ARRANGE
-        const [a, b] = setup({ kind: 'ValidationRule', id }, undefined);
-        const ctx =
-          mode === 'return-type'
-            ? context
-            : { ...(context as any), required: true };
-
-        // ACT
-        const result = rules(mode, a, b);
-
-        // ASSERT
-        expect(Array.from(result)).toEqual<RuleChangeInfo[]>([
-          {
-            kind: 'removed',
-            target: id,
-            category: 'minor',
-            a: { context: ctx, value: true },
           },
         ]);
       });

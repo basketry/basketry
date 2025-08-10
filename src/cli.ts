@@ -20,6 +20,7 @@ import {
 const { argv } = yargs(hideBin(process.argv))
   .strictCommands()
   .version(chalk.bold(`🧺 Basketry v${require('../package.json').version}`))
+  .alias('version', 'v')
   .command(
     'init',
     'Initializes a new Basketry project',
