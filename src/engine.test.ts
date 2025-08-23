@@ -1,4 +1,4 @@
-import { Engine } from './engine';
+import { NodeEngine } from './engine';
 import { BasketryError, File, Parser, Rule, Violation } from './types';
 
 import { setParser } from './test-modules/parser';
@@ -79,12 +79,12 @@ class MemoryFileSystem implements FileSystem {
 const fsPromises = new MemoryFileSystem();
 const projectDirectory = `${sep}some${sep}project${sep}path`;
 
-describe('engine', () => {
+describe('NodeEngine', () => {
   beforeEach(() => vol.reset());
 
   it('returns the absolute source path', () => {
     // ARRANGE
-    const engine = new Engine(
+    const engine = new NodeEngine(
       {
         projectDirectory,
         sourcePath: 'some-file.ext',
@@ -105,7 +105,7 @@ describe('engine', () => {
   describe('runParser', () => {
     it('returns a parsed service', async () => {
       // ARRANGE
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -136,7 +136,7 @@ describe('engine', () => {
 
     it('returns and error when the parser throws', async () => {
       // ARRANGE
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -186,7 +186,7 @@ describe('engine', () => {
 
       const rule: Rule = () => [violation];
 
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -232,7 +232,7 @@ describe('engine', () => {
       const rule1: Rule = () => [violation1];
       const rule2: Rule = () => [violation2];
 
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -260,7 +260,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -293,7 +293,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -331,7 +331,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -369,7 +369,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -409,7 +409,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -447,7 +447,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -487,7 +487,7 @@ describe('engine', () => {
           path: ['generated', 'file.ext'],
           contents: `Line one - version 1${EOL}Line two - version 1${EOL}Line three - version 1${EOL}`,
         };
-        const engine = new Engine(
+        const engine = new NodeEngine(
           {
             projectDirectory,
             sourcePath: 'some-file.ext',
@@ -526,7 +526,7 @@ describe('engine', () => {
             path: ['generated', 'file.ext'],
             contents: `Line one - version 1${EOL}`,
           };
-          const engine = new Engine(
+          const engine = new NodeEngine(
             {
               projectDirectory,
               sourcePath: 'some-file.ext',
@@ -564,7 +564,7 @@ describe('engine', () => {
             path: ['generated', 'file.ext'],
             contents: `Line one - version 2${EOL}`,
           };
-          const engine = new Engine(
+          const engine = new NodeEngine(
             {
               projectDirectory,
               sourcePath: 'some-file.ext',
@@ -604,7 +604,7 @@ describe('engine', () => {
             path: ['generated', 'file.ext'],
             contents: `Line one - version 2${EOL}Line two - version 1${EOL}Line three - version 1${EOL}`,
           };
-          const engine = new Engine(
+          const engine = new NodeEngine(
             {
               projectDirectory,
               sourcePath: 'some-file.ext',
@@ -642,7 +642,7 @@ describe('engine', () => {
             path: ['generated', 'file.ext'],
             contents: `Line one - version 1${EOL}Line two - version 2${EOL}Line three - version 2${EOL}`,
           };
-          const engine = new Engine(
+          const engine = new NodeEngine(
             {
               projectDirectory,
               sourcePath: 'some-file.ext',
@@ -680,7 +680,7 @@ describe('engine', () => {
             path: ['generated', 'file.ext'],
             contents: `Line one - version 1${EOL}`,
           };
-          const engine = new Engine(
+          const engine = new NodeEngine(
             {
               projectDirectory,
               sourcePath: 'some-file.ext',
@@ -718,7 +718,7 @@ describe('engine', () => {
             path: ['generated', 'file.ext'],
             contents: `Line one - version 1`,
           };
-          const engine = new Engine(
+          const engine = new NodeEngine(
             {
               projectDirectory,
               sourcePath: 'some-file.ext',
@@ -756,7 +756,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -793,7 +793,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -832,7 +832,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -874,7 +874,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -922,7 +922,7 @@ describe('engine', () => {
         path: ['generated', 'file.ext'],
         contents: 'Generated content',
       };
-      const engine = new Engine(
+      const engine = new NodeEngine(
         {
           projectDirectory,
           sourcePath: 'some-file.ext',
@@ -1003,7 +1003,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1036,7 +1036,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1083,7 +1083,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1128,7 +1128,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1176,7 +1176,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1224,7 +1224,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1275,7 +1275,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/module-that-throws',
@@ -1309,7 +1309,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1343,7 +1343,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1377,7 +1377,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser-that-throws',
@@ -1410,7 +1410,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1442,7 +1442,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',
@@ -1474,7 +1474,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/invalid-parser',
@@ -1495,55 +1495,56 @@ describe('engine', () => {
       expect(engine.errors).toEqual([
         {
           code: 'PARSER_ERROR',
-          message: "Invalid IR: `#` must have required property 'kind'",
+          message: "Invalid schema: `#` must have required property 'kind'",
         },
         {
           code: 'PARSER_ERROR',
-          message: "Invalid IR: `#` must have required property 'title'",
-        },
-        {
-          code: 'PARSER_ERROR',
-          message: "Invalid IR: `#` must have required property 'majorVersion'",
-        },
-        {
-          code: 'PARSER_ERROR',
-          message: "Invalid IR: `#` must have required property 'types'",
-        },
-        {
-          code: 'PARSER_ERROR',
-          message: "Invalid IR: `#` must have required property 'enums'",
-        },
-        {
-          code: 'PARSER_ERROR',
-          message: "Invalid IR: `#` must have required property 'unions'",
-        },
-        {
-          code: 'PARSER_ERROR',
-          message: 'Invalid IR: `#` must NOT have additional properties',
-        },
-        {
-          code: 'PARSER_ERROR',
-          message: 'Invalid IR: `#/basketry` must be equal to constant',
+          message: "Invalid schema: `#` must have required property 'title'",
         },
         {
           code: 'PARSER_ERROR',
           message:
-            "Invalid IR: `#/interfaces/0` must have required property 'kind'",
+            "Invalid schema: `#` must have required property 'majorVersion'",
+        },
+        {
+          code: 'PARSER_ERROR',
+          message: "Invalid schema: `#` must have required property 'types'",
+        },
+        {
+          code: 'PARSER_ERROR',
+          message: "Invalid schema: `#` must have required property 'enums'",
+        },
+        {
+          code: 'PARSER_ERROR',
+          message: "Invalid schema: `#` must have required property 'unions'",
+        },
+        {
+          code: 'PARSER_ERROR',
+          message: 'Invalid schema: `#` must NOT have additional properties',
+        },
+        {
+          code: 'PARSER_ERROR',
+          message: 'Invalid schema: `#/basketry` must be equal to constant',
         },
         {
           code: 'PARSER_ERROR',
           message:
-            "Invalid IR: `#/interfaces/0` must have required property 'name'",
+            "Invalid schema: `#/interfaces/0` must have required property 'kind'",
         },
         {
           code: 'PARSER_ERROR',
           message:
-            "Invalid IR: `#/interfaces/0` must have required property 'methods'",
+            "Invalid schema: `#/interfaces/0` must have required property 'name'",
         },
         {
           code: 'PARSER_ERROR',
           message:
-            'Invalid IR: `#/interfaces/0` must NOT have additional properties',
+            "Invalid schema: `#/interfaces/0` must have required property 'methods'",
+        },
+        {
+          code: 'PARSER_ERROR',
+          message:
+            'Invalid schema: `#/interfaces/0` must NOT have additional properties',
         },
       ]);
       expect(engine.files).toEqual([]);
@@ -1554,7 +1555,7 @@ describe('engine', () => {
       const {
         engines: [engine],
         errors,
-      } = await Engine.load({
+      } = await NodeEngine.load({
         sourcePath: 'some-file.ext',
         sourceContent: 'some content',
         parser: 'src/test-modules/parser',

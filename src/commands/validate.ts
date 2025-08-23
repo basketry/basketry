@@ -2,6 +2,7 @@ import { generate } from '.';
 import { CommmonArgs } from './types';
 
 export type ValidateArgs = {
+  engine?: string;
   config: string;
   source?: string;
   parser?: string;

@@ -2,7 +2,7 @@ import { performance } from 'perf_hooks';
 import * as fsPromises from 'fs/promises';
 
 import { BasketryError, PerfEvent } from '../types';
-import { Engine, getInput } from '../engine';
+import { NodeEngine, RpcEngine, getInput } from '../engine';
 import * as perf from '../performance';
 
 import { CommmonArgs } from './types';
@@ -17,6 +17,7 @@ export type CliOutput = {
 };
 
 export type GenerateArgs = {
+  engine?: string;
   config: string;
   source?: string;
   parser?: string;
@@ -38,21 +39,27 @@ export async function ir(args: GenerateArgs) {
       : undefined;
 
     const go = async () => {
-      const inputs = await getInput(config, fsPromises, {
-        validate: false,
-        parser,
-        sourceContent,
-        sourcePath: source,
-      });
-      errors.push(...inputs.errors);
+      const loadEngine = () => {
+        if (args.engine === 'rpc') {
+          return RpcEngine.load({
+            configPath: config,
+          });
+        } else {
+          return NodeEngine.load({
+            validate: false,
+            parser,
+            sourceContent,
+            sourcePath: source,
+          });
+        }
+      };
+
+      const { engines: pipelines, errors: errorsMkII } = await loadEngine();
+      errors.push(...errorsMkII);
 
       // TODO: fail if multiplexed with stdin (#24)
 
-      for (const input of inputs.values) {
-        const {
-          engines: [pipeline],
-        } = await Engine.load(input);
-
+      for (const pipeline of pipelines) {
         performance.mark('run-start');
 
         await pipeline.runParser();

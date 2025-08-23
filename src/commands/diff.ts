@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import * as fsPromises from 'fs/promises';
 
-import { BasketryError, Engine, getInput } from '..';
+import { BasketryError, NodeEngine, getInput } from '..';
 import { CommmonArgs } from './types';
 
 import { diff as compare } from '../diff';
@@ -10,6 +10,7 @@ import { relative } from 'path';
 import { prettyPrint } from '../diff/pretty-print';
 
 export type DiffArgs = {
+  engine?: string;
   config: string;
   source?: string;
   parser?: string;
@@ -79,7 +80,7 @@ export async function diff(args: DiffArgs) {
 
   const {
     engines: [a],
-  } = await Engine.load({
+  } = await NodeEngine.load({
     ...a_inputs.values[0],
     onError: console.error,
   });
@@ -87,7 +88,7 @@ export async function diff(args: DiffArgs) {
 
   const {
     engines: [b],
-  } = await Engine.load({
+  } = await NodeEngine.load({
     ...b_inputs.values[0],
     onError: console.error,
   });
