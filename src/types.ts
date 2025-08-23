@@ -1,4 +1,6 @@
-import { Service } from './ir';
+import { File, Service, Violation } from '@basketry/ir';
+
+export { File, Severity, Violation, Position, Range } from '@basketry/ir';
 
 export type Config = LocalConfig | GlobalConfig;
 
@@ -8,11 +10,11 @@ export type LocalConfig<
   /** CommonJS module that contains the Parser function */
   parser: string;
   /** Array of CommonJS modules that contain Rule functions */
-  rules?: string[];
+  rules?: (string | RuleOptions)[];
   /** Array of CommonJS modules that contain Generator functions */
   generators: (string | GeneratorOptions)[];
   /** The source Service Definition used to generate service code */
-  source?: string;
+  source: string;
   /** The folder in which to output all generated files. */
   output?: string;
   /** Common options passed only to all generators. These common options will be overridden by generator-specific options. */
@@ -176,35 +178,32 @@ export type BasketryError = {
     | 'SOURCE_ERROR'
     | 'FATAL_ERROR'
     | 'MODULE_ERROR'
+    | 'PLUGIN_ERROR'
     | 'MISSING_PARAMETER'
     | 'WRITE_ERROR';
   message: string;
+  plugin?: {
+    command: string;
+    method: string;
+  };
   filepath?: string;
 };
 
-export type File = {
-  path: string[];
-  contents: string;
-};
+export type Ok<T> = { ok: true; value: T; error: undefined };
+// eslint-disable-next-line no-redeclare
+export const Ok = <T>(value: T): Ok<T> => ({
+  ok: true,
+  value,
+  error: undefined,
+});
 
-export type Severity = 'info' | 'warning' | 'error';
+export type Err = { ok: false; value: undefined; errors: BasketryError[] };
+// eslint-disable-next-line no-redeclare
+export const Err = (error: BasketryError | BasketryError[]): Err => ({
+  ok: false,
+  value: undefined,
+  errors: Array.isArray(error) ? error : [error],
+});
 
-export type Violation = {
-  sourcePath: string;
-  range: Range;
-  message: string;
-  severity: Severity;
-  code: string;
-  link?: string;
-};
-
-export type Position = {
-  line: number;
-  column: number;
-  offset: number;
-};
-
-export type Range = {
-  start: Position;
-  end: Position;
-};
+export type Result<T> = Ok<T> | Err;
+export type AsyncResult<T> = Promise<Result<T>>;

@@ -2,12 +2,13 @@ import { relative } from 'path';
 
 import chalk from 'chalk';
 
-import { Engine } from '../engine';
+import { NodeEngine, RpcEngine } from '../engine';
 import {
   BasketryError,
   CliOutput,
   EngineEvents,
   FileStatus,
+  Severity,
   Violation,
 } from '../types';
 import {
@@ -19,13 +20,13 @@ import {
   printFiles,
   printViolation,
   readStreamToString,
+  warning,
 } from '../private-utils';
-
-import { Severity } from '..';
 
 import { CommmonArgs } from './types';
 
 export type CiArgs = {
+  engine?: string;
   severity?: Severity;
   config: string;
   source?: string;
@@ -57,16 +58,28 @@ export async function ci(args: CiArgs) {
             onViolation: printViolation,
           };
 
-      const { engines: pipelines, errors: errorsMkII } = await Engine.load({
-        configPath: config,
-        output,
-        generators,
-        parser,
-        rules,
-        sourceContent,
-        sourcePath: source,
-        ...events,
-      });
+      const loadEngine = () => {
+        if (args.engine === 'rpc') {
+          if (!json) console.log(warning('Using experimental RPC engine\n'));
+          return RpcEngine.load({
+            configPath: config,
+            ...events,
+          });
+        } else {
+          return NodeEngine.load({
+            configPath: config,
+            output,
+            generators,
+            parser,
+            rules,
+            sourceContent,
+            sourcePath: source,
+            ...events,
+          });
+        }
+      };
+
+      const { engines: pipelines, errors: errorsMkII } = await loadEngine();
 
       errors.push(...errorsMkII);
       if (!json) printErrors(errorsMkII);

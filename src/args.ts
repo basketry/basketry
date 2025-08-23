@@ -1,5 +1,14 @@
 import { Options } from 'yargs';
 
+const engineArg = {
+  engine: {
+    alias: 'e',
+    string: true as const,
+    description: 'The engine to use for the command.',
+    requiresArg: true,
+  },
+};
+
 const jsonArg = {
   json: {
     alias: 'j',
@@ -107,6 +116,7 @@ export const initArgs = {
 };
 
 export const generateArgs = {
+  ...engineArg,
   ...jsonArg,
   ...perfArg,
   ...configArg,
@@ -126,6 +136,7 @@ export const cleanArgs = {
 };
 
 export const irArgs = {
+  ...engineArg,
   ...perfArg,
   ...configArg,
   ...parserArg,
@@ -133,6 +144,7 @@ export const irArgs = {
 };
 
 export const ciArgs = {
+  ...engineArg,
   ...jsonArg,
   ...configArg,
   ...parserArg,
@@ -151,6 +163,7 @@ export const ciArgs = {
 };
 
 export const diffArgs = {
+  ...engineArg,
   ...jsonArg,
   ...configArg,
   ...parserArg,
@@ -183,6 +196,7 @@ export const diffArgs = {
 };
 
 export const validateArgs = {
+  ...engineArg,
   ...jsonArg,
   ...perfArg,
   ...configArg,

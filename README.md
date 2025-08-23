@@ -91,6 +91,10 @@ Generate code with the `basketry generate` command or just `basketry`.
 
 Path to the config file. The default value is `basketry.config.json`.
 
+#### `--engine`, `-e` (string)
+
+The engine to use for the command.
+
 #### `--generators`, `-g` (string)
 
 Generators
@@ -136,6 +140,10 @@ Validate the source per the supplied rules with the `basketry validate` command 
 #### `--config`, `-c` (string)
 
 Path to the config file. The default value is `basketry.config.json`.
+
+#### `--engine`, `-e` (string)
+
+The engine to use for the command.
 
 #### `--json`, `-j` (boolean)
 
@@ -204,6 +212,10 @@ This command is designed to run in a Continuous Integration pipeline to ensure t
 #### `--config`, `-c` (string)
 
 Path to the config file. The default value is `basketry.config.json`.
+
+#### `--engine`, `-e` (string)
+
+The engine to use for the command.
 
 #### `--generators`, `-g` (string)
 
@@ -283,6 +295,10 @@ Exact versioning strategies may vary between projects, but `basketry diff` and t
 
 Path to the config file. The default value is `basketry.config.json`.
 
+#### `--engine`, `-e` (string)
+
+The engine to use for the command.
+
 #### `--filter` (string)
 
 Specifies the _lowest_ semver change level to return. For example, if `major` is supplied, then only "breaking" changes will be returned. If `minor` is supplied, then both `major` and `minor` semver changes will be returned. A value of `all` ensures that all changes are returned, including the most trivial changes such as textual descriptions. The default value is `all`.
@@ -335,6 +351,10 @@ Writes the Intermediate Representation (IR) of the parsed service as JSON to `st
 #### `--config`, `-c` (string)
 
 Path to the config file. The default value is `basketry.config.json`.
+
+#### `--engine`, `-e` (string)
+
+The engine to use for the command.
 
 #### `--parser`, `-p` (string)
 
