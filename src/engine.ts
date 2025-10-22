@@ -224,7 +224,7 @@ export class RpcEngine implements Engine {
     lineNumber: number,
   ): Promise<string> {
     if (!this._contentBySource.has(sourcePath)) {
-      const buffer = await this.fs.readFile(sourcePath);
+      const buffer = await this.fs.readFile(this.resolve(sourcePath));
       this._contentBySource.set(sourcePath, buffer.toString().split(EOL));
     }
     return this._contentBySource.get(sourcePath)![lineNumber - 1];
@@ -1026,7 +1026,7 @@ export class NodeEngine implements Engine {
     lineNumber: number,
   ): Promise<string> {
     if (!this._contentBySource.has(sourcePath)) {
-      const buffer = await this.fs.readFile(sourcePath);
+      const buffer = await this.fs.readFile(this.resolve(sourcePath));
       this._contentBySource.set(sourcePath, buffer.toString().split(EOL));
     }
     return this._contentBySource.get(sourcePath)![lineNumber - 1];
